@@ -1,0 +1,45 @@
+const express = require("express");
+const swaggerUi = require("swagger-ui-express");
+const logger = require("morgan");
+const path = require("path");
+const cookieParser = require("cookie-parser");
+const session = require("express-session");
+const passport = require("passport");
+const flash = require("connect-flash");
+const cors = require("cors");
+require("dotenv").config();
+process.on('uncaughtException', (error) => {
+  console.error('Uncaught Exception:', error);
+});
+
+require("./config/passport-setup");
+
+const app = express();
+
+// Middlewares
+app.use(cors());
+app.use(logger("dev"));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, "public")));
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(flash());
+
+// Swagger UI
+const swaggerDocument = require("./swagger/swaggerConfig.js");
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+// Routers
+const indexRouter = require("./routes/index.routes");
+app.use("/", indexRouter);
+
+module.exports = app;
