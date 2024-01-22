@@ -14,6 +14,7 @@ class TeacherRole extends Model {
     }, {
       sequelize,
       modelName: 'TeacherRole',
+      tableName: 'TeacherRoles', 
       timestamps: false,
     });
   }

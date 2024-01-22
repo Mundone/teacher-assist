@@ -1,5 +1,5 @@
 const app = require("./app"); // Adjust the path as necessary if app.js is in a different directory
-const sequelize = require("./db").sequelize; // Adjust the path as necessary
+const sequelize = require("./config/sequelizeConfig"); // Adjust the path as necessary
 
 const port = process.env.PORT || 3000;
 

@@ -1,32 +1,30 @@
-const Student = require('../models/student');
 const { Op } = require('sequelize');
 
-const getAllStudents = async (queryParameters = {}) => {
+const queryBuilder = (queryParams) => {
   const where = {};
   const order = [];
 
-  // Example of handling various query parameters
-  if (queryParameters.name) {
-    where.name = queryParameters.name; // Equality
-  }
+  // Define a mapping of query param keys to their Sequelize operators
+  const queryMap = {
+    name: { operator: Op.eq, field: 'name' },
+    ageGreaterThan: { operator: Op.gt, field: 'age' },
+    emailIncludes: { operator: Op.like, field: 'email', process: (value) => `%${value}%` },
+    sort: { process: (value) => value.split(' ') }
+  };
 
-  if (queryParameters.ageGreaterThan) {
-    where.age = { [Op.gt]: queryParameters.ageGreaterThan }; // Greater than
-  }
+  Object.keys(queryParams).forEach(key => {
+    if (key in queryMap) {
+      const { operator, field, process } = queryMap[key];
 
-  if (queryParameters.emailIncludes) {
-    where.email = { [Op.like]: `%${queryParameters.emailIncludes}%` }; // Like / Includes
-  }
+      if (key === 'sort') {
+        const [sortField, sortOrder] = process(queryParams[key]);
+        order.push([sortField, sortOrder.toUpperCase()]);
+      } else {
+        const value = process ? process(queryParams[key]) : queryParams[key];
+        where[field] = operator ? { [operator]: value } : value;
+      }
+    }
+  });
 
-  // Handling sorting (e.g., 'age DESC')
-  if (queryParameters.sort) {
-    const [field, orderType] = queryParameters.sort.split(' ');
-    order.push([field, orderType.toUpperCase()]);
-  }
-
-  return await Student.findAll({ where, order });
-};
-
-module.exports = {
-  getAllStudents,
+  return { where, order };
 };

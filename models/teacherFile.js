@@ -26,7 +26,8 @@ class TeacherFile extends Model {
     }, {
       sequelize,
       modelName: 'TeacherFile',
-      timestamps: false,
+      tableName: 'TeacherFiles', 
+      timestamps: true,
     });
   }
 

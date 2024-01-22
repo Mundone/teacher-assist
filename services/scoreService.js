@@ -1,25 +1,67 @@
-const { Score, AttendanceRecord, Student, Subject, LectureSchedule, LabSchedule } = require('../models');
+const { Score, Student, Subject, Lab, Assignment } = require("../models");
 
-const getAllScores = async () => {
-  return await Score.findAll();
+const parseScores = (score, week) => {
+  // Assuming score fields are JSON strings with a structure that includes weekly data
+  const parsedLectureScores = JSON.parse(score.LectureScores || "{}");
+  const parsedLabScores = JSON.parse(score.LabScores || "{}");
+  const parsedAssignmentScores = JSON.parse(score.AssignmentScores || "{}");
+
+  // Extract the scores for the specified week
+  const lectureScore = parsedLectureScores[`week${week}`] || 0;
+  const labScore = parsedLabScores[`week${week}`] || 0;
+  const assignmentScore = parsedAssignmentScores[`week${week}`] || 0;
+
+  return {
+    lectureScore,
+    labScore,
+    assignmentScore,
+  };
 };
 
-const getStudentSubjectScores = async (studentId, subjectId) => {
-  // Fetch scores for the student in the subject
-  // You might need to perform multiple queries and aggregate the results
-  // Example:
+const getAllStudentScoresForSubjectAndWeek = async (subjectId, week, pageNo, pageSize, sortBy, sortOrder) => {
+  const sortByValid = sortBy || "StudentID"; // Replace 'StudentID' with your default sort column if different
+  const sortOrderValid = sortOrder === "desc" ? "DESC" : "ASC"; // Default to ascending if sortOrder is not 'desc'
+
+  const offset = pageNo * pageSize;
+  
+  // In your scoreService or wherever the findAll call is made
   const scores = await Score.findAll({
-    where: { StudentID: studentId, SubjectID: subjectId },
-    include: [{ model: Student }, { model: Subject }]
+    where: { SubjectID: subjectId },
+    include: [
+      {
+        model: Student,
+        attributes: ["StudentCode", "Name"],
+      },
+      // Add other includes if necessary
+    ],
+    limit: pageSize,
+    offset: offset,
+    // Use the validated sort parameters
+    order: [[sortByValid, sortOrderValid]],
   });
 
-  // Add additional queries for attendance records and other related data
-  // Aggregate and format the data as required
+  // Process the scores to format them for the table
+  return scores.map((score) => {
+    const { lectureScore, labScore, assignmentScore } = parseScores(score, week);
 
-  return scores; // Return the aggregated and formatted data
+    return {
+      StudentCode: score.Student.StudentCode,
+      StudentName: score.Student.Name,
+      LectureScore: lectureScore,
+      LabScore: labScore,
+      AssignmentScore: assignmentScore,
+      ExtraPoint: score.ExtraPoint || 0,
+    };
+  });
+};
+
+const updateStudentScore = async (scoreId, updatedScoreData) => {
+  return await Score.update(updatedScoreData, {
+    where: { ScoreID: scoreId },
+  });
 };
 
 module.exports = {
-  getAllScores,
-  getStudentSubjectScores,
+  getAllStudentScoresForSubjectAndWeek,
+  updateStudentScore,
 };

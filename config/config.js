@@ -1,4 +1,5 @@
-require('dotenv').config();
+// config/config.js
+require("dotenv").config();
 
 const isLocal = true; // Adjust the condition as needed
 
@@ -8,7 +9,8 @@ const localConfig = {
     password: process.env.LOCAL_DB_PASSWORD,
     database: process.env.LOCAL_DB_NAME,
     host: process.env.LOCAL_DB_HOST,
-    dialect: 'mysql',
+    dialect: "mysql",
+    logging: false,
   },
   jwtSecret: process.env.LOCAL_JWT_SECRET,
 };
@@ -19,7 +21,14 @@ const productionConfig = {
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
     host: process.env.DB_HOST,
-    dialect: 'mysql',
+    dialect: "mysql",
+    logging: false,
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false,
+      },
+    },
   },
   jwtSecret: process.env.JWT_SECRET,
 };

@@ -1,19 +1,54 @@
-const ScoreService = require('../services/scoreService');
+const scoreService = require("../services/scoreService");
+const { Score } = require("../models");
 
 const getScores = async (req, res, next) => {
   try {
-    const scores = await ScoreService.getAllScores();
-    res.json(scores);
+    const { subjectId, week } = req.query;
+    const { pageNo, pageSize, sortBy, sortOrder } = req.pagination; // Using pagination from middleware
+
+    const subjectIdInt = parseInt(subjectId);
+    const weekInt = parseInt(week);
+
+    // Validate the query parameters
+    if (isNaN(subjectIdInt) || isNaN(weekInt)) {
+      return res.status(400).json({ error: "Invalid subjectId or week." });
+    }
+
+    // Get the total count of scores for pagination
+    const totalElements = await Score.count({
+      where: { SubjectID: subjectIdInt },
+    });
+
+    // Calculate the total number of pages
+    const totalPages = Math.ceil(totalElements / pageSize);
+
+    // Fetch paginated scores with sorting
+    const scores = await scoreService.getAllStudentScoresForSubjectAndWeek(
+      subjectIdInt, weekInt, pageNo, pageSize, sortBy, sortOrder
+    );
+
+    // Respond with paginated and sorted scores
+    res.json({
+      pagination: {
+        current_page_no: pageNo,
+        total_pages: totalPages,
+        per_page: pageSize,
+        total_elements: totalElements,
+      },
+      sort: `${sortBy} ${sortOrder}`,
+      data: scores,
+    });
   } catch (error) {
-    next(error);
+    console.error('Error fetching scores:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
   }
 };
 
-const getStudentScores = async (req, res, next) => {
+const updateScore = async (req, res, next) => {
   try {
-    const { studentId, subjectId } = req.query;
-    const scores = await ScoreService.getStudentSubjectScores(studentId, subjectId);
-    res.json(scores);
+    const { scoreId } = req.params;
+    const updatedScore = await scoreService.updateStudentScore(scoreId, req.body);
+    res.json(updatedScore);
   } catch (error) {
     next(error);
   }
@@ -21,5 +56,5 @@ const getStudentScores = async (req, res, next) => {
 
 module.exports = {
   getScores,
-  getStudentScores,
+  updateScore,
 };

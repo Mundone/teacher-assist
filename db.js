@@ -1,4 +1,4 @@
-const { isLocal } = require("./config/db.config");
+const { isLocal } = require("./config/config");
 const { Sequelize, DataTypes } = require('sequelize');
 const fs = require('fs'); // Import the File System module
 

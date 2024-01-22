@@ -1,7 +1,7 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcryptjs');
-const sequelize = require("../db").sequelize;
+const sequelize = require("./sequelizeConfig");
 const { Sequelize, DataTypes } = require('sequelize');
 const User = require('../models/models')(sequelize, DataTypes).User; // Adjust the path based on your file structure
 

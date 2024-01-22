@@ -26,6 +26,7 @@ class AttendanceRecord extends Model {
     }, {
       sequelize,
       modelName: 'AttendanceRecord',
+      tableName: 'AttendanceRecords', 
       timestamps: false,
     });
   }

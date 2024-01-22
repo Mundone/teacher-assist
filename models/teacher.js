@@ -22,7 +22,8 @@ class Teacher extends Model {
     }, {
       sequelize,
       modelName: 'Teacher',
-      timestamps: false,
+      tableName: 'Teachers', 
+      timestamps: true,
     });
   }
 

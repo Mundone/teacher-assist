@@ -1,26 +1,31 @@
 const { Model, DataTypes } = require('sequelize');
 
-class LabSchedule extends Model {
+class Assignment extends Model {
   static init(sequelize) {
     super.init({
-      ScheduleID: {
+      AssignmentID: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
       },
       SubjectID: {
         type: DataTypes.INTEGER,
+        references: {
+          model: 'Subjects', // Ensure this matches your Subject model name
+          key: 'SubjectID',
+        },
       },
-      LabDay: {
+      MaxScore: {
         type: DataTypes.INTEGER,
       },
-      LabTime: {
+      AssignmentNumber: {
         type: DataTypes.INTEGER,
       },
     }, {
       sequelize,
-      modelName: 'LabSchedule',
-      timestamps: false,
+      modelName: 'Assignment',
+      tableName: 'Assignments', 
+      timestamps: false, // Consider if you need timestamps
     });
   }
 
@@ -29,4 +34,4 @@ class LabSchedule extends Model {
   }
 }
 
-module.exports = LabSchedule;
+module.exports = Assignment;

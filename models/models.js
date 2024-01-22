@@ -2,6 +2,34 @@ const moment = require("moment-timezone");
 const nowTime = moment.utc().subtract(-8, "hours").toDate();
 
 module.exports = (sequelize, DataTypes) => {
+  // Assignment model
+  const Assignment = sequelize.define(
+    "Assignment",
+    {
+      AssignmentID: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+      },
+      SubjectID: {
+        type: DataTypes.INTEGER,
+        references: {
+          model: "Subject", // Ensure this matches the actual Subject model name
+          key: "SubjectID",
+        },
+      },
+      MaxScore: {
+        type: DataTypes.INTEGER,
+      },
+      AssignmentNumber: {
+        type: DataTypes.INTEGER,
+      },
+    },
+    {
+      timestamps: true, // Consider adding timestamps
+    }
+  );
+
   const AttendanceRecord = sequelize.define(
     "AttendanceRecord",
     {
@@ -43,10 +71,11 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
 
-  const LabSchedule = sequelize.define(
-    "LabSchedule",
+  // Lab model
+  const Lab = sequelize.define(
+    "Lab",
     {
-      ScheduleID: {
+      LabID: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
@@ -54,7 +83,7 @@ module.exports = (sequelize, DataTypes) => {
       SubjectID: {
         type: DataTypes.INTEGER,
         references: {
-          model: "Subjects",
+          model: "Subject", // Ensure this matches the actual Subject model name
           key: "SubjectID",
         },
       },
@@ -64,9 +93,15 @@ module.exports = (sequelize, DataTypes) => {
       LabTime: {
         type: DataTypes.INTEGER,
       },
+      MaxScore: {
+        type: DataTypes.INTEGER,
+      },
+      LabNumber: {
+        type: DataTypes.INTEGER,
+      },
     },
     {
-      timestamps: false,
+      timestamps: true, // Consider adding timestamps
     }
   );
 
@@ -122,14 +157,21 @@ module.exports = (sequelize, DataTypes) => {
       LectureScores: {
         type: DataTypes.JSON,
       },
-      LabScores: {
-        type: DataTypes.JSON,
+      LabScoreID: {
+        type: DataTypes.INTEGER,
+        references: {
+          model: "Lab",
+          key: "LabID",
+        },
+        allowNull: true,
       },
-      LabAttendanceScores: {
-        type: DataTypes.JSON,
-      },
-      AssignmentScores: {
-        type: DataTypes.JSON,
+      AssignmentScoreID: {
+        type: DataTypes.INTEGER,
+        references: {
+          model: "Assignment",
+          key: "AssignmentID",
+        },
+        allowNull: true,
       },
       ExtraPoint: {
         type: DataTypes.INTEGER,
@@ -171,28 +213,21 @@ module.exports = (sequelize, DataTypes) => {
       StudentID: {
         type: DataTypes.INTEGER,
         references: {
-          model: "Students",
+          model: "Student", // Make sure this matches your Student model name
           key: "StudentID",
         },
       },
       SubjectID: {
         type: DataTypes.INTEGER,
         references: {
-          model: "Subjects",
+          model: "Subject", // Make sure this matches your Subject model name
           key: "SubjectID",
         },
       },
       LectureScheduleID: {
         type: DataTypes.INTEGER,
         references: {
-          model: "LectureSchedules",
-          key: "ScheduleID",
-        },
-      },
-      LabScheduleID: {
-        type: DataTypes.INTEGER,
-        references: {
-          model: "LabSchedules",
+          model: "LectureSchedule", // Make sure this matches your LectureSchedule model name
           key: "ScheduleID",
         },
       },
@@ -312,6 +347,8 @@ module.exports = (sequelize, DataTypes) => {
 
   // Associations
   //A
+  Assignment.belongsTo(Subject, { foreignKey: "SubjectID", onDelete: "CASCADE" });
+
   AttendanceRecord.belongsTo(Subject, {
     foreignKey: "SubjectID",
     ...cascadeOptions,
@@ -324,10 +361,8 @@ module.exports = (sequelize, DataTypes) => {
   });
 
   //L
-  LabSchedule.belongsTo(Subject, {
-    foreignKey: "SubjectID",
-    ...cascadeOptions,
-  });
+  Lab.belongsTo(Subject, { foreignKey: "SubjectID", onDelete: "CASCADE" });
+
   LectureSchedule.hasMany(AttendanceRecord, {
     foreignKey: "LectureScheduleID",
     ...cascadeOptions,
@@ -365,7 +400,10 @@ module.exports = (sequelize, DataTypes) => {
     foreignKey: "SubjectID",
     ...cascadeOptions,
   });
-  Subject.hasMany(LabSchedule, { foreignKey: "SubjectID", ...cascadeOptions });
+  Subject.hasMany(Lab, {
+    foreignKey: "SubjectID",
+    ...cascadeOptions,
+  });
   Subject.hasMany(StudentEnrollment, {
     foreignKey: "SubjectID",
 
@@ -376,6 +414,8 @@ module.exports = (sequelize, DataTypes) => {
     foreignKey: "SubjectID",
     ...cascadeOptions,
   });
+  Subject.hasMany(Lab, { foreignKey: "SubjectID", onDelete: "CASCADE" });
+  Subject.hasMany(Assignment, { foreignKey: "SubjectID", onDelete: "CASCADE" });
 
   //T
   Teacher.belongsTo(TeacherRole, { foreignKey: "RoleID", ...cascadeOptions });
@@ -389,8 +429,9 @@ module.exports = (sequelize, DataTypes) => {
   TeacherRole.hasMany(Teacher, { foreignKey: "RoleID", ...cascadeOptions });
 
   return {
+    Assignment,
     AttendanceRecord,
-    LabSchedule,
+    Lab,
     LectureSchedule,
     Teacher,
     TeacherFile,

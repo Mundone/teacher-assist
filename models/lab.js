@@ -1,34 +1,43 @@
 const { Model, DataTypes } = require('sequelize');
 
-class LectureSchedule extends Model {
+class Lab extends Model {
   static init(sequelize) {
     super.init({
-      ScheduleID: {
+      LabID: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
       },
       SubjectID: {
         type: DataTypes.INTEGER,
+        references: {
+          model: 'Subjects', // Make sure this matches your Subject model name
+          key: 'SubjectID',
+        },
       },
-      LectureDay: {
+      LabDay: {
         type: DataTypes.INTEGER,
       },
-      LectureTime: {
+      LabTime: {
+        type: DataTypes.INTEGER,
+      },
+      MaxScore: {
+        type: DataTypes.INTEGER,
+      },
+      LabNumber: {
         type: DataTypes.INTEGER,
       },
     }, {
       sequelize,
-      modelName: 'LectureSchedule',
-      tableName: 'LectureSchedules', 
-      timestamps: false,
+      modelName: 'Lab',
+      tableName: 'Labs', 
+      timestamps: false, // Consider if you need timestamps
     });
   }
 
   static associate(models) {
     this.belongsTo(models.Subject, { foreignKey: 'SubjectID' });
-    this.hasMany(models.AttendanceRecord, { foreignKey: 'LectureScheduleID' });
   }
 }
 
-module.exports = LectureSchedule;
+module.exports = Lab;

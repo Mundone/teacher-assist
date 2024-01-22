@@ -32,6 +32,7 @@ class Score extends Model {
     }, {
       sequelize,
       modelName: 'Score',
+      tableName: 'Scores', 
       timestamps: false,
     });
   }

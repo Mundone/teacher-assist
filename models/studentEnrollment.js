@@ -10,20 +10,31 @@ class StudentEnrollment extends Model {
       },
       StudentID: {
         type: DataTypes.INTEGER,
+        references: {
+          model: 'Students', // Make sure this matches your Student model name
+          key: 'StudentID',
+        },
       },
       SubjectID: {
         type: DataTypes.INTEGER,
+        references: {
+          model: 'Subjects', // Make sure this matches your Subject model name
+          key: 'SubjectID',
+        },
       },
       LectureScheduleID: {
         type: DataTypes.INTEGER,
+        references: {
+          model: 'LectureSchedules', // Make sure this matches your LectureSchedule model name
+          key: 'ScheduleID',
+        },
       },
-      LabScheduleID: {
-        type: DataTypes.INTEGER,
-      },
+      // LabScheduleID field is removed
     }, {
       sequelize,
       modelName: 'StudentEnrollment',
-      timestamps: false,
+      tableName: 'StudentEnrollments', 
+      timestamps: false, // Consider if you need timestamps
     });
   }
 
@@ -31,7 +42,8 @@ class StudentEnrollment extends Model {
     this.belongsTo(models.Student, { foreignKey: 'StudentID' });
     this.belongsTo(models.Subject, { foreignKey: 'SubjectID' });
     this.belongsTo(models.LectureSchedule, { foreignKey: 'LectureScheduleID' });
-    this.belongsTo(models.LabSchedule, { foreignKey: 'LabScheduleID' });
+    // Lab association if needed, replace with relevant field from the Lab model
+    // Example: this.belongsTo(models.Lab, { foreignKey: 'LabID' });
   }
 }
 

@@ -2,7 +2,6 @@ const router = require("express").Router();
 
 const authRouter = require('./auth.routes');
 const attendanceRecordRouter = require('./attendanceRecord.routes');
-const labScheduleRouter = require('./labSchedule.routes');
 const lectureScheduleRouter = require('./lectureSchedule.routes');
 const scoreRouter = require('./score.routes');
 const studentRouter = require('./student.routes');
@@ -12,7 +11,6 @@ const teacherFileRouter = require('./teacherFile.routes');
 const teacherRoleRouter = require('./teacherRole.routes');
 
 router.use('/', attendanceRecordRouter);
-router.use('/', labScheduleRouter);
 router.use('/', lectureScheduleRouter);
 router.use('/', scoreRouter);
 router.use('/', studentRouter);
