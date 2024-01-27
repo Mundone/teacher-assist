@@ -3,34 +3,34 @@ const { Model, DataTypes } = require('sequelize');
 class Assignment extends Model {
   static init(sequelize) {
     super.init({
-      AssignmentID: {
+      id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
       },
-      SubjectID: {
+      subject_id: {
         type: DataTypes.INTEGER,
         references: {
-          model: 'Subjects', // Ensure this matches your Subject model name
-          key: 'SubjectID',
+          model: 'subject', // Ensure this matches your Subject model name
+          key: 'id',
         },
       },
-      MaxScore: {
+      max_score: {
         type: DataTypes.INTEGER,
       },
-      AssignmentNumber: {
+      assignment_number: {
         type: DataTypes.INTEGER,
       },
     }, {
       sequelize,
-      modelName: 'Assignment',
-      tableName: 'Assignments', 
+      modelName: 'assignment',
+      tableName: 'assignment', 
       timestamps: false, // Consider if you need timestamps
     });
   }
 
   static associate(models) {
-    this.belongsTo(models.Subject, { foreignKey: 'SubjectID' });
+    this.belongsTo(models.Subject, { foreignKey: 'subject_id' });
   }
 }
 

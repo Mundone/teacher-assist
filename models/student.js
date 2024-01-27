@@ -3,29 +3,29 @@ const { Model, DataTypes } = require('sequelize');
 class Student extends Model {
   static init(sequelize) {
     super.init({
-      StudentID: {
+      id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
       },
-      Name: {
+      name: {
         type: DataTypes.STRING(255),
       },
-      StudentCode: {
+      student_code: {
         type: DataTypes.STRING(255),
       },
     }, {
       sequelize,
-      modelName: 'Student',
-      tableName: 'Students', 
+      modelName: 'student',
+      tableName: 'student', 
       timestamps: false,
     });
   }
 
   static associate(models) {
-    this.hasMany(models.StudentEnrollment, { foreignKey: 'StudentID' });
-    this.hasMany(models.Score, { foreignKey: 'StudentID' });
-    this.hasMany(models.AttendanceRecord, { foreignKey: 'StudentID' });
+    this.hasMany(models.StudentEnrollment, { foreignKey: 'student_id' });
+    this.hasMany(models.Score, { foreignKey: 'student_id' });
+    this.hasMany(models.AttendanceRecord, { foreignKey: 'student_id' });
     // Add other associations here
   }
 }

@@ -3,31 +3,35 @@ const { Model, DataTypes } = require('sequelize');
 class LectureSchedule extends Model {
   static init(sequelize) {
     super.init({
-      ScheduleID: {
+      id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
       },
-      SubjectID: {
+      subject_id: {
+        type: DataTypes.INTEGER,
+        references: {
+          model: 'subject', // Make sure this matches your Subject model name
+          key: 'id',
+        },
+      },
+      lecture_day: {
         type: DataTypes.INTEGER,
       },
-      LectureDay: {
-        type: DataTypes.INTEGER,
-      },
-      LectureTime: {
+      lecture_time: {
         type: DataTypes.INTEGER,
       },
     }, {
       sequelize,
-      modelName: 'LectureSchedule',
-      tableName: 'LectureSchedules', 
+      modelName: 'lectureSchedule',
+      tableName: 'lecture_schedule', 
       timestamps: false,
     });
   }
 
   static associate(models) {
-    this.belongsTo(models.Subject, { foreignKey: 'SubjectID' });
-    this.hasMany(models.AttendanceRecord, { foreignKey: 'LectureScheduleID' });
+    this.belongsTo(models.Subject, { foreignKey: 'subject_id' });
+    this.hasMany(models.AttendanceRecord, { foreignKey: 'lecture_schedule_id' });
   }
 }
 

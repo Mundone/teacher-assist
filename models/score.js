@@ -3,43 +3,51 @@ const { Model, DataTypes } = require('sequelize');
 class Score extends Model {
   static init(sequelize) {
     super.init({
-      ScoreID: {
+      id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
       },
-      StudentID: {
+      student_id: {
         type: DataTypes.INTEGER,
+        references: {
+          model: 'student', // Ensure this matches your Subject model name
+          key: 'id',
+        },
       },
-      SubjectID: {
+      subject_id: {
         type: DataTypes.INTEGER,
+        references: {
+          model: 'subject', // Make sure this matches your Subject model name
+          key: 'id',
+        },
       },
-      LectureScores: {
+      lecture_scores: {
         type: DataTypes.JSON,
       },
-      LabScores: {
+      lab_scores: {
         type: DataTypes.JSON,
       },
-      LabAttendanceScores: {
+      lab_attendance_scores: {
         type: DataTypes.JSON,
       },
-      AssignmentScores: {
+      assignment_scores: {
         type: DataTypes.JSON,
       },
-      ExtraPoint: {
+      extra_point: {
         type: DataTypes.INTEGER,
       },
     }, {
       sequelize,
-      modelName: 'Score',
-      tableName: 'Scores', 
+      modelName: 'score',
+      tableName: 'score', 
       timestamps: false,
     });
   }
 
   static associate(models) {
-    this.belongsTo(models.Student, { foreignKey: 'StudentID' });
-    this.belongsTo(models.Subject, { foreignKey: 'SubjectID' });
+    this.belongsTo(models.Student, { foreignKey: 'student_id' });
+    this.belongsTo(models.Subject, { foreignKey: 'subject_id' });
   }
 }
 

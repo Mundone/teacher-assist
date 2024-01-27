@@ -86,6 +86,8 @@ const options = {
           properties: {
             TeacherID: { type: "integer", description: "Unique identifier for the Teacher." },
             Name: { type: "string", description: "Name of the Teacher." },
+            Code: { type: "string", description: "Code of the Teacher." },
+            password: { type: "string", description: "Password123" },
             RoleID: { type: "integer", description: "Role ID of the Teacher." },
           },
           example: {

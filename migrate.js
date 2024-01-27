@@ -32,65 +32,68 @@ const generateRandomData = () => {
 const generateRandomScore = (maxScore) => Math.floor(Math.random() * (maxScore + 1));
 const generateRandomScores = (count, maxScore) => Array.from({ length: count }, () => generateRandomScore(maxScore));
 
+
 const insertRandomData = async () => {
-  for (let i = 0; i < 10; i++) {
+  const role = await models.TeacherRole.create({ role_name: `Багш` });
+  await models.TeacherRole.create({ role_name: `Ахлах багш` });
+  await models.TeacherRole.create({ role_name: `Салбарын эрхлэгч` });
+  for (let i = 0; i < 2; i++) {
     const data = generateRandomData();
     
-    const role = await models.TeacherRole.create({ RoleName: `Role${i}` });
-    const teacher = await models.Teacher.create({ Name: data.randomName, RoleID: role.RoleID });
-    const subject = await models.Subject.create({ SubjectName: `Subject${i}`, TeacherID: teacher.TeacherID });
+    const teacher = await models.Teacher.create({ code: `Code${data.randomName}`, name: data.randomName, role_id: role.id });
+    const subject = await models.Subject.create({ subject_name: `Subject${i}`, teacher_id: teacher.TeacherID });
 
     const lectureSchedule = await models.LectureSchedule.create({
-      SubjectID: subject.SubjectID,
-      LectureDay: data.randomDay,
-      LectureTime: data.randomTime,
+      subject_id: subject.id,
+      lecture_day: data.randomDay,
+      lecture_time: data.randomTime,
     });
 
     const labs = [];
     const assignments = [];
     for (let j = 0; j < data.randomNumber; j++) {
       const lab = await models.Lab.create({
-        SubjectID: subject.SubjectID,
-        LabDay: data.randomDay,
-        LabTime: data.randomTime,
-        MaxScore: MAX_LAB_SCORE,
-        LabNumber: j + 1,
+        subject_id: subject.id,
+        lab_day: data.randomDay,
+        lab_time: data.randomTime,
+        max_score: MAX_LAB_SCORE,
+        lab_number: j + 1,
       });
       labs.push(lab);
 
       const assignment = await models.Assignment.create({
-        SubjectID: subject.SubjectID,
-        MaxScore: MAX_ASSIGNMENT_SCORE,
-        AssignmentNumber: j + 1,
+        subject_id: subject.id,
+        max_score: MAX_ASSIGNMENT_SCORE,
+        assignment_number: j + 1,
       });
       assignments.push(assignment);
     }
 
-    const student = await models.Student.create({ Name: `Student${i}`, StudentCode: `Code${i}` });
+    const student = await models.Student.create({ name: `Student${i}`, student_code: `Code${i}` });
 
     await models.StudentEnrollment.create({
-      StudentID: student.StudentID,
-      SubjectID: subject.SubjectID,
-      LectureScheduleID: lectureSchedule.ScheduleID,
+      student_id: student.id,
+      subject_id: subject.id,
+      lecture_schedule_id: lectureSchedule.ScheduleID,
     });
 
     // Create Scores
     await models.Score.create({
-      StudentID: student.StudentID,
-      SubjectID: subject.SubjectID,
-      LectureScores: JSON.stringify(generateRandomScores(16, 1)), // 16 weeks, score either 0 or 1
-      LabScores: JSON.stringify(labs.map(lab => ({ labID: lab.LabID, score: generateRandomScore(lab.MaxScore) }))),
-      LabAttendanceScores: JSON.stringify(generateRandomScores(labs.length, 1)), // Score either 0 or 1 for lab attendance
-      AssignmentScores: JSON.stringify(assignments.map(assignment => ({ assignmentID: assignment.AssignmentID, score: generateRandomScore(assignment.MaxScore) }))),
-      ExtraPoint: generateRandomScore(MAX_EXTRA_POINT),
+      student_id: student.id,
+      subject_id: 1,
+      lecture_scores: JSON.stringify(generateRandomScores(16, 1)), // 16 weeks, score either 0 or 1
+      lab_scores: JSON.stringify(labs.map(lab => ({ lab_id: lab.id, score: generateRandomScore(lab.max_score) }))),
+      lab_attendance_scores: JSON.stringify(generateRandomScores(labs.length, 1)), // Score either 0 or 1 for lab attendance
+      assignment_scores: JSON.stringify(assignments.map(assignment => ({ assignment_id: assignment.id, score: generateRandomScore(assignment.max_score) }))),
+      extra_point: generateRandomScore(MAX_EXTRA_POINT),
     });
 
     await models.AttendanceRecord.create({
-      StudentID: student.StudentID,
-      SubjectID: subject.SubjectID,
-      LectureScheduleID: lectureSchedule.ScheduleID,
-      AttendanceDate: moment.utc().subtract(-8, "hours").toDate(),
-      Attended: Math.random() < 0.5,
+      student_id: student.id,
+      subject_id: subject.id,
+      lecture_schedule_id: lectureSchedule.id,
+      attendance_date: moment.utc().subtract(-8, "hours").toDate(),
+      attended: Math.random() < 0.5,
     });
   }
 };

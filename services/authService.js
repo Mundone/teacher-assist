@@ -2,36 +2,37 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { Teacher } = require('../models'); // adjust the path as needed
 
-const registerTeacher = async ({ email, password, name }) => {
-  const existingTeacher = await Teacher.findOne({ where: { email } });
+const registerTeacher = async ({ code, name, password, roleID }) => {
+  const existingTeacher = await Teacher.findOne({ where: { code } });
   if (existingTeacher) {
-    throw new Error('Email already in use.');
+    throw new Error('Хэрэглэгчийн код давтагдаж байна.');
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
   const newTeacher = await Teacher.create({
-    email,
+    code: code,
+    name: name,
     password: hashedPassword,
-    name,
+    role_id: roleID,
   });
 
   return newTeacher;
 };
 
-const authenticateTeacher = async (email, password) => {
-  const teacher = await Teacher.findOne({ where: { email } });
+const authenticateTeacher = async (code, password) => {
+  const teacher = await Teacher.findOne({ where: { code } });
   if (!teacher) {
-    throw new Error('Teacher not found.');
+    throw new Error('Хэрэглэгч олдсонгүй.');
   }
 
   const isMatch = await bcrypt.compare(password, teacher.password);
   if (!isMatch) {
-    throw new Error('Invalid credentials.');
+    throw new Error('Нууц үг буруу байна.');
   }
 
   const token = jwt.sign(
-    { id: teacher.id, email: teacher.email },
-    process.env.JWT_KEY,
+    { id: teacher.id, code: teacher.code },
+    process.env.JWT_SECRET,
     { expiresIn: '1h' }
   );
 
@@ -41,12 +42,12 @@ const authenticateTeacher = async (email, password) => {
 const refreshToken = async (teacherId) => {
   const teacher = await Teacher.findByPk(teacherId);
   if (!teacher) {
-    throw new Error('Teacher not found.');
+    throw new Error('Хэрэглэгч олдсонгүй.');
   }
 
   const newToken = jwt.sign(
-    { id: teacher.id, email: teacher.email },
-    process.env.JWT_KEY,
+    { id: teacher.id, code: teacher.code },
+    process.env.JWT_SECRET,
     { expiresIn: '1h' }
   );
 

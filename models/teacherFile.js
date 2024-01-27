@@ -3,36 +3,40 @@ const { Model, DataTypes } = require('sequelize');
 class TeacherFile extends Model {
   static init(sequelize) {
     super.init({
-      FileID: {
+      id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
       },
-      TeacherID: {
+      teacher_id: {
         type: DataTypes.INTEGER,
+        references: {
+          model: "teacher", // Make sure this matches your Teacher model name
+          key: "id",
+        },
       },
-      FileName: {
+      file_name: {
         type: DataTypes.STRING(255),
       },
-      FilePath: {
+      file_path: {
         type: DataTypes.STRING(255),
       },
-      FileType: {
+      file_type: {
         type: DataTypes.STRING(50),
       },
-      UploadDate: {
+      upload_date: {
         type: DataTypes.DATE,
       },
     }, {
       sequelize,
-      modelName: 'TeacherFile',
-      tableName: 'TeacherFiles', 
+      modelName: 'teacher_file',
+      tableName: 'teacher_file', 
       timestamps: true,
     });
   }
 
   static associate(models) {
-    this.belongsTo(models.Teacher, { foreignKey: 'TeacherID' });
+    this.belongsTo(models.Teacher, { foreignKey: 'teacher_id' });
   }
 }
 

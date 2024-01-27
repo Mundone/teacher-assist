@@ -7,11 +7,8 @@ const session = require("express-session");
 const passport = require("passport");
 const flash = require("connect-flash");
 const cors = require("cors");
+const methodCheckMiddleware = require('./middlewares/authMiddleware');
 require("dotenv").config();
-process.on('uncaughtException', (error) => {
-  console.error('Uncaught Exception:', error);
-});
-
 require("./config/passport-setup");
 
 const app = express();
@@ -20,7 +17,7 @@ const app = express();
 app.use(cors());
 app.use(logger("dev"));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true  }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(
@@ -40,6 +37,7 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Routers
 const indexRouter = require("./routes/index.routes");
+app.use(methodCheckMiddleware);
 app.use("/", indexRouter);
 
 module.exports = app;

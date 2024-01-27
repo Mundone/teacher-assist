@@ -1,30 +1,39 @@
-const { Op } = require('sequelize');
+// services/studentService.js
+const Student = require('../models/student');
 
-const queryBuilder = (queryParams) => {
-  const where = {};
-  const order = [];
+const getAllStudents = async () => {
+  return await Student.findAll();
+};
 
-  // Define a mapping of query param keys to their Sequelize operators
-  const queryMap = {
-    name: { operator: Op.eq, field: 'name' },
-    ageGreaterThan: { operator: Op.gt, field: 'age' },
-    emailIncludes: { operator: Op.like, field: 'email', process: (value) => `%${value}%` },
-    sort: { process: (value) => value.split(' ') }
-  };
+const getStudentById = async (id) => {
+  return await Student.findByPk(id);
+};
 
-  Object.keys(queryParams).forEach(key => {
-    if (key in queryMap) {
-      const { operator, field, process } = queryMap[key];
+const createStudent = async (data) => {
+  return await Student.create(data);
+};
 
-      if (key === 'sort') {
-        const [sortField, sortOrder] = process(queryParams[key]);
-        order.push([sortField, sortOrder.toUpperCase()]);
-      } else {
-        const value = process ? process(queryParams[key]) : queryParams[key];
-        where[field] = operator ? { [operator]: value } : value;
-      }
-    }
-  });
+const updateStudent = async (id, data) => {
+  const student = await Student.findByPk(id);
+  if (student) {
+    return await student.update(data);
+  }
+  return null;
+};
 
-  return { where, order };
+const deleteStudent = async (id) => {
+  const student = await Student.findByPk(id);
+  if (student) {
+    await student.destroy();
+    return true;
+  }
+  return false;
+};
+
+module.exports = {
+  getAllStudents,
+  getStudentById,
+  createStudent,
+  updateStudent,
+  deleteStudent,
 };

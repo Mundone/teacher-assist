@@ -3,47 +3,47 @@ const { Model, DataTypes } = require('sequelize');
 class StudentEnrollment extends Model {
   static init(sequelize) {
     super.init({
-      EnrollmentID: {
+      id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
       },
-      StudentID: {
+      student_id: {
         type: DataTypes.INTEGER,
         references: {
-          model: 'Students', // Make sure this matches your Student model name
-          key: 'StudentID',
+          model: 'student', // Make sure this matches your Student model name
+          key: 'id',
         },
       },
-      SubjectID: {
+      subject_id: {
         type: DataTypes.INTEGER,
         references: {
-          model: 'Subjects', // Make sure this matches your Subject model name
-          key: 'SubjectID',
+          model: 'subject', // Make sure this matches your Subject model name
+          key: 'id',
         },
       },
-      LectureScheduleID: {
+      lecture_schedule_id: {
         type: DataTypes.INTEGER,
         references: {
-          model: 'LectureSchedules', // Make sure this matches your LectureSchedule model name
-          key: 'ScheduleID',
+          model: 'lecture_schedule', // Make sure this matches your LectureSchedule model name
+          key: 'id',
         },
       },
-      // LabScheduleID field is removed
+      // LabSchedule_id field is removed
     }, {
       sequelize,
-      modelName: 'StudentEnrollment',
-      tableName: 'StudentEnrollments', 
-      timestamps: false, // Consider if you need timestamps
+      modelName: 'student_enrollment',
+      tableName: 'student_enrollment', 
+      timestamps: false, // Cons_ider if you need timestamps
     });
   }
 
   static associate(models) {
-    this.belongsTo(models.Student, { foreignKey: 'StudentID' });
-    this.belongsTo(models.Subject, { foreignKey: 'SubjectID' });
-    this.belongsTo(models.LectureSchedule, { foreignKey: 'LectureScheduleID' });
+    this.belongsTo(models.Student, { foreignKey: 'student_id' });
+    this.belongsTo(models.Subject, { foreignKey: 'subject_id' });
+    this.belongsTo(models.LectureSchedule, { foreignKey: 'lecture_schedule_id' });
     // Lab association if needed, replace with relevant field from the Lab model
-    // Example: this.belongsTo(models.Lab, { foreignKey: 'LabID' });
+    // Example: this.belongsTo(models.Lab, { foreignKey: 'Lab_id' });
   }
 }
 

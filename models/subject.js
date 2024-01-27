@@ -4,44 +4,41 @@ class Subject extends Model {
   static init(sequelize) {
     super.init(
       {
-        SubjectID: {
+        id: {
           type: DataTypes.INTEGER,
           primaryKey: true,
           autoIncrement: true,
         },
-        SubjectName: {
+        subject_name: {
           type: DataTypes.STRING(255),
         },
-        TeacherID: {
+        teacher_id: {
           type: DataTypes.INTEGER,
           references: {
-            model: "Teachers", // Make sure this matches your Teacher model name
-            key: "TeacherID",
+            model: "teacher", // Make sure this matches your Teacher model name
+            key: "id",
           },
         },
       },
       {
         sequelize,
-        modelName: "Subject",
-        tableName: "Subjects",
+        modelName: "subject",
+        tableName: "subject",
         timestamps: true, // Consider if you need timestamps
       }
     );
   }
 
   static associate(models) {
-    this.belongsTo(models.Teacher, { foreignKey: "TeacherID" });
+    this.belongsTo(models.Teacher, { foreignKey: "teacher_id" });
     this.hasMany(models.LectureSchedule, {
-      foreignKey: "SubjectID",
-      as: "LectureSchedules", // Alias for LectureSchedule association
+      foreignKey: "subject_id",
     });
     this.hasMany(models.Lab, {
-      foreignKey: "SubjectID",
-      as: "Labs", // Alias for Lab association
+      foreignKey: "subject_id",
     });
     this.hasMany(models.Assignment, {
-      foreignKey: "SubjectID",
-      as: "Assignments", // Alias for Assignment association
+      foreignKey: "subject_id",
     }); // Add other associations as needed
   }
 }

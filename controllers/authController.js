@@ -3,13 +3,25 @@ const { validatePassword } = require('../utils/validation'); // Import the valid
 
 const register = async (req, res) => {
   try {
-    const { email, password, name } = req.body;
+    if (!req.body) {
+      return res.status(400).send({ message: "Body хэрэгтэй." });
+    }
+
+    const { code, name, password } = req.body;
+
+    // Check if password is provided
+    if (!password) {
+      return res.status(400).send({ message: "Нууц үг оруулна уу." });
+    }
+
+    const roleID = 1; // Consider handling roles more dynamically if needed
+
     const passwordError = validatePassword(password);
     if (passwordError) {
       return res.status(400).send({ message: passwordError });
     }
 
-    const newTeacher = await authService.registerTeacher({ email, password, name });
+    const newTeacher = await authService.registerTeacher({ code, name, password, roleID });
     const { password: _, ...teacherInfo } = newTeacher.toJSON();
     res.status(201).send(teacherInfo);
   } catch (error) {
@@ -17,10 +29,11 @@ const register = async (req, res) => {
   }
 };
 
+
 const login = async (req, res) => {
   try {
-    const { email, password } = req.body;
-    const { teacher, token } = await authService.authenticateTeacher(email, password);
+    const { code, password } = req.body;
+    const { teacher, token } = await authService.authenticateTeacher(code, password);
     res.status(200).json({
       message: 'Login successful',
       accessToken: token,

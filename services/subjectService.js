@@ -7,20 +7,20 @@ const getAllSubjects = async (pageNo, pageSize, sortBy, sortOrder) => {
   const { count: totalSubjects, rows: subjects } = await Subject.findAndCountAll({
     attributes: {
       include: [
-        [Sequelize.literal(`(SELECT COUNT(*) FROM Labs WHERE Labs.SubjectID = Subject.SubjectID)`), "labCount"],
-        [Sequelize.literal(`(SELECT COUNT(*) FROM Assignments WHERE Assignments.SubjectID = Subject.SubjectID)`), "assignmentCount"],
-        [Sequelize.literal(`(SELECT COUNT(*) FROM StudentEnrollments WHERE StudentEnrollments.SubjectID = Subject.SubjectID)`), "studentCount"],
+        [Sequelize.literal(`(SELECT COUNT(*) FROM lab WHERE lab.subject_id = subject.id)`), "labCount"],
+        [Sequelize.literal(`(SELECT COUNT(*) FROM assignment WHERE assignment.subject_id = subject.id)`), "assignmentCount"],
+        [Sequelize.literal(`(SELECT COUNT(*) FROM student_enrollment WHERE student_enrollment.subject_id = subject.id)`), "studentCount"],
       ],
     },
     include: [
-      { model: LectureSchedule, as: "LectureSchedules" },
-      { model: Lab, as: "Labs" },
-      { model: Assignment, as: "Assignments" },
+      { model: LectureSchedule },
+      { model: Lab },
+      { model: Assignment },
     ],
-    group: ["Subject.SubjectID"],
+    group: ["subject.id"],
     limit: pageSize,
     offset: offset,
-    order: [[sortBy === "id" ? "SubjectID" : sortBy, sortOrder]],
+    order: [[sortBy === "id" ? "subject_id" : sortBy, sortOrder]],
   });
 
   return {

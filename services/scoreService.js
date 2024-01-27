@@ -1,67 +1,60 @@
 const { Score, Student, Subject, Lab, Assignment } = require("../models");
 
-const parseScores = (score, week) => {
-  // Assuming score fields are JSON strings with a structure that includes weekly data
-  const parsedLectureScores = JSON.parse(score.LectureScores || "{}");
-  const parsedLabScores = JSON.parse(score.LabScores || "{}");
-  const parsedAssignmentScores = JSON.parse(score.AssignmentScores || "{}");
+const transformScores = (score) => {
+  const lectureScores = JSON.parse(score.lecture_scores || "[]");
+  const labScores = JSON.parse(score.lab_scores || "[]");
+  const assignmentScores = JSON.parse(score.assignment_scores || "[]");
 
-  // Extract the scores for the specified week
-  const lectureScore = parsedLectureScores[`week${week}`] || 0;
-  const labScore = parsedLabScores[`week${week}`] || 0;
-  const assignmentScore = parsedAssignmentScores[`week${week}`] || 0;
-
-  return {
-    lectureScore,
-    labScore,
-    assignmentScore,
+  const scoresTransformed = {
+    student_code: score.student.student_code,
+    student_name: score.student.name,
+    extra_point: score.extra_point || 0,
   };
+
+  lectureScores.forEach((lecScore, index) => {
+    scoresTransformed[`lec${index + 1}_score`] = lecScore;
+  });
+
+  labScores.forEach((lab, index) => {
+    scoresTransformed[`lab${index + 1}_score`] = lab.score;
+  });
+
+  assignmentScores.forEach((ass, index) => {
+    scoresTransformed[`ass${index + 1}_score`] = ass.score;
+  });
+
+  return scoresTransformed;
 };
 
-const getAllStudentScoresForSubjectAndWeek = async (subjectId, week, pageNo, pageSize, sortBy, sortOrder) => {
-  const sortByValid = sortBy || "StudentID"; // Replace 'StudentID' with your default sort column if different
-  const sortOrderValid = sortOrder === "desc" ? "DESC" : "ASC"; // Default to ascending if sortOrder is not 'desc'
 
+const getAllStudentScoresForSubject = async (subjectId, pageNo, pageSize, sortBy, sortOrder) => {
   const offset = pageNo * pageSize;
-  
-  // In your scoreService or wherever the findAll call is made
-  const scores = await Score.findAll({
-    where: { SubjectID: subjectId },
+  const { count: totalScores, rows: scores } = await Score.findAndCountAll({
+    where: { subject_id: subjectId },
     include: [
       {
         model: Student,
-        attributes: ["StudentCode", "Name"],
+        attributes: ["student_code", "name"],
       },
-      // Add other includes if necessary
     ],
     limit: pageSize,
     offset: offset,
-    // Use the validated sort parameters
-    order: [[sortByValid, sortOrderValid]],
+    order: [[sortBy, sortOrder]],
   });
 
-  // Process the scores to format them for the table
-  return scores.map((score) => {
-    const { lectureScore, labScore, assignmentScore } = parseScores(score, week);
-
-    return {
-      StudentCode: score.Student.StudentCode,
-      StudentName: score.Student.Name,
-      LectureScore: lectureScore,
-      LabScore: labScore,
-      AssignmentScore: assignmentScore,
-      ExtraPoint: score.ExtraPoint || 0,
-    };
-  });
+  return {
+    totalScores,
+    scores: scores.map(transformScores),
+  };
 };
 
 const updateStudentScore = async (scoreId, updatedScoreData) => {
   return await Score.update(updatedScoreData, {
-    where: { ScoreID: scoreId },
+    where: { id: scoreId },
   });
 };
 
 module.exports = {
-  getAllStudentScoresForSubjectAndWeek,
+  getAllStudentScoresForSubject,
   updateStudentScore,
 };

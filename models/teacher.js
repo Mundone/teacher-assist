@@ -1,36 +1,52 @@
 const { Model, DataTypes } = require('sequelize');
+const moment = require('moment-timezone');
 
 class Teacher extends Model {
   static init(sequelize) {
     super.init({
-      TeacherID: {
+      id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
       },
-      Name: {
+      name: {
         type: DataTypes.STRING(255),
       },
-      RoleID: {
-        type: DataTypes.INTEGER,
+      code: {
+        type: DataTypes.STRING(255),
       },
-      createdAt: {
+      role_id: {
+        type: DataTypes.INTEGER,
+        references: {
+          model: "teacher_role", // Make sure this matches your Teacher model name
+          key: "id",
+        },
+      },
+      password: {
+          type: DataTypes.STRING
+      },
+      created_at: {
         type: DataTypes.DATE,
         allowNull: false,
         defaultValue: sequelize.literal('CURRENT_TIMESTAMP'),
       },
     }, {
       sequelize,
-      modelName: 'Teacher',
-      tableName: 'Teachers', 
+      modelName: 'teacher',
+      tableName: 'teacher', 
       timestamps: true,
+      hooks: {
+        beforeCreate: (teacher, options) => {
+          teacher.created_at = moment.utc().subtract(-8, 'hours').toDate();
+        },
+      },
     });
   }
 
   static associate(models) {
-    this.belongsTo(models.TeacherRole, { foreignKey: 'RoleID' });
-    this.hasMany(models.Subject, { foreignKey: 'TeacherID' });
-    this.hasMany(models.TeacherFile, { foreignKey: 'TeacherID' });
+    this.belongsTo(models.TeacherRole, { foreignKey: 'role_id' });
+    this.hasMany(models.Subject, { foreignKey: 'teacher_id' });
+    this.hasMany(models.TeacherFile, { foreignKey: 'teacher_id' });
   }
 }
 

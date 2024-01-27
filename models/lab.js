@@ -3,40 +3,40 @@ const { Model, DataTypes } = require('sequelize');
 class Lab extends Model {
   static init(sequelize) {
     super.init({
-      LabID: {
+      id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
       },
-      SubjectID: {
+      subject_id: {
         type: DataTypes.INTEGER,
         references: {
-          model: 'Subjects', // Make sure this matches your Subject model name
-          key: 'SubjectID',
+          model: 'subject', // Make sure this matches your Subject model name
+          key: 'id',
         },
       },
-      LabDay: {
+      lab_day: {
         type: DataTypes.INTEGER,
       },
-      LabTime: {
+      lab_time: {
         type: DataTypes.INTEGER,
       },
-      MaxScore: {
+      max_score: {
         type: DataTypes.INTEGER,
       },
-      LabNumber: {
+      lab_number: {
         type: DataTypes.INTEGER,
       },
     }, {
       sequelize,
-      modelName: 'Lab',
-      tableName: 'Labs', 
+      modelName: 'lab',
+      tableName: 'lab', 
       timestamps: false, // Consider if you need timestamps
     });
   }
 
   static associate(models) {
-    this.belongsTo(models.Subject, { foreignKey: 'SubjectID' });
+    this.belongsTo(models.Subject, { foreignKey: 'subject_id' });
   }
 }
 

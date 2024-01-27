@@ -1,17 +1,26 @@
 const jwt = require('jsonwebtoken');
-const config = require('../config/config');
 
-const verifyToken = (req, res, next) => {
-  const token = req.headers['authorization'];
-  if (!token) return res.status(403).send('A token is required for authentication');
-
-  try {
-    const decoded = jwt.verify(token, config.jwtSecret);
-    req.user = decoded;
-  } catch (err) {
-    return res.status(401).send('Invalid Token');
+const authenticateToken = (req, res, next) => {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1]; // Bearer Token
+  if (!token) {
+    return res.status(401).json({ message: "No token provided." });
   }
-  return next();
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, decodedToken) => {
+    if (err) {
+      return res.status(403).json({ message: "Invalid or expired token." });
+    }
+    req.user = decodedToken;
+    next();
+  });
 };
 
-module.exports = verifyToken;
+const methodCheckMiddleware = (req, res, next) => {
+  if (["POST", "PUT", "DELETE"].includes(req.method)) {
+    return authenticateToken(req, res, next);
+  }
+  next();
+};
+
+module.exports = methodCheckMiddleware;
