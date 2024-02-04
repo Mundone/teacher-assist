@@ -44,15 +44,20 @@ const login = async (req, res) => {
   }
 };
 
+// Controller
 const getAuthInfo = async (req, res) => {
   try {
-    const teacherId = req.user.id; // assuming req.user is set by a middleware
+    const teacherId = req.user.id; // Assuming req.user is set by Passport
     const { teacher, token } = await authService.refreshToken(teacherId);
     res.json({ teacher, token });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    // Enhanced error handling
+    const statusCode = error.statusCode || 500;
+    const message = error.message || 'Internal server error';
+    res.status(statusCode).json({ message });
   }
 };
+
 
 module.exports = {
   register,

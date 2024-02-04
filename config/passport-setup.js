@@ -1,24 +1,22 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcryptjs');
-const sequelize = require("./sequelizeConfig");
-const { Sequelize, DataTypes } = require('sequelize');
-const User = require('../models/models')(sequelize, DataTypes).User; // Adjust the path based on your file structure
+const Teacher = require('../models/index').Teacher; // Adjust the path based on your file structure
 
 
 passport.use(new LocalStrategy({
-    usernameField: 'email',
+    usernameField: 'code',
     passwordField: 'password'
   },
-    function(email, password, done) {
+    function(code, password, done) {
       console.log('USING PASSPORT SETUP');
-      console.log(email);
+      console.log(code);
       console.log(password);
-        User.findOne({ where: { email: email } })
+        Teacher.findOne({ where: { code: code } })
             .then(user => {
                 console.log(user);
                 if (!user) {
-                    return done(null, false, { message: 'Incorrect email.' });
+                    return done(null, false, { message: 'Incorrect code.' });
                 }
 
                 bcrypt.compare(password, user.password, function(err, isMatch) {

@@ -70,6 +70,7 @@ router.post('/login', authController.login);
  *       - Authorization: []
  */
 
-router.get('/get_auth_info', passport.authenticate('jwt', { session: false }), authController.getAuthInfo);
+// Route
+router.get('/get_auth_info', authController.getAuthInfo);
 
 module.exports = router;

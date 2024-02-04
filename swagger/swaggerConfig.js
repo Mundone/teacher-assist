@@ -1,14 +1,12 @@
 const swaggerJSDoc = require("swagger-jsdoc");
 
-// Options for the swagger docs
 const options = {
   definition: {
-    openapi: "3.0.0", // or your OpenAPI version
+    openapi: "3.0.0",
     info: {
       title: "Teacher-Journal API",
       version: "1.0.0",
       description: "API for Teacher-Journal",
-      // additional info fields
     },
     components: {
       securitySchemes: {
@@ -25,208 +23,223 @@ const options = {
         },
       ],
       schemas: {
+        Assignment: {
+          type: "object",
+          required: ["subject_id", "max_score", "assignment_number"],
+          properties: {
+            id: { type: "integer", description: "Unique identifier for the Assignment." },
+            subject_id: { type: "integer", description: "ID of the Subject." },
+            max_score: { type: "integer", description: "Maximum score for the assignment." },
+            assignment_number: { type: "integer", description: "Number of the assignment." },
+          },
+          example: {
+            id: 1,
+            subject_id: 5,
+            max_score: 100,
+            assignment_number: 1,
+          },
+        },
         AttendanceRecord: {
           type: "object",
-          required: ["StudentID", "SubjectID", "LectureScheduleID", "AttendanceDate", "Attended"],
+          required: ["student_id", "subject_id", "lecture_schedule_id", "attendance_date", "attended"],
           properties: {
-            AttendanceID: { type: "integer", description: "Unique identifier for the Attendance Record." },
-            StudentID: { type: "integer", description: "ID of the Student." },
-            SubjectID: { type: "integer", description: "ID of the Subject." },
-            LectureScheduleID: { type: "integer", description: "ID of the Lecture Schedule." },
-            AttendanceDate: { type: "string", format: "date", description: "Date of attendance." },
-            Attended: { type: "boolean", description: "Whether the student attended the lecture." },
+            id: { type: "integer", description: "Unique identifier for the Attendance Record." },
+            student_id: { type: "integer", description: "ID of the Student." },
+            subject_id: { type: "integer", description: "ID of the Subject." },
+            lecture_schedule_id: { type: "integer", description: "ID of the Lecture Schedule." },
+            attendance_date: { type: "string", format: "date", description: "Date of attendance." },
+            attended: { type: "boolean", description: "Whether the student attended the lecture." },
           },
           example: {
-            AttendanceID: 1,
-            StudentID: 101,
-            SubjectID: 5,
-            LectureScheduleID: 3,
-            AttendanceDate: "2024-01-21",
-            Attended: true,
+            id: 1,
+            student_id: 101,
+            subject_id: 5,
+            lecture_schedule_id: 3,
+            attendance_date: "2024-01-21",
+            attended: true,
           },
         },
-
-        LabSchedule: {
+        Lab: {
           type: "object",
-          required: ["SubjectID", "LabDay", "LabTime"],
+          required: ["subject_id", "lab_day", "lab_time", "max_score", "lab_number"],
           properties: {
-            ScheduleID: { type: "integer", description: "Unique identifier for the Lab Schedule." },
-            SubjectID: { type: "integer", description: "ID of the Subject." },
-            LabDay: { type: "integer", description: "Day of the lab." },
-            LabTime: { type: "integer", description: "Time of the lab." },
+            id: { type: "integer", description: "Unique identifier for the Lab." },
+            subject_id: { type: "integer", description: "ID of the Subject." },
+            lab_day: { type: "integer", description: "Day of the lab." },
+            lab_time: { type: "integer", description: "Time of the lab." },
+            max_score: { type: "integer", description: "Maximum score for the lab." },
+            lab_number: { type: "integer", description: "Number of the lab." },
           },
           example: {
-            ScheduleID: 1,
-            SubjectID: 10,
-            LabDay: 2, // Assuming 2 means 'Tuesday'
-            LabTime: 14, // Assuming 14 means '2 PM'
+            id: 1,
+            subject_id: 5,
+            lab_day: 3,
+            lab_time: 14,
+            max_score: 50,
+            lab_number: 2,
           },
         },
-
         LectureSchedule: {
           type: "object",
-          required: ["SubjectID", "LectureDay", "LectureTime"],
+          required: ["subject_id", "lecture_day", "lecture_time"],
           properties: {
-            ScheduleID: { type: "integer", description: "Unique identifier for the Lecture Schedule." },
-            SubjectID: { type: "integer", description: "ID of the Subject." },
-            LectureDay: { type: "integer", description: "Day of the lecture." },
-            LectureTime: { type: "integer", description: "Time of the lecture." },
+            id: { type: "integer", description: "Unique identifier for the Lecture Schedule." },
+            subject_id: { type: "integer", description: "ID of the Subject." },
+            lecture_day: { type: "integer", description: "Day of the lecture." },
+            lecture_time: { type: "integer", description: "Time of the lecture." },
           },
           example: {
-            ScheduleID: 2,
-            SubjectID: 11,
-            LectureDay: 3, // Assuming 3 means 'Wednesday'
-            LectureTime: 10, // Assuming 10 means '10 AM'
+            id: 1,
+            subject_id: 5,
+            lecture_day: 2,
+            lecture_time: 10,
           },
         },
-
-        Teacher: {
-          type: "object",
-          required: ["Name", "RoleID"],
-          properties: {
-            TeacherID: { type: "integer", description: "Unique identifier for the Teacher." },
-            Name: { type: "string", description: "Name of the Teacher." },
-            Code: { type: "string", description: "Code of the Teacher." },
-            password: { type: "string", description: "Password123" },
-            RoleID: { type: "integer", description: "Role ID of the Teacher." },
-          },
-          example: {
-            TeacherID: 1,
-            Name: "Jane Doe",
-            RoleID: 2,
-          },
-        },
-
-        TeacherRole: {
-          type: "object",
-          properties: {
-            RoleID: { type: "integer", description: "Unique identifier for the Teacher Role." },
-            RoleName: { type: "string", description: "Name of the role." },
-          },
-          example: {
-            RoleID: 2,
-            RoleName: "Senior Lecturer",
-          },
-        },
-
         Score: {
           type: "object",
-          required: ["StudentID", "SubjectID", "LectureScores", "LabScores", "LabAttendanceScores", "AssignmentScores", "ExtraPoint"],
+          required: ["student_id", "subject_id", "lecture_scores", "lab_scores", "lab_attendance_scores", "assignment_scores", "extra_point"],
           properties: {
-            ScoreID: { type: "integer", description: "Unique identifier for the Score." },
-            StudentID: { type: "integer", description: "ID of the Student." },
-            SubjectID: { type: "integer", description: "ID of the Subject." },
-            LectureScores: { type: "object", additionalProperties: { type: "integer" }, description: "Scores in lectures." },
-            LabScores: { type: "object", additionalProperties: { type: "integer" }, description: "Scores in labs." },
-            LabAttendanceScores: { type: "object", additionalProperties: { type: "integer" }, description: "Scores for lab attendance." },
-            AssignmentScores: { type: "object", additionalProperties: { type: "integer" }, description: "Scores for assignments." },
-            ExtraPoint: { type: "integer", description: "Extra points." },
+            id: { type: "integer", description: "Unique identifier for the Score." },
+            student_id: { type: "integer", description: "ID of the Student." },
+            subject_id: { type: "integer", description: "ID of the Subject." },
+            lecture_scores: { type: "json", description: "JSON of lecture scores." },
+            lab_scores: { type: "json", description: "JSON of lab scores." },
+            lab_attendance_scores: { type: "json", description: "JSON of lab attendance scores." },
+            assignment_scores: { type: "json", description: "JSON of assignment scores." },
+            extra_point: { type: "integer", description: "Extra points." },
           },
           example: {
-            ScoreID: 1,
-            StudentID: 101,
-            SubjectID: 5,
-            LectureScores: { week1: 80, week2: 85 },
-            LabScores: { week1: 90, week2: 95 },
-            LabAttendanceScores: { week1: 10, week2: 10 },
-            AssignmentScores: { assignment1: 75, assignment2: 80 },
-            ExtraPoint: 5,
+            id: 1,
+            student_id: 101,
+            subject_id: 5,
+            lecture_scores: "{...}",
+            lab_scores: "{...}",
+            lab_attendance_scores: "{...}",
+            assignment_scores: "{...}",
+            extra_point: 5,
           },
         },
-
         Student: {
           type: "object",
-          required: ["Name", "StudentCode"],
+          required: ["name", "student_code"],
           properties: {
-            StudentID: {
-              type: "integer",
-              description: "Unique identifier for the Student.",
-            },
-            Name: {
-              type: "string",
-              description: "Name of the Student.",
-            },
-            StudentCode: {
-              type: "string",
-              description: "Code of the Student.",
-            },
+            id: { type: "integer", description: "Unique identifier for the Student." },
+            name: { type: "string", description: "Name of the Student." },
+            student_code: { type: "string", description: "Unique code for the Student." },
           },
           example: {
-            StudentID: 1,
-            Name: "John Doe",
-            StudentCode: "S123456",
+            id: 101,
+            name: "John Doe",
+            student_code: "S001",
           },
         },
-
         StudentEnrollment: {
           type: "object",
-          required: ["StudentID", "SubjectID", "LectureScheduleID", "LabScheduleID"],
+          required: ["student_id", "subject_id", "lecture_schedule_id"],
           properties: {
-            EnrollmentID: { type: "integer", description: "Unique identifier for the Student Enrollment." },
-            StudentID: { type: "integer", description: "ID of the Student." },
-            SubjectID: { type: "integer", description: "ID of the Subject." },
-            LectureScheduleID: { type: "integer", description: "ID of the Lecture Schedule." },
-            LabScheduleID: { type: "integer", description: "ID of the Lab Schedule." },
+            id: { type: "integer", description: "Unique identifier for the Student Enrollment." },
+            student_id: { type: "integer", description: "ID of the Student." },
+            subject_id: { type: "integer", description: "ID of the Subject." },
+            lecture_schedule_id: { type: "integer", description: "ID of the Lecture Schedule." },
           },
           example: {
-            EnrollmentID: 1,
-            StudentID: 101,
-            SubjectID: 5,
-            LectureScheduleID: 3,
-            LabScheduleID: 2,
+            id: 10,
+            student_id: 101,
+            subject_id: 5,
+            lecture_schedule_id: 3,
           },
         },
-
         Subject: {
           type: "object",
-          required: ["SubjectName", "TeacherID"],
+          required: ["subject_name", "teacher_id"],
           properties: {
-            SubjectID: {
-              type: "integer",
-              description: "Unique identifier for the Subject.",
-            },
-            SubjectName: {
-              type: "string",
-              description: "Name of the Subject.",
-            },
-            TeacherID: {
-              type: "integer",
-              description: "ID of the Teacher associated with the Subject.",
-            },
+            id: { type: "integer", description: "Unique identifier for the Subject." },
+            subject_name: { type: "string", description: "Name of the Subject." },
+            teacher_id: { type: "integer", description: "ID of the Teacher." },
           },
           example: {
-            SubjectID: 1,
-            SubjectName: "Mathematics",
-            TeacherID: 2,
+            id: 5,
+            subject_name: "Mathematics",
+            teacher_id: 202,
+          },
+        },
+        Teacher: {
+          type: "object",
+          required: ["name", "code", "role_id", "password"],
+          properties: {
+            id: { type: "integer", description: "Unique identifier for the Teacher." },
+            name: { type: "string", description: "Name of the Teacher." },
+            code: { type: "string", description: "Unique code for the Teacher." },
+            role_id: { type: "integer", description: "ID of the Teacher's Role." },
+            password: { type: "string", description: "Password for the Teacher." },
+          },
+          example: {
+            id: 202,
+            name: "Jane Smith",
+            code: "T001",
+            role_id: 1,
+            password: "pass1234",
+          },
+        },
+        TeacherFile: {
+          type: "object",
+          required: ["teacher_id", "file_name", "file_path", "file_type", "upload_date"],
+          properties: {
+            id: { type: "integer", description: "Unique identifier for the Teacher File." },
+            teacher_id: { type: "integer", description: "ID of the Teacher." },
+            file_name: { type: "string", description: "Name of the file." },
+            file_path: { type: "string", description: "Path of the file." },
+            file_type: { type: "string", description: "Type of the file." },
+            upload_date: { type: "string", format: "date-time", description: "Upload date of the file." },
+          },
+          example: {
+            id: 33,
+            teacher_id: 202,
+            file_name: "lecture.pdf",
+            file_path: "/files/lecture.pdf",
+            file_type: "pdf",
+            upload_date: "2024-01-25T08:30:00Z",
+          },
+        },
+        TeacherRole: {
+          type: "object",
+          required: ["role_name"],
+          properties: {
+            id: { type: "integer", description: "Unique identifier for the Teacher Role." },
+            role_name: { type: "string", description: "Name of the Teacher Role." },
+          },
+          example: {
+            id: 1,
+            role_name: "Math Teacher",
           },
         },
 
         Login: {
           type: "object",
-          required: ["name"], // assuming these are required fields
+          required: ["code", "password"], // assuming these are required fields
           properties: {
-            email: {
+            code: {
               type: "integer",
-              description: "Email of a new user.",
+              description: "Code of a user.",
             },
             password: {
               type: "string",
-              description: "Password of a new user.",
+              description: "Password of a user.",
             },
           },
           example: {
-            email: "bataa@yahoo.com",
+            email: "B200910045",
             password: "Password",
           },
         },
-        
+
         Register: {
           type: "object",
-          required: ["email", "name", "password"], // assuming these are required fields
+          required: ["code", "name", "password"], // assuming these are required fields
           properties: {
-            email: {
+            code: {
               type: "integer",
-              description: "Email of a new user.",
+              description: "Code of a new user.",
             },
             name: {
               type: "string",
@@ -243,15 +256,21 @@ const options = {
             password: "Password",
           },
         },
-        // You can define other schemas here...
+        // Define other models (Assignment, Lab, LectureSchedule, Score, etc.) following the same pattern
       },
-      // other component definitions (e.g., securitySchemes, requestBodies, etc.)
+      securitySchemes: {
+        bearerAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT",
+        },
+      },
     },
+    security: [{ bearerAuth: [] }],
   },
   apis: ["./routes/*.js"], // Path to the API docs (your route files)
 };
 
-// Initialize swagger-jsdoc -> returns validated swagger spec in JSON format
 const swaggerSpec = swaggerJSDoc(options);
 
 module.exports = swaggerSpec;

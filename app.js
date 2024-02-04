@@ -33,7 +33,7 @@ app.use(flash());
 
 // Swagger UI
 const swaggerDocument = require("./swagger/swaggerConfig.js");
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use("/api", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Routers
 const indexRouter = require("./routes/index.routes");

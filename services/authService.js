@@ -39,10 +39,13 @@ const authenticateTeacher = async (code, password) => {
   return { teacher, token };
 };
 
+// Service
 const refreshToken = async (teacherId) => {
   const teacher = await Teacher.findByPk(teacherId);
   if (!teacher) {
-    throw new Error('Хэрэглэгч олдсонгүй.');
+    const error = new Error('Teacher not found.');
+    error.statusCode = 404;
+    throw error;
   }
 
   const newToken = jwt.sign(
@@ -53,6 +56,7 @@ const refreshToken = async (teacherId) => {
 
   return { teacher, token: newToken };
 };
+
 
 module.exports = {
   registerTeacher,

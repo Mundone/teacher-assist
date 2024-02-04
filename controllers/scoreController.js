@@ -38,8 +38,8 @@ const getScores = async (req, res, next) => {
 
 const updateScore = async (req, res, next) => {
   try {
-    const { scoreId } = req.params;
-    const updatedScore = await scoreService.updateStudentScore(scoreId, req.body);
+    const { id } = req.params;
+    const updatedScore = await scoreService.updateStudentScore(id, req.body);
     res.json(updatedScore);
   } catch (error) {
     next(error);
