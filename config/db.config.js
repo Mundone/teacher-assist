@@ -1,6 +1,4 @@
 
 const isLocal = false;
 
-module.exports = {
-  isLocal
-};
+module.exports = isLocal;
