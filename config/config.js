@@ -1,7 +1,7 @@
 // config/config.js
 require("dotenv").config();
 
-const isLocal = require('../config/db.config');
+const isLocal = false;
 
 const localConfig = {
   database: {

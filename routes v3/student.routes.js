@@ -1,21 +1,20 @@
-// subjectRoutes.js
+// routes/studentRoutes.js
 const express = require('express');
-const subjectController = require('../controllers/subjectController');
-const paginationMiddleware = require('../middlewares/paginationMiddleware');
 const router = express.Router();
+const studentController = require('../controllers/studentController');
 
 /**
  * @swagger
- * /get_subjects:
+ * /get_students:
  *   get:
- *     summary: Retrieve all subject
- *     tags: [Subject]
+ *     summary: Retrieve all student
+ *     tags: [Student]
  *     parameters:
  *     - in: query
  *       name: search
  *       schema:
  *         type: string
- *       description: Optional search term to filter subject
+ *       description: Optional search term to filter student
  *     responses:
  *       200:
  *         description: OK
@@ -24,19 +23,20 @@ const router = express.Router();
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/Subject'
+ *                 $ref: '#/components/schemas/Student'
  *       500:
  *         description: Internal Server Error
  */
 
-router.get('/get_subjects', paginationMiddleware, subjectController.getSubjects);
+router.get('/get_students', studentController.getStudents);
+
 
 /**
  * @swagger
- * /get_subject/{id}:
+ * /get_student/{id}:
  *   get:
- *     summary: Retrieve a single subject by ID
- *     tags: [Subject]
+ *     summary: Retrieve a single student by ID
+ *     tags: [Student]
  *     parameters:
  *       - in: path
  *         name: id
@@ -44,41 +44,42 @@ router.get('/get_subjects', paginationMiddleware, subjectController.getSubjects)
  *         schema:
  *           type: integer
  *           minimum: 1
- *         description: The ID of the subject
+ *         description: The ID of the student
  *     responses:
  *       200:
  *         description: OK
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Subject'
+ *               $ref: '#/components/schemas/Student'
  *       404:
  *         description: Not Found
  *       500:
  *         description: Internal Server Error
  */
 
-router.get('/get_subject/:id', subjectController.getSubject);
+router.get('/get_student/:id', studentController.getStudentById);
+
 
 /**
  * @swagger
- * /create_subject:
+ * /create_student:
  *   post:
- *     summary: Create a new subject
- *     tags: [Subject]
+ *     summary: Create a new student
+ *     tags: [Student]
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Subject'
+ *             $ref: '#/components/schemas/Student'
  *     responses:
  *       201:
  *         description: Created
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Subject'
+ *               $ref: '#/components/schemas/Student'
  *       400:
  *         description: Bad request
  *       500:
@@ -87,22 +88,21 @@ router.get('/get_subject/:id', subjectController.getSubject);
  *       - Authorization: []
  */
 
-router.post('/create_subject', subjectController.createSubject);
-
+router.post('/create_student', studentController.createStudent);
 
 /**
  * @swagger
- * /update_subject/{id}:
+ * /update_student/{id}:
  *   put:
  *     tags:
- *       - Subject
- *     summary: "Update an subject by ID"
- *     description: "This endpoint updates an existing subject's information."
+ *       - Student
+ *     summary: "Update an student by ID"
+ *     description: "This endpoint updates an existing student's information."
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: "ID of the subject to update"
+ *         description: "ID of the student to update"
  *         schema:
  *           type: integer
  *     requestBody:
@@ -111,37 +111,37 @@ router.post('/create_subject', subjectController.createSubject);
  *       content:
  *         application/json:
  *           schema:
- *             $ref: "#/components/schemas/Subject"
+ *             $ref: "#/components/schemas/Student"
  *     responses:
  *       200:
  *         description: "updated successfully"
  *         content:
  *           application/json:
  *             schema:
- *               $ref: "#/components/schemas/Subject"
+ *               $ref: "#/components/schemas/Student"
  *       400:
  *         description: "Invalid request"
  *       404:
  *         description: "not found"
  *       500:
- *         description: "Error updating subject"
+ *         description: "Error updating student"
  *     security:
  *       - Authorization: []
  */
+router.put('/update_student/:id', studentController.updateStudent);
 
-router.put('/update_subject/:id', subjectController.updateSubject);
 
 /**
  * @swagger
- * /delete_subject/{id}:
+ * /delete_student/{id}:
  *   delete:
- *     summary: Delete an subject by its ID
- *     tags: [Subject]
+ *     summary: Delete an student by its ID
+ *     tags: [Student]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: ID of the subject to delete
+ *         description: ID of the student to delete
  *         schema:
  *           type: integer
  *           format: int64
@@ -156,7 +156,7 @@ router.put('/update_subject/:id', subjectController.updateSubject);
  *                 message:
  *                   type: string
  *                   description: A message indicating the successful deletion
- *                   example: Subject was deleted successfully!
+ *                   example: Student was deleted successfully!
  *       404:
  *         description: not found
  *       500:
@@ -164,7 +164,6 @@ router.put('/update_subject/:id', subjectController.updateSubject);
  *     security:
  *       - Authorization: []
  */
-
-router.delete('/delete_subject/:id', subjectController.deleteSubject);
+router.delete('/delete_student/:id', studentController.deleteStudent);
 
 module.exports = router;

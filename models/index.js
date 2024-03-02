@@ -2,44 +2,47 @@ const { Sequelize } = require("sequelize");
 const sequelize = require("../config/sequelizeConfig"); // Adjust the path as needed
 
 // Import models as classes
-const TeacherRole = require("./teacherRole");
-const Teacher = require("./teacher");
-const Subject = require("./subject");
-const LectureSchedule = require("./lectureSchedule");
-const Lab = require("./lab");
-const Assignment = require("./assignment"); // Ensure you have an Assignment model
-const Student = require("./student");
-const StudentEnrollment = require("./studentEnrollment");
+const AttendanceResponse = require("./attendanceResponse");
+const Lesson = require("./lesson");
+const LessonType = require("./lessonType");
 const Score = require("./score");
-const AttendanceRecord = require("./attendanceRecord");
+const Student = require("./student");
+const StudentSubjectSchedule = require("./studentSubjectSchedule");
+const Subject = require("./subject");
+const SubjectSchedule = require("./subjectSchedule");
+const Teacher = require("./teacher");
 const TeacherFile = require("./teacherFile");
+const TeacherRole = require("./teacherRole");
+const TeacherSubject = require('./teacherSubject');
 
 // Initialize models in order respecting foreign key dependencies
-TeacherRole.init(sequelize, Sequelize.DataTypes);
-Teacher.init(sequelize, Sequelize.DataTypes);
-Subject.init(sequelize, Sequelize.DataTypes);
-LectureSchedule.init(sequelize, Sequelize.DataTypes);
-Lab.init(sequelize, Sequelize.DataTypes);
-Assignment.init(sequelize, Sequelize.DataTypes);
-Student.init(sequelize, Sequelize.DataTypes);
-StudentEnrollment.init(sequelize, Sequelize.DataTypes);
+AttendanceResponse.init(sequelize, Sequelize.DataTypes);
+Lesson.init(sequelize, Sequelize.DataTypes);
+LessonType.init(sequelize, Sequelize.DataTypes);
 Score.init(sequelize, Sequelize.DataTypes);
-AttendanceRecord.init(sequelize, Sequelize.DataTypes);
+Student.init(sequelize, Sequelize.DataTypes);
+StudentSubjectSchedule.init(sequelize, Sequelize.DataTypes);
+Subject.init(sequelize, Sequelize.DataTypes);
+SubjectSchedule.init(sequelize, Sequelize.DataTypes);
+Teacher.init(sequelize, Sequelize.DataTypes);
 TeacherFile.init(sequelize, Sequelize.DataTypes);
+TeacherRole.init(sequelize, Sequelize.DataTypes);
+TeacherSubject.init(sequelize, Sequelize.DataTypes);
 
 // Set up associations
 const models = {
-  TeacherRole,
-  Teacher,
-  Subject,
-  LectureSchedule,
-  Lab,
-  Assignment,
-  Student,
-  StudentEnrollment,
+  AttendanceResponse,
+  Lesson,
+  LessonType,
   Score,
-  AttendanceRecord,
+  Student,
+  StudentSubjectSchedule,
+  Subject,
+  SubjectSchedule,
+  Teacher,
   TeacherFile,
+  TeacherRole,
+  TeacherSubject
 };
 
 Object.keys(models).forEach((modelName) => {

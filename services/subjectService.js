@@ -1,33 +1,34 @@
-// subjectService.js
-const { Subject, Lab, Assignment, StudentEnrollment, LectureSchedule } = require("../models");
+const allModels = require("../models");
 const { Sequelize } = require("sequelize");
 
 const getAllSubjects = async (pageNo, pageSize, sortBy, sortOrder) => {
   const offset = pageNo * pageSize;
-  const { count: totalSubjects, rows: subjects } = await Subject.findAndCountAll({
-    attributes: {
-      include: [
-        [Sequelize.literal(`(SELECT COUNT(*) FROM lab WHERE lab.subject_id = subject.id)`), "labCount"],
-        [Sequelize.literal(`(SELECT COUNT(*) FROM assignment WHERE assignment.subject_id = subject.id)`), "assignmentCount"],
-        [Sequelize.literal(`(SELECT COUNT(*) FROM student_enrollment WHERE student_enrollment.subject_id = subject.id)`), "studentCount"],
-      ],
-    },
-    include: [
-      { model: LectureSchedule },
-      { model: Lab },
-      { model: Assignment },
-    ],
-    group: ["subject.id"],
-    limit: pageSize,
-    offset: offset,
-    order: [[sortBy === "id" ? "subject_id" : sortBy, sortOrder]],
-  });
+  const { count: totalSubjects, rows: subjects } =
+    await allModels.Subject.findAndCountAll({
+      include: [{
+        model: allModels.Teacher, // Ensure you have imported your allModels at the top of the file
+        // as: 'Teachers', // Use the alias you defined in your association, if applicable
+        through: { attributes: [] }, // This ensures only teacher info is returned, not join table info
+        attributes: ['id', 'name', 'email', 'code'], // Specify the teacher attributes you want
+      }],
+      limit: pageSize,
+      offset: offset,
+      order: [[sortBy, sortOrder]],
+      distinct: true, // This ensures count is accurate when including many-to-many relationships
+    });
 
   return {
-    totalSubjects, // This will be a single number
-    subjects,
+    totalSubjects,
+    subjects: subjects.map(subject => {
+      // Optionally, format the subject data as needed before returning
+      return {
+        ...subject.get({ plain: true }), // This normalizes the Sequelize object
+        // Add or transform any subject data here if needed
+      };
+    }),
   };
 };
+
 
 const createSubject = async (subjectData) => {
   return await Subject.create(subjectData);

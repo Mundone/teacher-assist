@@ -1,5 +1,6 @@
 const authService = require('../services/authService');
 const { validatePassword } = require('../utils/validation'); // Import the validatePassword function
+const jwt = require("jsonwebtoken");
 
 const register = async (req, res) => {
   try {
@@ -46,17 +47,27 @@ const login = async (req, res) => {
 
 // Controller
 const getAuthInfo = async (req, res) => {
-  try {
-    const teacherId = req.user.id; // Assuming req.user is set by Passport
-    const { teacher, token } = await authService.refreshToken(teacherId);
-    res.json({ teacher, token });
-  } catch (error) {
-    // Enhanced error handling
-    const statusCode = error.statusCode || 500;
-    const message = error.message || 'Internal server error';
-    res.status(statusCode).json({ message });
+  const token = req.headers.authorization?.split(" ")[1];
+  if (!token) {
+    return res.status(401).json({ message: "No token provided" });
   }
+
+  jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
+    if (err) {
+      return res.status(403).json({ message: "Token is not valid" });
+    }
+    try {
+      // Use the decoded ID to fetch the teacher and refresh the token
+      const { teacher, token: newToken } = await authService.refreshToken(decoded.id);
+      res.json({ teacher, token: newToken });
+    } catch (error) {
+      const statusCode = error.statusCode || 500;
+      const message = error.message || 'Internal server error';
+      res.status(statusCode).json({ message });
+    }
+  });
 };
+
 
 
 module.exports = {

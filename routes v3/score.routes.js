@@ -1,6 +1,6 @@
 const express = require('express');
 const scoreController = require('../controllers/scoreController');
-const paginationMiddleware = require('../middlewares/paginationMiddleware');
+const paginationMiddleware = require('./paginationMiddleware');
 const router = express.Router();
 
 

@@ -30,16 +30,18 @@ class Subject extends Model {
   }
 
   static associate(models) {
-    this.belongsTo(models.Teacher, { foreignKey: "teacher_id" });
-    this.hasMany(models.LectureSchedule, {
+    this.belongsToMany(models.Teacher, {
+      through: "teacher_subject",
+      foreignKey: "subject_id",
+      otherKey: "teacher_id",
+    });
+
+    this.hasMany(models.Lesson, {
       foreignKey: "subject_id",
     });
-    this.hasMany(models.Lab, {
+    this.hasMany(models.SubjectSchedule, {
       foreignKey: "subject_id",
     });
-    this.hasMany(models.Assignment, {
-      foreignKey: "subject_id",
-    }); // Add other associations as needed
   }
 }
 

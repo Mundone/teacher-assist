@@ -15,27 +15,15 @@ class Score extends Model {
           key: 'id',
         },
       },
-      subject_id: {
+      lesson_id: {
         type: DataTypes.INTEGER,
         references: {
-          model: 'subject', // Make sure this matches your Subject model name
+          model: 'lesson', // Make sure this matches your Subject model name
           key: 'id',
         },
       },
-      lecture_scores: {
-        type: DataTypes.JSON,
-      },
-      lab_scores: {
-        type: DataTypes.JSON,
-      },
-      lab_attendance_scores: {
-        type: DataTypes.JSON,
-      },
-      assignment_scores: {
-        type: DataTypes.JSON,
-      },
-      extra_point: {
-        type: DataTypes.INTEGER,
+      score: {
+        type: DataTypes.FLOAT,
       },
     }, {
       sequelize,
@@ -47,7 +35,7 @@ class Score extends Model {
 
   static associate(models) {
     this.belongsTo(models.Student, { foreignKey: 'student_id' });
-    this.belongsTo(models.Subject, { foreignKey: 'subject_id' });
+    this.belongsTo(models.Lesson, { foreignKey: 'lesson_id' });
   }
 }
 

@@ -1,7 +1,7 @@
 // subjectRoutes.js
 const express = require('express');
 const subjectController = require('../controllers/subjectController');
-const paginationMiddleware = require('../middlewares/paginationMiddleware');
+const paginationMiddleware = require('./paginationMiddleware'); // Ensure correct path
 const router = express.Router();
 
 /**

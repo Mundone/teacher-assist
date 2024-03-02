@@ -1,21 +1,21 @@
 // subjectRoutes.js
 const express = require('express');
-const subjectController = require('../controllers/subjectController');
-const paginationMiddleware = require('../middlewares/paginationMiddleware');
+const lessonController = require('../controllers/lessonController');
+const paginationMiddleware = require('../middlewares/paginationMiddleware'); // Ensure correct path
 const router = express.Router();
 
 /**
  * @swagger
- * /get_subjects:
+ * /get_lessons:
  *   get:
- *     summary: Retrieve all subject
- *     tags: [Subject]
+ *     summary: Retrieve all lesson
+ *     tags: [Lesson]
  *     parameters:
  *     - in: query
  *       name: search
  *       schema:
  *         type: string
- *       description: Optional search term to filter subject
+ *       description: Optional search term to filter lesson
  *     responses:
  *       200:
  *         description: OK
@@ -24,19 +24,19 @@ const router = express.Router();
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/Subject'
+ *                 $ref: '#/components/schemas/Lesson'
  *       500:
  *         description: Internal Server Error
  */
 
-router.get('/get_subjects', paginationMiddleware, subjectController.getSubjects);
+router.get('/get_lessons', paginationMiddleware, lessonController.getLessons);
 
 /**
  * @swagger
- * /get_subject/{id}:
+ * /get_lesson/{id}:
  *   get:
- *     summary: Retrieve a single subject by ID
- *     tags: [Subject]
+ *     summary: Retrieve a single lesson by ID
+ *     tags: [Lesson]
  *     parameters:
  *       - in: path
  *         name: id
@@ -44,41 +44,41 @@ router.get('/get_subjects', paginationMiddleware, subjectController.getSubjects)
  *         schema:
  *           type: integer
  *           minimum: 1
- *         description: The ID of the subject
+ *         description: The ID of the lesson
  *     responses:
  *       200:
  *         description: OK
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Subject'
+ *               $ref: '#/components/schemas/Lesson'
  *       404:
  *         description: Not Found
  *       500:
  *         description: Internal Server Error
  */
 
-router.get('/get_subject/:id', subjectController.getSubject);
+router.get('/get_lesson/:id', lessonController.getLesson);
 
 /**
  * @swagger
- * /create_subject:
+ * /create_lesson:
  *   post:
- *     summary: Create a new subject
- *     tags: [Subject]
+ *     summary: Create a new lesson
+ *     tags: [Lesson]
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Subject'
+ *             $ref: '#/components/schemas/Lesson'
  *     responses:
  *       201:
  *         description: Created
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Subject'
+ *               $ref: '#/components/schemas/Lesson'
  *       400:
  *         description: Bad request
  *       500:
@@ -87,22 +87,22 @@ router.get('/get_subject/:id', subjectController.getSubject);
  *       - Authorization: []
  */
 
-router.post('/create_subject', subjectController.createSubject);
+router.post('/create_lesson', lessonController.createLesson);
 
 
 /**
  * @swagger
- * /update_subject/{id}:
+ * /update_lesson/{id}:
  *   put:
  *     tags:
- *       - Subject
- *     summary: "Update an subject by ID"
- *     description: "This endpoint updates an existing subject's information."
+ *       - Lesson
+ *     summary: "Update an lesson by ID"
+ *     description: "This endpoint updates an existing lesson's information."
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: "ID of the subject to update"
+ *         description: "ID of the lesson to update"
  *         schema:
  *           type: integer
  *     requestBody:
@@ -111,37 +111,37 @@ router.post('/create_subject', subjectController.createSubject);
  *       content:
  *         application/json:
  *           schema:
- *             $ref: "#/components/schemas/Subject"
+ *             $ref: "#/components/schemas/Lesson"
  *     responses:
  *       200:
  *         description: "updated successfully"
  *         content:
  *           application/json:
  *             schema:
- *               $ref: "#/components/schemas/Subject"
+ *               $ref: "#/components/schemas/Lesson"
  *       400:
  *         description: "Invalid request"
  *       404:
  *         description: "not found"
  *       500:
- *         description: "Error updating subject"
+ *         description: "Error updating lesson"
  *     security:
  *       - Authorization: []
  */
 
-router.put('/update_subject/:id', subjectController.updateSubject);
+router.put('/update_lesson/:id', lessonController.updateLesson);
 
 /**
  * @swagger
- * /delete_subject/{id}:
+ * /delete_lesson/{id}:
  *   delete:
- *     summary: Delete an subject by its ID
- *     tags: [Subject]
+ *     summary: Delete an lesson by its ID
+ *     tags: [Lesson]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: ID of the subject to delete
+ *         description: ID of the lesson to delete
  *         schema:
  *           type: integer
  *           format: int64
@@ -156,7 +156,7 @@ router.put('/update_subject/:id', subjectController.updateSubject);
  *                 message:
  *                   type: string
  *                   description: A message indicating the successful deletion
- *                   example: Subject was deleted successfully!
+ *                   example: Lesson was deleted successfully!
  *       404:
  *         description: not found
  *       500:
@@ -165,6 +165,6 @@ router.put('/update_subject/:id', subjectController.updateSubject);
  *       - Authorization: []
  */
 
-router.delete('/delete_subject/:id', subjectController.deleteSubject);
+router.delete('/delete_lesson/:id', lessonController.deleteLesson);
 
 module.exports = router;
