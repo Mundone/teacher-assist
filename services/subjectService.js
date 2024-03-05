@@ -3,32 +3,78 @@ const { Sequelize } = require("sequelize");
 
 const getAllSubjects = async (pageNo, pageSize, sortBy, sortOrder) => {
   const offset = pageNo * pageSize;
-  const { count: totalSubjects, rows: subjects } =
+
+  let { count: totalSubjects, rows: subjects } =
     await allModels.Subject.findAndCountAll({
-      include: [{
-        model: allModels.Teacher, // Ensure you have imported your allModels at the top of the file
-        // as: 'Teachers', // Use the alias you defined in your association, if applicable
-        through: { attributes: [] }, // This ensures only teacher info is returned, not join table info
-        attributes: ['id', 'name', 'email', 'code'], // Specify the teacher attributes you want
-      }],
+      include: [
+        {
+          model: allModels.Teacher,
+          attributes: ["id", "name", "email", "code"],
+          include: [
+            {
+              model: allModels.TeachingAssignment,
+              attributes: [
+                "id",
+                "teacher_id",
+                "subject_id",
+                "lesson_type_id",
+                // "createdAt",
+                // "updatedAt",
+              ],
+
+              include: [
+                {
+                  model: allModels.LessonType,
+                },
+              ],
+              // Initially, don't filter here; we'll filter manually later
+            },
+          ],
+        },
+      ],
+      attributes: [
+        "id",
+        "subject_name",
+        "createdAt",
+        "updatedAt",
+        "main_teacher_id",
+      ],
       limit: pageSize,
       offset: offset,
       order: [[sortBy, sortOrder]],
-      distinct: true, // This ensures count is accurate when including many-to-many relationships
+      distinct: true,
     });
+
+  // Manual post-processing to filter TeachingAssignments
+  subjects = subjects.map((subject) => subject.get({ plain: true })); // Convert all subjects to plain objects first
+
+  subjects = subjects.map((subject) => {
+    if (subject.teachers && subject.teachers.length > 0) {
+      subject.teachers = subject.teachers.map((teacher) => {
+        // Filter teaching_assignments to ensure they match the current subject's ID
+        if (teacher.teaching_assignments) {
+          teacher.teaching_assignments = teacher.teaching_assignments.filter(
+            (ta) => ta.subject_id === subject.id
+          );
+        } else {
+          teacher.teaching_assignments = []; // Ensure it's an array even if undefined
+        }
+
+        // Explicitly remove the teaching_assignment object
+        const { teaching_assignment, ...teacherWithoutAssignment } = teacher;
+        return teacherWithoutAssignment;
+      });
+    } else {
+      subject.teachers = [];
+    }
+    return subject; // Return the modified subject object
+  });
 
   return {
     totalSubjects,
-    subjects: subjects.map(subject => {
-      // Optionally, format the subject data as needed before returning
-      return {
-        ...subject.get({ plain: true }), // This normalizes the Sequelize object
-        // Add or transform any subject data here if needed
-      };
-    }),
+    subjects,
   };
 };
-
 
 const createSubject = async (subjectData) => {
   return await Subject.create(subjectData);

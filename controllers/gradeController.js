@@ -1,7 +1,7 @@
-const scoreService = require("../services/scoreService");
-const { Score } = require("../models");
+const gradeService = require("../services/gradeService");
+const { Grade } = require("../models");
 
-const getScores = async (req, res, next) => {
+const getGrades = async (req, res, next) => {
   try {
     const { subjectId } = req.query;
     const { pageNo, pageSize, sortBy, sortOrder } = req.pagination;
@@ -12,7 +12,7 @@ const getScores = async (req, res, next) => {
       return res.status(400).json({ error: "Invalid subjectId." });
     }
 
-    const { totalScores, scores } = await scoreService.getAllStudentScoresForSubject(
+    const { totalScores, grades } = await gradeService.getAllStudentScoresForSubject(
       subjectIdInt, pageNo, pageSize, sortBy, sortOrder
     );
 
@@ -26,10 +26,10 @@ const getScores = async (req, res, next) => {
         total_elements: totalScores,
       },
       sort: `${sortBy} ${sortOrder}`,
-      data: scores,
+      data: grades,
     });
   } catch (error) {
-    console.error('Error fetching scores:', error);
+    console.error('Error fetching grades:', error);
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 };
@@ -39,7 +39,7 @@ const getScores = async (req, res, next) => {
 const updateScore = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const updatedScore = await scoreService.updateStudentScore(id, req.body);
+    const updatedScore = await gradeService.updateStudentScore(id, req.body);
     res.json(updatedScore);
   } catch (error) {
     next(error);
@@ -47,6 +47,6 @@ const updateScore = async (req, res, next) => {
 };
 
 module.exports = {
-  getScores,
+  getGrades,
   updateScore,
 };

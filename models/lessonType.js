@@ -22,6 +22,7 @@ class LessonType extends Model {
   static associate(models) {
     this.hasMany(models.Lesson, { foreignKey: 'lesson_type_id' });
     this.hasMany(models.SubjectSchedule, { foreignKey: 'lesson_type_id' });
+    this.hasMany(models.LessonAssessment, { foreignKey: 'lesson_type_id' });
   }
 }
 

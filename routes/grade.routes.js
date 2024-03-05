@@ -1,21 +1,21 @@
 const express = require('express');
-const scoreController = require('../controllers/scoreController');
+const gradeController = require('../controllers/gradeController');
 const paginationMiddleware = require('../middlewares/paginationMiddleware');
 const router = express.Router();
 
 
 /**
  * @swagger
- * /get_scores:
+ * /get_grades:
  *   get:
- *     summary: Retrieve all scores
- *     tags: [Score]
+ *     summary: Retrieve all grades
+ *     tags: [Grade]
  *     parameters:
  *     - in: query
  *       name: search
  *       schema:
  *         type: string
- *       description: Optional search term to filter scores
+ *       description: Optional search term to filter grades
  *     responses:
  *       200:
  *         description: OK
@@ -24,21 +24,21 @@ const router = express.Router();
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/Score'
+ *                 $ref: '#/components/schemas/Grade'
  *       500:
  *         description: Internal Server Error
  */
 
-router.get('/scores', paginationMiddleware, scoreController.getScores); // Get scores for a specific week and subject
+router.get('/grades', paginationMiddleware, gradeController.getGrades); // Get grades for a specific week and subject
 
 
 
 /**
  * @swagger
- * /get_score/{id}:
+ * /get_grade/{id}:
  *   get:
- *     summary: Retrieve a single score by ID
- *     tags: [Score]
+ *     summary: Retrieve a single grade by ID
+ *     tags: [Grade]
  *     parameters:
  *       - in: path
  *         name: id
@@ -46,20 +46,20 @@ router.get('/scores', paginationMiddleware, scoreController.getScores); // Get s
  *         schema:
  *           type: integer
  *           minimum: 1
- *         description: The ID of the score
+ *         description: The ID of the grade
  *     responses:
  *       200:
  *         description: OK
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Score'
+ *               $ref: '#/components/schemas/Grade'
  *       404:
  *         description: Not Found
  *       500:
  *         description: Internal Server Error
  */
 
-router.put('/scores/:id', paginationMiddleware, scoreController.updateScore); // Update a specific score
+router.put('/grades/:id', paginationMiddleware, gradeController.updateScore); // Update a specific grade
 
 module.exports = router;

@@ -31,8 +31,8 @@ class StudentSubjectSchedule extends Model {
   }
 
   static associate(models) {
-    this.belongsTo(models.Student, { foreignKey: 'student_id' }); // Corrected to belongsTo
-    this.belongsTo(models.SubjectSchedule, { foreignKey: 'subject_schedule_id' }); // Corrected to belongsTo
+    this.belongsTo(models.Student, { foreignKey: 'student_id' });
+    this.belongsTo(models.SubjectSchedule, { foreignKey: 'subject_schedule_id' });
   }
 }
 

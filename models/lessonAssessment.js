@@ -1,6 +1,6 @@
 const { Model, DataTypes } = require('sequelize');
 
-class Student extends Model {
+class LessonAssessment extends Model {
   static init(sequelize) {
     super.init({
       id: {
@@ -8,27 +8,26 @@ class Student extends Model {
         primaryKey: true,
         autoIncrement: true,
       },
-      name: {
+      lesson_assessment_code: {
         type: DataTypes.STRING(255),
       },
-      student_code: {
+      lesson_assessment_description: {
         type: DataTypes.STRING(255),
       },
-      // grade: {
-      //   type: DataTypes.JSON,
-      // },
+      score: {
+        type: DataTypes.FLOAT,
+      }
     }, {
       sequelize,
-      modelName: 'student',
-      tableName: 'student', 
+      modelName: 'lesson_assessment',
+      tableName: 'lesson_assessment',
       timestamps: false,
     });
   }
 
   static associate(models) {
-    this.hasMany(models.Grade, { foreignKey: 'student_id' });
+    this.belongsTo(models.LessonType, { foreignKey: "lesson_type_id" });
   }
 }
 
-module.exports = Student;
-
+module.exports = LessonAssessment;

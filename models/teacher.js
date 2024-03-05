@@ -52,11 +52,11 @@ class Teacher extends Model {
   static associate(models) {
     this.belongsTo(models.TeacherRole, { foreignKey: "role_id" });
     this.hasMany(models.TeacherFile, { foreignKey: "teacher_id" });
-
+    this.hasMany(models.TeachingAssignment, { foreignKey: 'teacher_id' });
     this.belongsToMany(models.Subject, {
-      through: "teacher_subject",
-      foreignKey: "teacher_id",
-      otherKey: "subject_id",
+      through: models.TeachingAssignment,
+      foreignKey: 'teacher_id',
+      otherKey: 'subject_id'
     });
   }
 }

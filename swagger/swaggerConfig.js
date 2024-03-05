@@ -29,7 +29,7 @@ const options = {
           properties: {
             id: { type: "integer", description: "Unique identifier for the Assignment." },
             subject_id: { type: "integer", description: "ID of the Subject." },
-            max_score: { type: "integer", description: "Maximum score for the assignment." },
+            max_score: { type: "integer", description: "Maximum grade for the assignment." },
             assignment_number: { type: "integer", description: "Number of the assignment." },
           },
           example: {
@@ -67,7 +67,7 @@ const options = {
             subject_id: { type: "integer", description: "ID of the Subject." },
             lab_day: { type: "integer", description: "Day of the lab." },
             lab_time: { type: "integer", description: "Time of the lab." },
-            max_score: { type: "integer", description: "Maximum score for the lab." },
+            max_score: { type: "integer", description: "Maximum grade for the lab." },
             lab_number: { type: "integer", description: "Number of the lab." },
           },
           example: {
@@ -95,17 +95,17 @@ const options = {
             lecture_time: 10,
           },
         },
-        Score: {
+        Grade: {
           type: "object",
           required: ["student_id", "subject_id", "lecture_scores", "lab_scores", "lab_attendance_scores", "assignment_scores", "extra_point"],
           properties: {
-            id: { type: "integer", description: "Unique identifier for the Score." },
+            id: { type: "integer", description: "Unique identifier for the Grade." },
             student_id: { type: "integer", description: "ID of the Student." },
             subject_id: { type: "integer", description: "ID of the Subject." },
-            lecture_scores: { type: "json", description: "JSON of lecture scores." },
-            lab_scores: { type: "json", description: "JSON of lab scores." },
-            lab_attendance_scores: { type: "json", description: "JSON of lab attendance scores." },
-            assignment_scores: { type: "json", description: "JSON of assignment scores." },
+            lecture_scores: { type: "json", description: "JSON of lecture grades." },
+            lab_scores: { type: "json", description: "JSON of lab grades." },
+            lab_attendance_scores: { type: "json", description: "JSON of lab attendance grades." },
+            assignment_scores: { type: "json", description: "JSON of assignment grades." },
             extra_point: { type: "integer", description: "Extra points." },
           },
           example: {
@@ -256,7 +256,7 @@ const options = {
             password: "Password",
           },
         },
-        // Define other models (Assignment, Lab, LectureSchedule, Score, etc.) following the same pattern
+        // Define other models (Assignment, Lab, LectureSchedule, Grade, etc.) following the same pattern
       },
       securitySchemes: {
         bearerAuth: {

@@ -12,14 +12,14 @@ class Lesson extends Model {
         subject_id: {
           type: DataTypes.INTEGER,
           references: {
-            model: "subject", // Make sure this matches your Teacher model name
+            model: "subject",
             key: "id",
           },
         },
-        lesson_type_id: {
+        lesson_assessment_id: {
           type: DataTypes.INTEGER,
           references: {
-            model: "lesson_type", // Make sure this matches your Teacher model name
+            model: "lesson_assessment",
             key: "id",
           },
         },
@@ -39,13 +39,13 @@ class Lesson extends Model {
     );
   }
 
-  static associate(models) {
+  static associate(models) { 
     this.belongsTo(models.Subject, { foreignKey: "subject_id" });
-    this.belongsTo(models.LessonType, { foreignKey: "lesson_type_id" });
+    this.belongsTo(models.LessonAssessment, { foreignKey: "lesson_assessment_id" });
     this.hasMany(models.AttendanceResponse, {
       foreignKey: "lesson_id",
     });
-    this.hasMany(models.Score, {
+    this.hasMany(models.Grade, {
       foreignKey: "lesson_id",
     });
   }

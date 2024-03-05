@@ -1,14 +1,14 @@
-const { Score, Student, Subject, Lab, Assignment } = require("../models");
+const { Grade, Student, Subject, Lab, Assignment } = require("../models");
 
-const transformScores = (score) => {
-  const lectureScores = JSON.parse(score.lecture_scores || "[]");
-  const labScores = JSON.parse(score.lab_scores || "[]");
-  const assignmentScores = JSON.parse(score.assignment_scores || "[]");
+const transformScores = (grade) => {
+  const lectureScores = JSON.parse(grade.lecture_scores || "[]");
+  const labScores = JSON.parse(grade.lab_scores || "[]");
+  const assignmentScores = JSON.parse(grade.assignment_scores || "[]");
 
   const scoresTransformed = {
-    student_code: score.student.student_code,
-    student_name: score.student.name,
-    extra_point: score.extra_point || 0,
+    student_code: grade.student.student_code,
+    student_name: grade.student.name,
+    extra_point: grade.extra_point || 0,
   };
 
   lectureScores.forEach((lecScore, index) => {
@@ -16,11 +16,11 @@ const transformScores = (score) => {
   });
 
   labScores.forEach((lab, index) => {
-    scoresTransformed[`lab${index + 1}_score`] = lab.score;
+    scoresTransformed[`lab${index + 1}_score`] = lab.grade;
   });
 
   assignmentScores.forEach((ass, index) => {
-    scoresTransformed[`ass${index + 1}_score`] = ass.score;
+    scoresTransformed[`ass${index + 1}_score`] = ass.grade;
   });
 
   return scoresTransformed;
@@ -29,7 +29,7 @@ const transformScores = (score) => {
 
 const getAllStudentScoresForSubject = async (subjectId, pageNo, pageSize, sortBy, sortOrder) => {
   const offset = pageNo * pageSize;
-  const { count: totalScores, rows: scores } = await Score.findAndCountAll({
+  const { count: totalScores, rows: grades } = await Grade.findAndCountAll({
     where: { subject_id: subjectId },
     include: [
       {
@@ -44,12 +44,12 @@ const getAllStudentScoresForSubject = async (subjectId, pageNo, pageSize, sortBy
 
   return {
     totalScores,
-    scores: scores.map(transformScores),
+    grades: grades.map(transformScores),
   };
 };
 
 const updateStudentScore = async (scoreId, updatedScoreData) => {
-  return await Score.update(updatedScoreData, {
+  return await Grade.update(updatedScoreData, {
     where: { id: scoreId },
   });
 };

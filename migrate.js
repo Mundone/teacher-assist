@@ -2,10 +2,6 @@ const models = require("./models/index");
 const moment = require("moment-timezone");
 const sequelize = require("./config/sequelizeConfig");
 
-// const MAX_LAB_SCORE = 3;
-// const MAX_ASSIGNMENT_SCORE = 20;
-// const MAX_EXTRA_POINT = 10;
-
 const main = async () => {
   try {
     await sequelize.sync();
@@ -133,84 +129,33 @@ const lessonTypeNames = [
   "Практик",
 ];
 
-// // Helper functions to generate random data
-// const generateRandomData = () => {
-//   const randomName = `Name${Math.floor(Math.random() * 100)}`;
-//   const randomDay = Math.floor(Math.random() * 7) + 1;
-//   const randomTime = Math.floor(Math.random() * 10) + 1;
-//   const randomNumber = Math.floor(Math.random() * 10) + 1;
-//   return { randomName, randomDay, randomTime, randomNumber };
-// };
+lessonAssessmentCodes = [
+  "CF1",
+  "CF2",
+  "CT3",
+  "CT4",
+  "CT5",
+  "CT5",
+  "CT6",
+  "CD7",
+  "CD8",
+  "CD9",
+];
 
-// const generateRandomScore = (maxScore) => Math.floor(Math.random() * (maxScore + 1));
-// const generateRandomScores = (count, maxScore) => Array.from({ length: count }, () => generateRandomScore(maxScore));
+lessonAssessmentDescriptions = [
+  "Цаг төлөвлөлт, хариуцлага",
+  "Сурах хүсэл эрмэлзлэл, өөрийгөө илэрхийлэх",
+  "Мэдлэгээ сэргээн санах, тайлбарлах",
+  "Асуудал шийдвэрлэхэд мэдлэгээ хэрэглэх, задлан шинжлэх",
+  "Мэдлэгээ сэргээн санах, тайлбарлах",
+  "Асуудал шийдвэрлэхэд мэдлэгээ хэрэглэх, задлан шинжлэх",
+  "Лабаораторийн хэмжилт, туршилт, даалгавар гүйцэтгэх",
+  "Үр дүнг тохирох аргаар, өгөгдсөн форматын дагуу боловсруулж тайлагнах",
+  "Өгөгдсөн даалгаврын хүрээнд шийдвэрлэх асуудлаа тодорхойлж, томёолох",
+  "Шийдвэрлэх асуудлын хүрээнд тодорхой шийдэл дэвшүүлэх, дүн шинжилгээ хийх",
+];
 
-// const insertRandomData = async () => {
-//   const exampleRole = await models.TeacherRole.create({ role_name: `Багш` });
-//   await models.TeacherRole.create({ role_name: `Ахлах багш` });
-//   await models.TeacherRole.create({ role_name: `Салбарын эрхлэгч` });
-//   for (let i = 0; i < 2; i++) {
-//     const data = generateRandomData();
-
-//     const teacher = await models.Teacher.create({ code: `Code${data.randomName}`, name: data.randomName, role_id: exampleRole.id });
-//     const subject = await models.Subject.create({ subject_name: `Subject${i}`, teacher_id: teacher.TeacherID });
-
-//     const lectureSchedule = await models.LectureSchedule.create({
-//       subject_id: subject.id,
-//       lecture_day: data.randomDay,
-//       lecture_time: data.randomTime,
-//     });
-
-//     const labs = [];
-//     const assignments = [];
-//     for (let j = 0; j < data.randomNumber; j++) {
-//       const lab = await models.Lab.create({
-//         subject_id: subject.id,
-//         lab_day: data.randomDay,
-//         lab_time: data.randomTime,
-//         max_score: MAX_LAB_SCORE,
-//         lab_number: j + 1,
-//       });
-//       labs.push(lab);
-
-//       const assignment = await models.Assignment.create({
-//         subject_id: subject.id,
-//         max_score: MAX_ASSIGNMENT_SCORE,
-//         assignment_number: j + 1,
-//       });
-//       assignments.push(assignment);
-//     }
-
-//     const student = await models.Student.create({ name: `Student${i}`, student_code: `Code${i}` });
-
-//     await models.StudentEnrollment.create({
-//       student_id: student.id,
-//       subject_id: subject.id,
-//       lecture_schedule_id: lectureSchedule.ScheduleID,
-//     });
-
-//     // Create Scores
-//     await models.Score.create({
-//       student_id: student.id,
-//       subject_id: 1,
-//       lecture_scores: JSON.stringify(generateRandomScores(16, 1)), // 16 weeks, score either 0 or 1
-//       lab_scores: JSON.stringify(labs.map(lab => ({ lab_id: lab.id, score: generateRandomScore(lab.max_score) }))),
-//       lab_attendance_scores: JSON.stringify(generateRandomScores(labs.length, 1)), // Score either 0 or 1 for lab attendance
-//       assignment_scores: JSON.stringify(assignments.map(assignment => ({ assignment_id: assignment.id, score: generateRandomScore(assignment.max_score) }))),
-//       extra_point: generateRandomScore(MAX_EXTRA_POINT),
-//     });
-
-//     await models.AttendanceRecord.create({
-//       student_id: student.id,
-//       subject_id: subject.id,
-//       lecture_schedule_id: lectureSchedule.id,
-//       attendance_date: moment.utc().subtract(-8, "hours").toDate(),
-//       attended: Math.random() < 0.5,
-//     });
-//   }
-// };
-
-const MAX_SCORE = 10;
+const MAX_GRADE = 10;
 
 const generateRandomData = () => {
   const randomDay = Math.floor(Math.random() * 7) + 1; // Day of the week, 1 (Monday) - 7 (Sunday)
@@ -218,8 +163,8 @@ const generateRandomData = () => {
   return { randomDay, randomTime };
 };
 
-const generateRandomScore = (maxScore) =>
-  Math.floor(Math.random() * (maxScore + 1));
+const generateRandomGrade = (maxGrade) =>
+  Math.floor(Math.random() * (maxGrade + 1));
 
 const insertRandomData = async () => {
   //teacherRole
@@ -228,14 +173,32 @@ const insertRandomData = async () => {
   await models.TeacherRole.create({ role_name: "Салбарын эрхлэгч" });
 
   for (let i = 0; i < lessonTypeNames.length; i++) {
-    await models.LessonType.create({ lesson_type_name: lessonTypeNames[i] });
+    const exampleLessonType = await models.LessonType.create({
+      lesson_type_name: lessonTypeNames[i],
+    });
+    await models.LessonAssessment.create({
+      lesson_assessment_code: lessonAssessmentCodes[i * 2],
+      lesson_assessment_description: lessonAssessmentDescriptions[i * 2],
+      lesson_type_id: exampleLessonType.id,
+    });
+    await models.LessonAssessment.create({
+      lesson_assessment_code: lessonAssessmentCodes[i * 2 + 1],
+      lesson_assessment_description: lessonAssessmentDescriptions[i * 2 + 1],
+      lesson_type_id: exampleLessonType.id,
+    });
   }
+
+  await models.LessonAssessment.create({
+    lesson_assessment_code: "Test code",
+    lesson_assessment_description: "Test desc",
+    lesson_type_id: lessonTypeNames.length,
+  });
 
   for (let i = 0; i < 10; i++) {
     const randomDataContainer = generateRandomData();
 
-    // Create a teacher
-    const teacher = await models.Teacher.create({
+    // Create a exampleTeacher
+    const exampleTeacher = await models.Teacher.create({
       name: peopleNames[i],
       email: peopleNamesEn[i] + "@must.com",
       code: teacherCodes[i],
@@ -243,42 +206,79 @@ const insertRandomData = async () => {
       role_id: exampleRole.id,
     });
 
-    // Create a subject
-    const subject = await models.Subject.create({
+    // Create a exampleSubject
+    const exampleSubject = await models.Subject.create({
       subject_name: subjectNames[i],
-      // teacher_id: teacher.id,
+      main_teacher_id: exampleTeacher.id,
     });
 
-    await teacher.addSubject(subject);
-
-    const nextTeacher = await models.Teacher.findOne({
+    const exampleNextTeacher = await models.Teacher.findOne({
       where: { id: i + 1 },
     });
-    if(nextTeacher != null){
-      await nextTeacher.addSubject(subject);
+
+    
+    const exampleNextTeacher2 = await models.Teacher.findOne({
+      where: { id: i - 1 },
+    });
+
+    // Additional teachers as assistant teachers
+
+    // Link assistant teacher to subject via TeachingAssignment
+    if(exampleNextTeacher != null){
+      await models.TeachingAssignment.create({
+        teacher_id: exampleNextTeacher.id,
+        subject_id: exampleSubject.id,
+        lesson_type_id: Math.floor(Math.random() * lessonTypeNames.length) + 1, // Random lesson type
+      });
+
+    }
+
+    if(exampleNextTeacher2 != null){
+      await models.TeachingAssignment.create({
+        teacher_id: exampleNextTeacher2.id,
+        subject_id: exampleSubject.id,
+        lesson_type_id: Math.floor(Math.random() * lessonTypeNames.length) + 1, // Random lesson type
+      });
     }
 
     // Create a lesson type (assuming lesson types are predefined and have specific IDs)
-    const lessonType = await models.LessonType.findOne({
+    const exampleLessonType = await models.LessonType.findOne({
       where: { id: Math.floor(Math.random() * lessonTypeNames.length) + 1 },
+      include: [
+        {
+          model: models.LessonAssessment,
+        },
+      ],
     });
 
-    // Create a subject schedule
-    const subjectSchedule = await models.SubjectSchedule.create({
-      subject_id: subject.id,
-      lesson_type_id: lessonType.id,
+    // await exampleTeacher.addSubject(exampleSubject);
+
+    // await models.TeacherSubject.create({
+    //   teacher_id: exampleTeacher.id,
+    //   subject_id: exampleSubject.id,
+    //   lesson_type_id: exampleLessonType.id,
+    // });
+
+    // Create a exampleSubject schedule
+    const exampleSubjectSchedule = await models.SubjectSchedule.create({
+      subject_id: exampleSubject.id,
+      lesson_type_id: exampleLessonType.id,
       lecture_day: randomDataContainer.randomDay,
       lecture_time: randomDataContainer.randomTime,
     });
 
     // Create lessons
     for (let week = 1; week <= 16; week++) {
-      await models.Lesson.create({
-        subject_id: subject.id,
-        lesson_type_id: lessonType.id,
-        week_number: week,
-        lesson_number: week, // Assuming lesson number is the same as week number for simplicity
-      });
+      if (exampleLessonType && exampleLessonType.lesson_assessments) {
+        for (const assessment of exampleLessonType.lesson_assessments) {
+          await models.Lesson.create({
+            subject_id: exampleSubject.id,
+            lesson_assessment_id: assessment.id,
+            week_number: week,
+            lesson_number: week,
+          });
+        }
+      }
     }
 
     // Create a student
@@ -287,18 +287,19 @@ const insertRandomData = async () => {
       student_code: studentCodes[i],
     });
 
-    // Enroll student in the subject schedule (assuming this represents the student being allocated to a specific schedule)
+    // Enroll student in the exampleSubject schedule (assuming this represents the student being allocated to a specific schedule)
     await models.StudentSubjectSchedule.create({
       student_id: student.id,
-      subject_schedule_id: subjectSchedule.id,
+      subject_schedule_id: exampleSubjectSchedule.id,
     });
 
-    // Create scores for each lesson (assuming 16 lessons, one per week)
-    for (let lessonId = 1; lessonId <= 16; lessonId++) {
-      await models.Score.create({
+    const allLessons = await models.Lesson.findAll();
+
+    for (const lesson of allLessons) {
+      await models.Grade.create({
         student_id: student.id,
-        lesson_id: lessonId,
-        score: generateRandomScore(MAX_SCORE), // Assuming a score out of MAX_SCORE
+        lesson_id: lesson.id,
+        grade: generateRandomGrade(MAX_GRADE),
       });
     }
   }

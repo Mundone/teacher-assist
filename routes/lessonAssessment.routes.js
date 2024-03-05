@@ -1,19 +1,19 @@
 const express = require('express');
-const labController = require('../controllers/labController');
+const lessonAssessmentController = require('../controllers/lessonAssessmentController');
 const router = express.Router();
 
 /**
  * @swagger
- * /get_labs:
+ * /get_lessonAssessments:
  *   get:
- *     summary: Retrieve all labs
- *     tags: [Lab]
+ *     summary: Retrieve all lessonAssessments
+ *     tags: [LessonAssessment]
  *     parameters:
  *     - in: query
  *       name: search
  *       schema:
  *         type: string
- *       description: Optional search term to filter labs
+ *       description: Optional search term to filter lessonAssessments
  *     responses:
  *       200:
  *         description: OK
@@ -22,13 +22,12 @@ const router = express.Router();
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/Lab'
+ *                 $ref: '#/components/schemas/lessonAssessment'
  *       500:
  *         description: Internal Server Error
  */
 
-
-router.get('/get_labs', labController.getLabs);
+router.get('/get_lessonAssessments', lessonAssessmentController.getLessonAssessments);
 // other routes like POST, PUT, DELETE
 
 module.exports = router;

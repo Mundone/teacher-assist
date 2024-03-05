@@ -1,6 +1,6 @@
 const { Model, DataTypes } = require('sequelize');
 
-class Score extends Model {
+class Grade extends Model {
   static init(sequelize) {
     super.init({
       id: {
@@ -22,13 +22,13 @@ class Score extends Model {
           key: 'id',
         },
       },
-      score: {
+      grade: {
         type: DataTypes.FLOAT,
       },
     }, {
       sequelize,
-      modelName: 'score',
-      tableName: 'score', 
+      modelName: 'grade',
+      tableName: 'grade', 
       timestamps: false,
     });
   }
@@ -39,4 +39,4 @@ class Score extends Model {
   }
 }
 
-module.exports = Score;
+module.exports = Grade;

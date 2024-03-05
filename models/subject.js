@@ -12,7 +12,7 @@ class Subject extends Model {
         subject_name: {
           type: DataTypes.STRING(255),
         },
-        teacher_id: {
+        main_teacher_id: {
           type: DataTypes.INTEGER,
           references: {
             model: "teacher", // Make sure this matches your Teacher model name
@@ -30,8 +30,12 @@ class Subject extends Model {
   }
 
   static associate(models) {
+    // this.belongsTo(models.Teacher, {
+    //   foreignKey: "main_teacher_id",
+    //   as: "MainTeacher", // Alias added here
+    // });
     this.belongsToMany(models.Teacher, {
-      through: "teacher_subject",
+      through: models.TeachingAssignment,
       foreignKey: "subject_id",
       otherKey: "teacher_id",
     });
@@ -42,6 +46,8 @@ class Subject extends Model {
     this.hasMany(models.SubjectSchedule, {
       foreignKey: "subject_id",
     });
+
+    this.hasMany(models.TeachingAssignment, { foreignKey: "subject_id" });
   }
 }
 
