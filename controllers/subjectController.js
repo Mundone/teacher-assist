@@ -1,10 +1,14 @@
-// subjectController.js
 const subjectService = require("../services/subjectService");
 
 exports.getSubjects = async (req, res, next) => {
   try {
     const { pageNo, pageSize, sortBy, sortOrder } = req.pagination;
-    const { totalSubjects, subjects } = await subjectService.getAllSubjects(pageNo, pageSize, sortBy, sortOrder);
+    const { totalSubjects, subjects } = await subjectService.getAllSubjects(
+      pageNo,
+      pageSize,
+      sortBy,
+      sortOrder
+    );
 
     res.json({
       pagination: {

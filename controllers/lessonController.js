@@ -4,7 +4,7 @@ const lessonService = require("../services/lessonService");
 exports.getLessons = async (req, res, next) => {
   try {
     const { pageNo, pageSize, sortBy, sortOrder } = req.pagination;
-    const { totalLessons, lessons } = await lessonService.getAllSubjects(pageNo, pageSize, sortBy, sortOrder);
+    const { totalLessons, lessons } = await lessonService.getAllLessons(pageNo, pageSize, sortBy, sortOrder);
 
     res.json({
       pagination: {

@@ -1,58 +1,52 @@
 // subjectService.js
-const { Subject, Lab, Assignment, StudentEnrollment, LectureSchedule } = require("../models");
+const allModels = require("../models");
 const { Sequelize } = require("sequelize");
 
-const getAllSubjects = async (pageNo, pageSize, sortBy, sortOrder) => {
+const getAllLessons = async (pageNo, pageSize, sortBy, sortOrder) => {
   const offset = pageNo * pageSize;
-  const { count: totalSubjects, rows: subjects } = await Subject.findAndCountAll({
-    attributes: {
-      include: [
-        [Sequelize.literal(`(SELECT COUNT(*) FROM lab WHERE lab.subject_id = subject.id)`), "labCount"],
-        [Sequelize.literal(`(SELECT COUNT(*) FROM assignment WHERE assignment.subject_id = subject.id)`), "assignmentCount"],
-        [Sequelize.literal(`(SELECT COUNT(*) FROM student_enrollment WHERE student_enrollment.subject_id = subject.id)`), "studentCount"],
-      ],
-    },
+  const { count: totalLessons, rows: lessons } = await allModels.Lesson.findAndCountAll({
     include: [
-      { model: LectureSchedule },
-      { model: Lab },
-      { model: Assignment },
+      {
+        model: allModels.LessonAssessment,
+        attributes: ["id", "lesson_assessment_code", "lesson_assessment_description", "lesson_type_id"],
+      },
     ],
-    group: ["subject.id"],
+    attributes: ["id", "subject_id", "lesson_assessment_id", "week_number", "lesson_number"],
     limit: pageSize,
     offset: offset,
-    order: [[sortBy === "id" ? "subject_id" : sortBy, sortOrder]],
+    order: [[sortBy, sortOrder]],
   });
 
   return {
-    totalSubjects, // This will be a single number
-    subjects,
+    totalLessons, // This will be a single number
+    lessons,
   };
 };
 
-const createSubject = async (subjectData) => {
-  return await Subject.create(subjectData);
+const createLesson = async (lessonData) => {
+  return await Lesson.create(lessonData);
 };
 
-const updateSubject = async (id, subjectData) => {
-  return await Subject.update(subjectData, {
+const updateLesson = async (id, lessonData) => {
+  return await Lesson.update(lessonData, {
     where: { id: id },
   });
 };
 
-const getSubjectById = async (id) => {
-  return await Subject.findByPk(id);
+const getLessonById = async (id) => {
+  return await Lesson.findByPk(id);
 };
 
-const deleteSubject = async (id) => {
-  return await Subject.destroy({
+const deleteLesson = async (id) => {
+  return await Lesson.destroy({
     where: { id: id },
   });
 };
 
 module.exports = {
-  getAllSubjects,
-  createSubject,
-  updateSubject,
-  getSubjectById,
-  deleteSubject,
+  getAllLessons,
+  createLesson,
+  updateLesson,
+  getLessonById,
+  deleteLesson,
 };

@@ -27,7 +27,7 @@ const router = express.Router();
  *         description: Internal Server Error
  */
 
-router.get('/get_lessonTypes', lessonTypeController.getLessonTypes);
+router.get('/get_lesson_types', lessonTypeController.getLessonTypes);
 // other routes like POST, PUT, DELETE
 
 module.exports = router;
