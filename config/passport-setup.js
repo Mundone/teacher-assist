@@ -1,7 +1,7 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcryptjs');
-const Teacher = require('../models/index').Teacher; // Adjust the path based on your file structure
+const User = require('../models/index').User; // Adjust the path based on your file structure
 
 
 passport.use(new LocalStrategy({
@@ -12,7 +12,7 @@ passport.use(new LocalStrategy({
       console.log('USING PASSPORT SETUP');
       console.log(code);
       console.log(password);
-        Teacher.findOne({ where: { code: code } })
+        User.findOne({ where: { code: code } })
             .then(user => {
                 console.log(user);
                 if (!user) {

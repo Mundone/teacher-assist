@@ -15,16 +15,16 @@ const register = async (req, res) => {
       return res.status(400).send({ message: "Нууц үг оруулна уу." });
     }
 
-    const roleID = 1; // Consider handling roles more dynamically if needed
+    const roleID = 2; // Consider handling roles more dynamically if needed
 
     const passwordError = validatePassword(password);
     if (passwordError) {
       return res.status(400).send({ message: passwordError });
     }
 
-    const newTeacher = await authService.registerTeacher({ code, name, password, roleID });
-    const { password: _, ...teacherInfo } = newTeacher.toJSON();
-    res.status(201).send(teacherInfo);
+    const newUser = await authService.registerUser({ code, name, password, roleID });
+    const { password: _, ...userInfo } = newUser.toJSON();
+    res.status(201).send(userInfo);
   } catch (error) {
     res.status(500).send({ message: error.message });
   }
@@ -34,11 +34,11 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   try {
     const { code, password } = req.body;
-    const { teacher, token } = await authService.authenticateTeacher(code, password);
+    const { user, token } = await authService.authenticateUser(code, password);
     res.status(200).json({
       message: 'Login successful',
       accessToken: token,
-      teacher,
+      user,
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -57,9 +57,9 @@ const getAuthInfo = async (req, res) => {
       return res.status(403).json({ message: "Token is not valid" });
     }
     try {
-      // Use the decoded ID to fetch the teacher and refresh the token
-      const { teacher, token: newToken } = await authService.refreshToken(decoded.id);
-      res.json({ teacher, token: newToken });
+      // Use the decoded ID to fetch the user and refresh the token
+      const { user, token: newToken } = await authService.refreshToken(decoded.id);
+      res.json({ user, token: newToken });
     } catch (error) {
       const statusCode = error.statusCode || 500;
       const message = error.message || 'Internal server error';

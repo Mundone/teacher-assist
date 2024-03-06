@@ -8,10 +8,10 @@ class TeachingAssignment extends Model {
         primaryKey: true,
         autoIncrement: true,
       },
-      teacher_id: {
+      user_id: {
         type: DataTypes.INTEGER,
         references: {
-          model: "teacher",
+          model: "user",
           key: "id",
         },
       },
@@ -34,14 +34,14 @@ class TeachingAssignment extends Model {
       modelName: 'teaching_assignment',
       uniqueKeys: {
         items_unique: {
-          fields: ['teacher_id', 'subject_id', 'lesson_type_id']
+          fields: ['user_id', 'subject_id', 'lesson_type_id']
         }
       }
     });
   }
 
   static associate(models) {
-    this.belongsTo(models.Teacher, { foreignKey: 'teacher_id' });
+    this.belongsTo(models.User, { foreignKey: 'user_id' });
     this.belongsTo(models.Subject, { foreignKey: 'subject_id' });
     this.belongsTo(models.LessonType, { foreignKey: 'lesson_type_id' });
   }

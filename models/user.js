@@ -1,7 +1,7 @@
 const { Model, DataTypes } = require("sequelize");
 const moment = require("moment-timezone");
 
-class Teacher extends Model {
+class User extends Model {
   static init(sequelize) {
     super.init(
       {
@@ -22,7 +22,7 @@ class Teacher extends Model {
         role_id: {
           type: DataTypes.INTEGER,
           references: {
-            model: "teacher_role", // Make sure this matches your Teacher model name
+            model: "user_role", // Make sure this matches your User model name
             key: "id",
           },
         },
@@ -37,12 +37,12 @@ class Teacher extends Model {
       },
       {
         sequelize,
-        modelName: "teacher",
-        tableName: "teacher",
+        modelName: "user",
+        tableName: "user",
         timestamps: true,
         hooks: {
-          beforeCreate: (teacher, options) => {
-            teacher.created_at = moment.utc().subtract(-8, "hours").toDate();
+          beforeCreate: (user, options) => {
+            user.created_at = moment.utc().subtract(-8, "hours").toDate();
           },
         },
       }
@@ -50,15 +50,15 @@ class Teacher extends Model {
   }
 
   static associate(models) {
-    this.belongsTo(models.TeacherRole, { foreignKey: "role_id" });
-    this.hasMany(models.TeacherFile, { foreignKey: "teacher_id" });
-    this.hasMany(models.TeachingAssignment, { foreignKey: 'teacher_id' });
+    this.belongsTo(models.UserRole, { foreignKey: "role_id" });
+    this.hasMany(models.UserFile, { foreignKey: "user_id" });
+    this.hasMany(models.TeachingAssignment, { foreignKey: 'user_id' });
     this.belongsToMany(models.Subject, {
       through: models.TeachingAssignment,
-      foreignKey: 'teacher_id',
+      foreignKey: 'user_id',
       otherKey: 'subject_id'
     });
   }
 }
 
-module.exports = Teacher;
+module.exports = User;

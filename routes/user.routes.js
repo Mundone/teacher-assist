@@ -1,20 +1,20 @@
-// routes/teacherRoutes.js
+// routes/userRoutes.js
 const express = require('express');
 const router = express.Router();
-const teacherController = require('../controllers/teacherController');
+const userController = require('../controllers/userController');
 
 /**
  * @swagger
- * /get_teachers:
+ * /get_users:
  *   get:
- *     summary: Retrieve all teachers
- *     tags: [Teacher]
+ *     summary: Retrieve all users
+ *     tags: [User]
  *     parameters:
  *       - in: query
  *         name: search
  *         schema:
  *           type: string
- *         description: Optional search term to filter teachers
+ *         description: Optional search term to filter users
  *     responses:
  *       200:
  *         description: OK
@@ -22,21 +22,21 @@ const teacherController = require('../controllers/teacherController');
  *         description: Internal Server Error
  */
 
-router.get('/get_teachers', teacherController.getTeachers);
+router.get('/get_users', userController.getUsers);
 
 /**
  * @swagger
- * /get_teacher/{id}:
+ * /get_user/{id}:
  *   get:
- *     summary: Retrieve a single teacher by ID
- *     tags: [Teacher]
+ *     summary: Retrieve a single user by ID
+ *     tags: [User]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: integer
- *         description: The ID of the teacher
+ *         description: The ID of the user
  *     responses:
  *       200:
  *         description: OK
@@ -46,23 +46,23 @@ router.get('/get_teachers', teacherController.getTeachers);
  *         description: Internal Server Error
  */
 
-router.get('/get_teacher/:id', teacherController.getTeacher);
+router.get('/get_user/:id', userController.getUser);
 
 /**
  * @swagger
- * /create_teacher:
+ * /create_user:
  *   post:
- *     summary: Create a new teacher
- *     tags: [Teacher]
+ *     summary: Create a new user
+ *     tags: [User]
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Teacher'
+ *             $ref: '#/components/schemas/User'
  *     responses:
  *       201:
- *         description: Teacher created successfully
+ *         description: User created successfully
  *       400:
  *         description: Bad request
  *       500:
@@ -71,72 +71,72 @@ router.get('/get_teacher/:id', teacherController.getTeacher);
  *       - Authorization: []
  */
 
-router.post('/create_teacher', teacherController.createTeacher);
+router.post('/create_user', userController.createUser);
 
 /**
  * @swagger
- * /update_teacher/{id}:
+ * /update_user/{id}:
  *   put:
- *     tags: [Teacher]
- *     summary: Update a teacher by ID
- *     description: Updates an existing teacher's information.
+ *     tags: [User]
+ *     summary: Update a user by ID
+ *     description: Updates an existing user's information.
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: ID of the teacher to update
+ *         description: ID of the user to update
  *         schema:
  *           type: integer
  *     requestBody:
- *       description: Teacher data to update
+ *       description: User data to update
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Teacher'
+ *             $ref: '#/components/schemas/User'
  *     responses:
  *       200:
- *         description: Teacher updated successfully
+ *         description: User updated successfully
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Teacher'
+ *               $ref: '#/components/schemas/User'
  *       400:
  *         description: Invalid request
  *       404:
- *         description: Teacher not found
+ *         description: User not found
  *       500:
- *         description: Error updating teacher
+ *         description: Error updating user
  *     security:
  *       - Authorization: []
  */
 
-router.put('/update_teacher/:id', teacherController.updateTeacher);
+router.put('/update_user/:id', userController.updateUser);
 
 /**
  * @swagger
- * /delete_teacher/{id}:
+ * /delete_user/{id}:
  *   delete:
- *     summary: Delete a teacher by its ID
- *     tags: [Teacher]
+ *     summary: Delete a user by its ID
+ *     tags: [User]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: ID of the teacher to delete
+ *         description: ID of the user to delete
  *         schema:
  *           type: integer
  *     responses:
  *       200:
- *         description: Teacher deleted successfully
+ *         description: User deleted successfully
  *       404:
- *         description: Teacher not found
+ *         description: User not found
  *       500:
  *         description: Internal server error
  *     security:
  *       - Authorization: []
  */
 
-router.delete('/delete_teacher/:id', teacherController.deleteTeacher);
+router.delete('/delete_user/:id', userController.deleteUser);
 
 module.exports = router;

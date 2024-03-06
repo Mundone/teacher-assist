@@ -1,19 +1,19 @@
 const express = require('express');
-const teacherFileController = require('../controllers/teacherFileController');
+const userRoleController = require('../controllers/userRoleController');
 const router = express.Router();
 
 /**
  * @swagger
- * /get_teacher_files:
+ * /get_user_roles:
  *   get:
- *     summary: Retrieve all teacherFile
- *     tags: [TeacherFile]
+ *     summary: Retrieve all userRoles
+ *     tags: [UserRole]
  *     parameters:
  *     - in: query
  *       name: search
  *       schema:
  *         type: string
- *       description: Optional search term to filter teacherFile
+ *       description: Optional search term to filter userRoles
  *     responses:
  *       200:
  *         description: OK
@@ -22,12 +22,12 @@ const router = express.Router();
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/TeacherFile'
+ *                 $ref: '#/components/schemas/UserRole'
  *       500:
  *         description: Internal Server Error
  */
 
-router.get('/get_teacher_files', teacherFileController.getTeacherFiles);
+router.get('/get_user_roles', userRoleController.getUserRoles);
 // other routes like POST, PUT, DELETE
 
 module.exports = router;

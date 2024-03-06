@@ -15,7 +15,7 @@ class Subject extends Model {
         main_teacher_id: {
           type: DataTypes.INTEGER,
           references: {
-            model: "teacher", // Make sure this matches your Teacher model name
+            model: "user", // Make sure this matches your User model name
             key: "id",
           },
         },
@@ -30,14 +30,14 @@ class Subject extends Model {
   }
 
   static associate(models) {
-    // this.belongsTo(models.Teacher, {
+    // this.belongsTo(models.User, {
     //   foreignKey: "main_teacher_id",
     //   as: "MainTeacher", // Alias added here
     // });
-    this.belongsToMany(models.Teacher, {
+    this.belongsToMany(models.User, {
       through: models.TeachingAssignment,
       foreignKey: "subject_id",
-      otherKey: "teacher_id",
+      otherKey: "user_id",
     });
 
     this.hasMany(models.Lesson, {

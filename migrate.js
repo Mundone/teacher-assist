@@ -1,6 +1,7 @@
 const models = require("./models/index");
 const moment = require("moment-timezone");
 const sequelize = require("./config/sequelizeConfig");
+const bcrypt = require("bcryptjs");
 
 const main = async () => {
   try {
@@ -168,9 +169,9 @@ const generateRandomGrade = (maxGrade) =>
 
 const insertRandomData = async () => {
   //teacherRole
-  const exampleRole = await models.TeacherRole.create({ role_name: "Багш" });
-  await models.TeacherRole.create({ role_name: "Ахлах багш" });
-  await models.TeacherRole.create({ role_name: "Салбарын эрхлэгч" });
+  await models.UserRole.create({ role_name: "Админ" });
+  const exampleRole = await models.UserRole.create({ role_name: "Багш" });
+  await models.UserRole.create({ role_name: "Салбарын эрхлэгч" });
 
   for (let i = 0; i < lessonTypeNames.length; i++) {
     const exampleLessonType = await models.LessonType.create({
@@ -197,8 +198,8 @@ const insertRandomData = async () => {
   for (let i = 0; i < 10; i++) {
     const randomDataContainer = generateRandomData();
 
-    // Create a exampleTeacher
-    const exampleTeacher = await models.Teacher.create({
+    // Create a exampleUser
+    const exampleUser = await models.User.create({
       name: peopleNames[i],
       email: peopleNamesEn[i] + "@must.com",
       code: teacherCodes[i],
@@ -209,33 +210,31 @@ const insertRandomData = async () => {
     // Create a exampleSubject
     const exampleSubject = await models.Subject.create({
       subject_name: subjectNames[i],
-      main_teacher_id: exampleTeacher.id,
+      main_teacher_id: exampleUser.id,
     });
 
-    const exampleNextTeacher = await models.Teacher.findOne({
+    const exampleNextUser = await models.User.findOne({
       where: { id: i + 1 },
     });
 
-    
-    const exampleNextTeacher2 = await models.Teacher.findOne({
+    const exampleNextUser2 = await models.User.findOne({
       where: { id: i - 1 },
     });
 
     // Additional teachers as assistant teachers
 
-    // Link assistant teacher to subject via TeachingAssignment
-    if(exampleNextTeacher != null){
+    // Link assistant user to subject via TeachingAssignment
+    if (exampleNextUser != null) {
       await models.TeachingAssignment.create({
-        teacher_id: exampleNextTeacher.id,
+        user_id: exampleNextUser.id,
         subject_id: exampleSubject.id,
         lesson_type_id: Math.floor(Math.random() * lessonTypeNames.length) + 1, // Random lesson type
       });
-
     }
 
-    if(exampleNextTeacher2 != null){
+    if (exampleNextUser2 != null) {
       await models.TeachingAssignment.create({
-        teacher_id: exampleNextTeacher2.id,
+        user_id: exampleNextUser2.id,
         subject_id: exampleSubject.id,
         lesson_type_id: Math.floor(Math.random() * lessonTypeNames.length) + 1, // Random lesson type
       });
@@ -251,10 +250,10 @@ const insertRandomData = async () => {
       ],
     });
 
-    // await exampleTeacher.addSubject(exampleSubject);
+    // await exampleUser.addSubject(exampleSubject);
 
     // await models.TeacherSubject.create({
-    //   teacher_id: exampleTeacher.id,
+    //   user_id: exampleUser.id,
     //   subject_id: exampleSubject.id,
     //   lesson_type_id: exampleLessonType.id,
     // });
@@ -303,6 +302,24 @@ const insertRandomData = async () => {
       });
     }
   }
+
+  await models.User.create({
+    name: "hotMunhuu",
+    email: "hotmonhoo@gmail.com",
+    code: "zma",
+    // Assume role_id is set correctly
+    role_id: 2,
+    password: await bcrypt.hash("Pass@123", 10),
+  });
+
+  await models.User.create({
+    name: "coldAdmin",
+    email: "coldAdmin@gmail.com",
+    code: "admin",
+    // Assume role_id is set correctly
+    role_id: 1,
+    password: await bcrypt.hash("Pass@123", 10),
+  });
 };
 
 main();

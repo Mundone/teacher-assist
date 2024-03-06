@@ -8,14 +8,14 @@ const getAllSubjects = async (pageNo, pageSize, sortBy, sortOrder) => {
     await allModels.Subject.findAndCountAll({
       include: [
         {
-          model: allModels.Teacher,
+          model: allModels.User,
           attributes: ["id", "name", "email", "code"],
           include: [
             {
               model: allModels.TeachingAssignment,
               attributes: [
                 "id",
-                "teacher_id",
+                "user_id",
                 "subject_id",
                 "lesson_type_id",
                 // "createdAt",
@@ -49,23 +49,23 @@ const getAllSubjects = async (pageNo, pageSize, sortBy, sortOrder) => {
   subjects = subjects.map((subject) => subject.get({ plain: true })); // Convert all subjects to plain objects first
 
   subjects = subjects.map((subject) => {
-    if (subject.teachers && subject.teachers.length > 0) {
-      subject.teachers = subject.teachers.map((teacher) => {
+    if (subject.users && subject.users.length > 0) {
+      subject.users = subject.users.map((user) => {
         // Filter teaching_assignments to ensure they match the current subject's ID
-        if (teacher.teaching_assignments) {
-          teacher.teaching_assignments = teacher.teaching_assignments.filter(
+        if (user.teaching_assignments) {
+          user.teaching_assignments = user.teaching_assignments.filter(
             (ta) => ta.subject_id === subject.id
           );
         } else {
-          teacher.teaching_assignments = []; // Ensure it's an array even if undefined
+          user.teaching_assignments = []; // Ensure it's an array even if undefined
         }
 
         // Explicitly remove the teaching_assignment object
-        const { teaching_assignment, ...teacherWithoutAssignment } = teacher;
+        const { teaching_assignment, ...teacherWithoutAssignment } = user;
         return teacherWithoutAssignment;
       });
     } else {
-      subject.teachers = [];
+      subject.users = [];
     }
     return subject; // Return the modified subject object
   });

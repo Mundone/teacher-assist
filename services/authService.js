@@ -1,66 +1,72 @@
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const { Teacher } = require('../models'); // adjust the path as needed
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const { User } = require("../models"); // adjust the path as needed
 
-const registerTeacher = async ({ code, name, password, roleID }) => {
-  const existingTeacher = await Teacher.findOne({ where: { code } });
-  if (existingTeacher) {
-    throw new Error('Хэрэглэгчийн код давтагдаж байна.');
+const registerUser = async ({ code, name, password, roleID }) => {
+  const existingUser = await User.findOne({ where: { code } });
+  if (existingUser) {
+    throw new Error("Хэрэглэгчийн код давтагдаж байна.");
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
-  const newTeacher = await Teacher.create({
+  const newUser = await User.create({
     code: code,
     name: name,
     password: hashedPassword,
     role_id: roleID,
   });
 
-  return newTeacher;
+  return newUser;
 };
 
-const authenticateTeacher = async (code, password) => {
-  const teacher = await Teacher.findOne({ where: { code } });
-  if (!teacher) {
-    throw new Error('Хэрэглэгч олдсонгүй.');
+const authenticateUser = async (code, password) => {
+  const inputUser = await User.findOne({ where: { code } });
+  if (!inputUser) {
+    throw new Error("Хэрэглэгч олдсонгүй.");
   }
 
-  const isMatch = await bcrypt.compare(password, teacher.password);
+  const isMatch = await bcrypt.compare(password, inputUser.password);
   if (!isMatch) {
-    throw new Error('Нууц үг буруу байна.');
+    throw new Error("Нууц үг буруу байна.");
   }
 
   const token = jwt.sign(
-    { id: teacher.id, code: teacher.code },
+    { id: inputUser.id, code: inputUser.code },
     process.env.JWT_SECRET,
-    { expiresIn: '1h' }
+    { expiresIn: "1h" }
   );
-
-  return { teacher, token };
+  
+  var user = {
+    id: inputUser.id,
+    name: inputUser.name,
+    email: inputUser.email,
+    code: inputUser.code,
+    role_id: inputUser.role_id,
+  };
+  
+  return { user, token };
 };
 
 // Service
-const refreshToken = async (teacherId) => {
-  const teacher = await Teacher.findByPk(teacherId);
-  if (!teacher) {
-    const error = new Error('Teacher not found.');
+const refreshToken = async (userId) => {
+  const user = await User.findByPk(userId);
+  if (!user) {
+    const error = new Error("User not found.");
     error.statusCode = 404;
     throw error;
   }
 
   const newToken = jwt.sign(
-    { id: teacher.id, code: teacher.code },
+    { id: user.id, code: user.code },
     process.env.JWT_SECRET,
-    { expiresIn: '1h' }
+    { expiresIn: "1h" }
   );
 
-  return { teacher, token: newToken };
+  return { user, token: newToken };
 };
 
-
-
 module.exports = {
-  registerTeacher,
-  authenticateTeacher,
+  registerUser,
+  authenticateUser,
   refreshToken,
 };

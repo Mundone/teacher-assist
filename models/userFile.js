@@ -1,6 +1,6 @@
 const { Model, DataTypes } = require('sequelize');
 
-class TeacherFile extends Model {
+class UserFile extends Model {
   static init(sequelize) {
     super.init({
       id: {
@@ -8,10 +8,10 @@ class TeacherFile extends Model {
         primaryKey: true,
         autoIncrement: true,
       },
-      teacher_id: {
+      user_id: {
         type: DataTypes.INTEGER,
         references: {
-          model: "teacher", // Make sure this matches your Teacher model name
+          model: "user", // Make sure this matches your User model name
           key: "id",
         },
       },
@@ -29,15 +29,15 @@ class TeacherFile extends Model {
       },
     }, {
       sequelize,
-      modelName: 'teacher_file',
-      tableName: 'teacher_file', 
+      modelName: 'user_file',
+      tableName: 'user_file', 
       timestamps: true,
     });
   }
 
   static associate(models) {
-    this.belongsTo(models.Teacher, { foreignKey: 'teacher_id' });
+    this.belongsTo(models.User, { foreignKey: 'user_id' });
   }
 }
 
-module.exports = TeacherFile;
+module.exports = UserFile;

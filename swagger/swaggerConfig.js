@@ -4,9 +4,9 @@ const options = {
   definition: {
     openapi: "3.0.0",
     info: {
-      title: "Teacher-Journal API",
+      title: "User-Journal API",
       version: "1.0.0",
-      description: "API for Teacher-Journal",
+      description: "API for User-Journal",
     },
     components: {
       securitySchemes: {
@@ -151,27 +151,27 @@ const options = {
         },
         Subject: {
           type: "object",
-          required: ["subject_name", "teacher_id"],
+          required: ["subject_name", "user_id"],
           properties: {
             id: { type: "integer", description: "Unique identifier for the Subject." },
             subject_name: { type: "string", description: "Name of the Subject." },
-            teacher_id: { type: "integer", description: "ID of the Teacher." },
+            user_id: { type: "integer", description: "ID of the User." },
           },
           example: {
             id: 5,
             subject_name: "Mathematics",
-            teacher_id: 202,
+            user_id: 202,
           },
         },
-        Teacher: {
+        User: {
           type: "object",
           required: ["name", "code", "role_id", "password"],
           properties: {
-            id: { type: "integer", description: "Unique identifier for the Teacher." },
-            name: { type: "string", description: "Name of the Teacher." },
-            code: { type: "string", description: "Unique code for the Teacher." },
-            role_id: { type: "integer", description: "ID of the Teacher's Role." },
-            password: { type: "string", description: "Password for the Teacher." },
+            id: { type: "integer", description: "Unique identifier for the User." },
+            name: { type: "string", description: "Name of the User." },
+            code: { type: "string", description: "Unique code for the User." },
+            role_id: { type: "integer", description: "ID of the User's Role." },
+            password: { type: "string", description: "Password for the User." },
           },
           example: {
             id: 202,
@@ -181,12 +181,12 @@ const options = {
             password: "pass1234",
           },
         },
-        TeacherFile: {
+        UserFile: {
           type: "object",
-          required: ["teacher_id", "file_name", "file_path", "file_type", "upload_date"],
+          required: ["user_id", "file_name", "file_path", "file_type", "upload_date"],
           properties: {
-            id: { type: "integer", description: "Unique identifier for the Teacher File." },
-            teacher_id: { type: "integer", description: "ID of the Teacher." },
+            id: { type: "integer", description: "Unique identifier for the User File." },
+            user_id: { type: "integer", description: "ID of the User." },
             file_name: { type: "string", description: "Name of the file." },
             file_path: { type: "string", description: "Path of the file." },
             file_type: { type: "string", description: "Type of the file." },
@@ -194,23 +194,23 @@ const options = {
           },
           example: {
             id: 33,
-            teacher_id: 202,
+            user_id: 202,
             file_name: "lecture.pdf",
             file_path: "/files/lecture.pdf",
             file_type: "pdf",
             upload_date: "2024-01-25T08:30:00Z",
           },
         },
-        TeacherRole: {
+        UserRole: {
           type: "object",
           required: ["role_name"],
           properties: {
-            id: { type: "integer", description: "Unique identifier for the Teacher Role." },
-            role_name: { type: "string", description: "Name of the Teacher Role." },
+            id: { type: "integer", description: "Unique identifier for the User Role." },
+            role_name: { type: "string", description: "Name of the User Role." },
           },
           example: {
             id: 1,
-            role_name: "Math Teacher",
+            role_name: "Math User",
           },
         },
 
