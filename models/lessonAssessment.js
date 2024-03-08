@@ -21,7 +21,7 @@ class LessonAssessment extends Model {
       sequelize,
       modelName: 'lesson_assessment',
       tableName: 'lesson_assessment',
-      timestamps: false,
+      timestamps: true,
     });
   }
 

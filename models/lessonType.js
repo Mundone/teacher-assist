@@ -15,7 +15,7 @@ class LessonType extends Model {
       sequelize,
       modelName: 'lesson_type',
       tableName: 'lesson_type', 
-      timestamps: false,
+      timestamps: true,
     });
   }
 
@@ -23,6 +23,7 @@ class LessonType extends Model {
     this.hasMany(models.Lesson, { foreignKey: 'lesson_type_id' });
     this.hasMany(models.SubjectSchedule, { foreignKey: 'lesson_type_id' });
     this.hasMany(models.LessonAssessment, { foreignKey: 'lesson_type_id' });
+    this.hasMany(models.SubjectLessonType, { foreignKey: "lesson_type_id" });
   }
 }
 

@@ -29,7 +29,7 @@ const router = express.Router();
  *         description: Internal Server Error
  */
 
-router.get('/get_subjects', paginationMiddleware, subjectController.getSubjects);
+router.post('/get_subjects', paginationMiddleware, subjectController.getSubjects);
 
 /**
  * @swagger

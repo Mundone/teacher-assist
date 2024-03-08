@@ -26,7 +26,7 @@ class StudentSubjectSchedule extends Model {
       sequelize,
       modelName: 'student_subject_schedule',
       tableName: 'student_subject_schedule', 
-      timestamps: false, // Cons_ider if you need timestamps
+      timestamps: true, // Cons_ider if you need timestamps
     });
   }
 

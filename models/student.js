@@ -21,7 +21,7 @@ class Student extends Model {
       sequelize,
       modelName: 'student',
       tableName: 'student', 
-      timestamps: false,
+      timestamps: true,
     });
   }
 

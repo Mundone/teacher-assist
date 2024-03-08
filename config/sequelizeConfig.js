@@ -7,6 +7,7 @@ let sequelizeOptions = {
   host: config.database.host,
   dialect: config.database.dialect,
   logging: config.database.logging,
+  timezone:"+08:00"
 };
 
 // Additional options for production

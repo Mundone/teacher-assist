@@ -1,25 +1,42 @@
 // paginationMiddleware.js
-
 function paginationMiddleware(req, res, next) {
-    // Extract common pagination and sorting query parameters
-    const { pageNo, pageSize, sortBy, sortOrder } = req.query;
-  
-    // Default values if not provided
-    const pageNoValid = parseInt(pageNo, 10) || 0;
-    const pageSizeValid = parseInt(pageSize, 10) || 10;
-    const sortByValid = sortBy || 'id'; // Default to sorting by 'id' or any other default field
-    const sortOrderValid = sortOrder === 'desc' ? 'DESC' : 'ASC'; // Default to ascending if sortOrder is not 'desc'
-  
-    // Attach to request object
-    req.pagination = {
-      pageNo: pageNoValid,
-      pageSize: pageSizeValid,
-      sortBy: sortByValid,
-      sortOrder: sortOrderValid
-    };
-  
-    next();
-  }
+  // Set default values if the body is not provided or if it is empty
+  const defaultPageNo = 0;
+  const defaultPerPage = 10;
+  const defaultSort = 'createdAt asc';
+
+  const {
+    page_no = defaultPageNo,
+    per_page = defaultPerPage,
+    sort = defaultSort,
+    filter = [],
+  } = req.body || {}; // Use destructuring with default values
+
+  const pageNoValid = Math.max(parseInt(page_no, 10), 0); // Ensuring page number is not negative
+  const pageSizeValid = parseInt(per_page, 10);
+
+  const [sortByValid, sortOrder] = sort.split(' ');
+  const sortOrderValid = sortOrder && sortOrder.toLowerCase() === 'desc' ? 'DESC' : 'ASC';
+
+  const filtersValid = Array.isArray(filter) ? filter.map(f => ({
+    fieldName: f.field_name,
+    operation: f.operation,
+    value: f.value
+  })) : [];
+
+  req.pagination = {
+    pageNo: pageNoValid, // The value is now zero-based after the check
+    pageSize: pageSizeValid,
+    sortBy: sortByValid,
+    sortOrder: sortOrderValid,
+    filters: filtersValid
+  };
+
+  next();
+}
+
+
+
   
   module.exports = paginationMiddleware;
   

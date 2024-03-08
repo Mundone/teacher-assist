@@ -1,74 +1,32 @@
 const allModels = require("../models");
 const { Sequelize } = require("sequelize");
 
-const getAllSubjects = async (pageNo, pageSize, sortBy, sortOrder) => {
-  const offset = pageNo * pageSize;
+const getAllSubjects = async ({ where, limit, offset, order }) => {
 
   let { count: totalSubjects, rows: subjects } =
     await allModels.Subject.findAndCountAll({
       include: [
         {
-          model: allModels.User,
-          attributes: ["id", "name", "email", "code"],
-          include: [
-            {
-              model: allModels.TeachingAssignment,
-              attributes: [
-                "id",
-                "user_id",
-                "subject_id",
-                "lesson_type_id",
-                // "createdAt",
-                // "updatedAt",
-              ],
-
-              include: [
-                {
-                  model: allModels.LessonType,
-                },
-              ],
-              // Initially, don't filter here; we'll filter manually later
-            },
-          ],
+          model: allModels.SubjectLessonType,
+          attributes: ["lesson_type_id"], // Include other necessary fields from the join table if needed
+          include: [{
+            model: allModels.LessonType,
+            attributes: ["lesson_type_name"] // Adjust "name" to the actual field name of the lesson type's name
+          }]
         },
       ],
       attributes: [
         "id",
         "subject_name",
         "createdAt",
-        "updatedAt",
-        "main_teacher_id",
       ],
-      limit: pageSize,
+
+      where: where, // Use the where options built from filters
+      limit: limit,
       offset: offset,
-      order: [[sortBy, sortOrder]],
+      order: order,
       distinct: true,
     });
-
-  // Manual post-processing to filter TeachingAssignments
-  subjects = subjects.map((subject) => subject.get({ plain: true })); // Convert all subjects to plain objects first
-
-  subjects = subjects.map((subject) => {
-    if (subject.users && subject.users.length > 0) {
-      subject.users = subject.users.map((user) => {
-        // Filter teaching_assignments to ensure they match the current subject's ID
-        if (user.teaching_assignments) {
-          user.teaching_assignments = user.teaching_assignments.filter(
-            (ta) => ta.subject_id === subject.id
-          );
-        } else {
-          user.teaching_assignments = []; // Ensure it's an array even if undefined
-        }
-
-        // Explicitly remove the teaching_assignment object
-        const { teaching_assignment, ...teacherWithoutAssignment } = user;
-        return teacherWithoutAssignment;
-      });
-    } else {
-      subject.users = [];
-    }
-    return subject; // Return the modified subject object
-  });
 
   return {
     totalSubjects,
@@ -76,9 +34,12 @@ const getAllSubjects = async (pageNo, pageSize, sortBy, sortOrder) => {
   };
 };
 
-const createSubject = async (subjectData) => {
-  return await Subject.create(subjectData);
+// Service
+const createSubject = async (subjectData, user_id) => {
+  // Add the user_id to the subjectData object
+  return await Subject.create({ ...subjectData, user_id });
 };
+
 
 const updateSubject = async (id, subjectData) => {
   return await Subject.update(subjectData, {

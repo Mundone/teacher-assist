@@ -10,8 +10,7 @@ const getLessonAssessments = async (req, res, next) => {
         sortBy,
         sortOrder
       );
-      console.log(totalLessonAssessments);
-
+      
       res.json({
         pagination: {
           current_page_no: pageNo,

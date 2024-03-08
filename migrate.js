@@ -195,6 +195,25 @@ const insertRandomData = async () => {
     lesson_type_id: lessonTypeNames.length,
   });
 
+  
+  await models.User.create({
+    name: "Ulziimaa",
+    email: "zma@gmail.com",
+    code: "zma",
+    // Assume role_id is set correctly
+    role_id: 2,
+    password: await bcrypt.hash("Pass@123", 10),
+  });
+
+  await models.User.create({
+    name: "adminName",
+    email: "admin@gmail.com",
+    code: "admin",
+    // Assume role_id is set correctly
+    role_id: 1,
+    password: await bcrypt.hash("Pass@123", 10),
+  });
+
   for (let i = 0; i < 10; i++) {
     const randomDataContainer = generateRandomData();
 
@@ -211,33 +230,26 @@ const insertRandomData = async () => {
     const exampleSubject = await models.Subject.create({
       subject_name: subjectNames[i],
       main_teacher_id: exampleUser.id,
-    });
-
-    const exampleNextUser = await models.User.findOne({
-      where: { id: i + 1 },
-    });
-
-    const exampleNextUser2 = await models.User.findOne({
-      where: { id: i - 1 },
+      user_id: i % 2 == 0 ? 1 : 3
     });
 
     // Additional teachers as assistant teachers
 
-    // Link assistant user to subject via TeachingAssignment
-    if (exampleNextUser != null) {
-      await models.TeachingAssignment.create({
-        user_id: exampleNextUser.id,
-        subject_id: exampleSubject.id,
-        lesson_type_id: Math.floor(Math.random() * lessonTypeNames.length) + 1, // Random lesson type
-      });
-    }
+    var randomLessonTypeId1 = Math.floor(Math.random() * lessonTypeNames.length) + 1;
 
-    if (exampleNextUser2 != null) {
-      await models.TeachingAssignment.create({
-        user_id: exampleNextUser2.id,
+    await models.SubjectLessonType.create({
+      subject_id: exampleSubject.id,
+      lesson_type_id: randomLessonTypeId1, // Random lesson type
+    });
+
+    var randomLessonTypeId2 = Math.floor(Math.random() * lessonTypeNames.length) + 1;
+    
+    if(randomLessonTypeId1 != randomLessonTypeId2){
+      await models.SubjectLessonType.create({
         subject_id: exampleSubject.id,
-        lesson_type_id: Math.floor(Math.random() * lessonTypeNames.length) + 1, // Random lesson type
+        lesson_type_id: randomLessonTypeId2, // Random lesson type
       });
+
     }
 
     // Create a lesson type (assuming lesson types are predefined and have specific IDs)
@@ -303,23 +315,8 @@ const insertRandomData = async () => {
     }
   }
 
-  await models.User.create({
-    name: "hotMunhuu",
-    email: "hotmonhoo@gmail.com",
-    code: "zma",
-    // Assume role_id is set correctly
-    role_id: 2,
-    password: await bcrypt.hash("Pass@123", 10),
-  });
+  
 
-  await models.User.create({
-    name: "coldAdmin",
-    email: "coldAdmin@gmail.com",
-    code: "admin",
-    // Assume role_id is set correctly
-    role_id: 1,
-    password: await bcrypt.hash("Pass@123", 10),
-  });
 };
 
 main();

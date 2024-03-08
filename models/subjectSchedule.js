@@ -32,7 +32,7 @@ class SubjectSchedule extends Model {
       sequelize,
       modelName: 'subject_schedule',
       tableName: 'subject_schedule', 
-      timestamps: false,
+      timestamps: true,
     });
   }
 

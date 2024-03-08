@@ -1,5 +1,4 @@
 const { Model, DataTypes } = require("sequelize");
-const moment = require("moment-timezone");
 
 class User extends Model {
   static init(sequelize) {
@@ -29,22 +28,12 @@ class User extends Model {
         password: {
           type: DataTypes.STRING,
         },
-        created_at: {
-          type: DataTypes.DATE,
-          allowNull: false,
-          defaultValue: sequelize.literal("CURRENT_TIMESTAMP"),
-        },
       },
       {
         sequelize,
         modelName: "user",
         tableName: "user",
         timestamps: true,
-        hooks: {
-          beforeCreate: (user, options) => {
-            user.created_at = moment.utc().subtract(-8, "hours").toDate();
-          },
-        },
       }
     );
   }
@@ -52,11 +41,8 @@ class User extends Model {
   static associate(models) {
     this.belongsTo(models.UserRole, { foreignKey: "role_id" });
     this.hasMany(models.UserFile, { foreignKey: "user_id" });
-    this.hasMany(models.TeachingAssignment, { foreignKey: 'user_id' });
-    this.belongsToMany(models.Subject, {
-      through: models.TeachingAssignment,
-      foreignKey: 'user_id',
-      otherKey: 'subject_id'
+    this.hasMany(models.Lesson, {
+      foreignKey: "subject_id",
     });
   }
 }

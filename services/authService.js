@@ -33,7 +33,7 @@ const authenticateUser = async (code, password) => {
   const token = jwt.sign(
     { id: inputUser.id, code: inputUser.code },
     process.env.JWT_SECRET,
-    { expiresIn: "1h" }
+    { expiresIn: "24h" }
   );
   
   var user = {

@@ -14,7 +14,7 @@ const SubjectSchedule = require("./subjectSchedule");
 const User = require("./user");
 const UserFile = require("./userFile");
 const UserRole = require("./userRole");
-const TeachingAssignment = require('./teachingAssignment');
+const SubjectLessonType = require('./subjectLessonType');
 
 // Initialize models in order respecting foreign key dependencies
 AttendanceResponse.init(sequelize, Sequelize.DataTypes);
@@ -29,7 +29,7 @@ SubjectSchedule.init(sequelize, Sequelize.DataTypes);
 User.init(sequelize, Sequelize.DataTypes);
 UserFile.init(sequelize, Sequelize.DataTypes);
 UserRole.init(sequelize, Sequelize.DataTypes);
-TeachingAssignment.init(sequelize, Sequelize.DataTypes);
+SubjectLessonType.init(sequelize, Sequelize.DataTypes);
 
 // Set up associations
 const models = {
@@ -45,7 +45,7 @@ const models = {
   User,
   UserFile,
   UserRole,
-  TeachingAssignment
+  SubjectLessonType
 };
 
 Object.keys(models).forEach((modelName) => {

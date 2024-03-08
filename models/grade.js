@@ -29,7 +29,7 @@ class Grade extends Model {
       sequelize,
       modelName: 'grade',
       tableName: 'grade', 
-      timestamps: false,
+      timestamps: true,
     });
   }
 

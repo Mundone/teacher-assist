@@ -35,7 +35,7 @@ class AttendanceResponse extends Model {
       sequelize,
       modelName: 'attendance_record',
       tableName: 'attendance_record', 
-      timestamps: false,
+      timestamps: true,
     });
   }
 

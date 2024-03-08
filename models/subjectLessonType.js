@@ -1,19 +1,12 @@
 const { Model, DataTypes } = require("sequelize");
 
-class TeachingAssignment extends Model {
+class SubjectLessonType extends Model {
   static init(sequelize) {
     super.init({
       id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
-      },
-      user_id: {
-        type: DataTypes.INTEGER,
-        references: {
-          model: "user",
-          key: "id",
-        },
       },
       subject_id: {
         type: DataTypes.INTEGER,
@@ -31,21 +24,15 @@ class TeachingAssignment extends Model {
       },
     }, {
       sequelize,
-      modelName: 'teaching_assignment',
-      uniqueKeys: {
-        items_unique: {
-          fields: ['user_id', 'subject_id', 'lesson_type_id']
-        }
-      }
+      modelName: 'SubjectLessonType',  // Change the modelName to match the class name
+      tableName: 'subject_lesson_type',  // Explicitly define the table name if it's different from the modelName
     });
   }
 
   static associate(models) {
-    this.belongsTo(models.User, { foreignKey: 'user_id' });
     this.belongsTo(models.Subject, { foreignKey: 'subject_id' });
     this.belongsTo(models.LessonType, { foreignKey: 'lesson_type_id' });
   }
-
 }
 
-module.exports = TeachingAssignment;
+module.exports = SubjectLessonType;

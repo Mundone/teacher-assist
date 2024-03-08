@@ -19,6 +19,13 @@ class Subject extends Model {
             key: "id",
           },
         },
+        updatedBy: {
+          type: DataTypes.INTEGER,
+          references: {
+            model: "user",
+            key: "id",
+          },
+        },
       },
       {
         sequelize,
@@ -34,11 +41,8 @@ class Subject extends Model {
     //   foreignKey: "main_teacher_id",
     //   as: "MainTeacher", // Alias added here
     // });
-    this.belongsToMany(models.User, {
-      through: models.TeachingAssignment,
-      foreignKey: "subject_id",
-      otherKey: "user_id",
-    });
+    
+    this.belongsTo(models.User, { foreignKey: "user_id" });
 
     this.hasMany(models.Lesson, {
       foreignKey: "subject_id",
@@ -47,7 +51,7 @@ class Subject extends Model {
       foreignKey: "subject_id",
     });
 
-    this.hasMany(models.TeachingAssignment, { foreignKey: "subject_id" });
+    this.hasMany(models.SubjectLessonType, { foreignKey: "subject_id" });
   }
 }
 
