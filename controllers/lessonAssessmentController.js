@@ -1,22 +1,38 @@
 const lessonAssessmentService = require("../services/lessonAssessmentService");
+const buildWhereOptions = require("../utils/sequelizeUtil");
 
 const getLessonAssessments = async (req, res, next) => {
   try {
-    const { pageNo, pageSize, sortBy, sortOrder } = req.pagination;
+    const userId = req.user && req.user.role_id;
+
+    console.log(req.user);
+
+    if (userId != 1) {
+      return res.status(403).json({ message: 'Authentication is required.' });
+    }
+
+    const { pageNo, pageSize, sortBy, sortOrder, filters } = req.pagination;
+
+    
+    const queryOptions = {
+      // Assuming you have a function that translates filters to Sequelize where options
+      where: buildWhereOptions(filters),
+      limit: pageSize,
+      offset: pageNo * pageSize,
+      order: [[sortBy, sortOrder]],
+    };
+
     const { totalLessonAssessments, lessonAssessments } =
       await lessonAssessmentService.getAllLessonAssessments(
-        pageNo,
-        pageSize,
-        sortBy,
-        sortOrder
+        queryOptions
       );
       
       res.json({
         pagination: {
-          current_page_no: pageNo,
+          current_page_no: pageNo + 1,
           total_pages: Math.ceil(totalLessonAssessments / pageSize),
           per_page: pageSize,
-          // total_elements: totalSubjects,
+          total_elements: totalLessonAssessments,
         },
         data: lessonAssessments,
       });

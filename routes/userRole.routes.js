@@ -1,6 +1,7 @@
 const express = require('express');
 const userRoleController = require('../controllers/userRoleController');
 const router = express.Router();
+const paginationMiddleware = require('../middlewares/paginationMiddleware');
 
 /**
  * @swagger
@@ -27,7 +28,7 @@ const router = express.Router();
  *         description: Internal Server Error
  */
 
-router.get('/get_user_roles', userRoleController.getUserRoles);
+router.post('/get_user_roles', paginationMiddleware, userRoleController.getUserRoles);
 // other routes like POST, PUT, DELETE
 
 module.exports = router;

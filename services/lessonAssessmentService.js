@@ -1,7 +1,9 @@
 const allModels = require("../models");
 
-const getAllLessonAssessments = async (pageNo, pageSize, sortBy, sortOrder) => {
-  const offset = pageNo * pageSize;
+const getAllLessonAssessments = async ({ where, limit, offset, order }) => {
+
+  console.log(where);
+
   const { count: totalLessonAssessments, rows: lessonAssessments } =
     await allModels.LessonAssessment.findAndCountAll({
       attributes: [
@@ -10,9 +12,11 @@ const getAllLessonAssessments = async (pageNo, pageSize, sortBy, sortOrder) => {
         "lesson_assessment_description",
         "lesson_type_id",
       ],
-      limit: pageSize,
+      where: where, // Use the where options built from filters
+      limit: limit,
       offset: offset,
-      order: [[sortBy, sortOrder]],
+      order: order,
+      distinct: true,
     });
   return {
     totalLessonAssessments, // This will be a single number

@@ -1,5 +1,6 @@
 const express = require('express');
 const lessonTypeController = require('../controllers/lessonTypeController');
+const paginationMiddleware = require('../middlewares/paginationMiddleware');
 const router = express.Router();
 
 /**
@@ -27,7 +28,7 @@ const router = express.Router();
  *         description: Internal Server Error
  */
 
-router.get('/get_lesson_types', lessonTypeController.getLessonTypes);
+router.post('/get_lesson_types', paginationMiddleware, lessonTypeController.getLessonTypes);
 // other routes like POST, PUT, DELETE
 
 module.exports = router;

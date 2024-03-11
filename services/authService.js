@@ -22,16 +22,18 @@ const registerUser = async ({ code, name, password, roleID }) => {
 const authenticateUser = async (code, password) => {
   const inputUser = await User.findOne({ where: { code } });
   if (!inputUser) {
+    error.statusCode = 404;
     throw new Error("Хэрэглэгч олдсонгүй.");
   }
 
   const isMatch = await bcrypt.compare(password, inputUser.password);
   if (!isMatch) {
+    error.statusCode = 404;
     throw new Error("Нууц үг буруу байна.");
   }
 
   const token = jwt.sign(
-    { id: inputUser.id, code: inputUser.code },
+    { id: inputUser.id, code: inputUser.code, role_id: inputUser.role_id },
     process.env.JWT_SECRET,
     { expiresIn: "24h" }
   );
@@ -57,7 +59,7 @@ const refreshToken = async (userId) => {
   }
 
   const newToken = jwt.sign(
-    { id: user.id, code: user.code },
+    { id: user.id, code: user.code, role_id: user.role_id },
     process.env.JWT_SECRET,
     { expiresIn: "1h" }
   );

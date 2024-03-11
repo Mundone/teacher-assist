@@ -2,6 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const studentController = require('../controllers/studentController');
+const paginationMiddleware = require('../middlewares/paginationMiddleware');
 
 /**
  * @swagger
@@ -28,7 +29,7 @@ const studentController = require('../controllers/studentController');
  *         description: Internal Server Error
  */
 
-router.get('/get_students', studentController.getStudents);
+router.post('/get_students', paginationMiddleware, studentController.getStudents);
 
 
 /**

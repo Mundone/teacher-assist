@@ -1,5 +1,4 @@
 const allModels = require("../models");
-const { Sequelize } = require("sequelize");
 
 const getAllSubjects = async ({ where, limit, offset, order }) => {
 

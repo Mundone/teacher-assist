@@ -1,8 +1,65 @@
 // services/studentService.js
-const Student = require('../models/student');
+const allModels = require("../models");
 
-const getAllStudents = async () => {
-  return await Student.findAll();
+const getAllStudents = async ({
+  where,
+  limit,
+  offset,
+  order,
+  userId,
+  subjectScheduleId,
+}) => {
+  const isUserIncludeSchedule = await allModels.SubjectSchedule.findOne({
+    where: { id: subjectScheduleId },
+
+  }).then((ss) => {
+    if(ss != null){
+      return true;
+    }
+    return false;
+  });
+
+  if (!isUserIncludeSchedule) {
+    const error = new Error("Зөвшөөрөлгүй хандалт.");
+    error.statusCode = 403;
+    throw error;
+  }
+
+  let { count: totalStudents, rows: students } =
+    await allModels.Student.findAndCountAll({
+      include: [
+        {
+          model: allModels.StudentSubjectSchedule,
+          attributes: ["id", "subject_schedule_id"],
+          where: { id: subjectScheduleId },
+          include: [
+            {
+              model: allModels.SubjectSchedule,
+              attributes: ["id", "subject_id"],
+              include: [
+                {
+                  model: allModels.Subject,
+                  attributes: ["id", "user_id"],
+                  // where: { user_id: userId }
+                },
+              ],
+            },
+          ],
+        },
+      ],
+      attributes: ["id", "name", "student_code", "createdAt"],
+
+      where: where,
+      limit: limit,
+      offset: offset,
+      order: order,
+      distinct: true,
+    });
+
+  return {
+    totalStudents,
+    students,
+  };
 };
 
 const getStudentById = async (id) => {
