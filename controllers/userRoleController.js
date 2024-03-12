@@ -1,32 +1,23 @@
 const userRoleService = require("../services/userRoleService");
 const buildWhereOptions = require("../utils/sequelizeUtil");
+const { internalServerError } = require("../utils/responseUtil");
 
-exports.getUserRoles = async (req, res, next) => {
+const getUserRoles = async (req, res, next) => {
   try {
-    const userId = req.user && req.user.role_id;
-    if (userId != 1 && userId != 2 && userId != 3) {
-      return res.status(403).json({ message: "Зөвшөөрөлгүй хандалт." });
-    }
-
     const { pageNo, pageSize, sortBy, sortOrder, filters } = req.pagination;
-
     const queryOptions = {
-      // Assuming you have a function that translates filters to Sequelize where options
       where: buildWhereOptions(filters),
       limit: pageSize,
       offset: pageNo * pageSize,
       order: [[sortBy, sortOrder]],
     };
-
-    // console.log(req);
-
     const { totalUserRoles, userRoles } = await userRoleService.getAllUserRoles(
       queryOptions
     );
 
     res.json({
       pagination: {
-        current_page_no: pageNo + 1, // Since pageNo in the response should be one-based
+        current_page_no: pageNo + 1,
         total_pages: Math.ceil(totalUserRoles / pageSize),
         per_page: pageSize,
         total_elements: totalUserRoles,
@@ -34,7 +25,72 @@ exports.getUserRoles = async (req, res, next) => {
       data: userRoles,
     });
   } catch (error) {
-    console.error("Error fetching subjects:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    internalServerError;
   }
+};
+
+const getUserRolesWithoutBody = async (req, res, next) => {
+  try {
+
+    const userRoles =
+      await userRoleService.getAllUserRoles({
+        isWithoutBody: true,
+      });
+    res.json(userRoles);
+  } catch (error) {
+    internalServerError(res, error);
+  }
+};
+
+const getUserRoleById = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const student = await userRoleService.getUserRoleById(id);
+    if (!student) {
+      return res.status(404).json({ message: "UserRole not found" });
+    }
+    res.json(student);
+  } catch (error) {
+    internalServerError(res, error);
+  }
+};
+
+const createUserRole = async (req, res, next) => {
+  try {
+    const newUserRole = await userRoleService.createUserRole(
+      req.body
+    );
+    res.status(201).json({ message: "UserRole created successfully", newUserRole });
+  } catch (error) {
+    internalServerError(res, error);
+  }
+};
+
+const updateUserRole = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    await userRoleService.updateUserRole(id, req.body);
+    res.json({ message: "UserRole updated successfully", data: req.body });
+  } catch (error) {
+    internalServerError(res, error);
+  }
+};
+
+const deleteUserRole = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    await userRoleService.deleteUserRole(id);
+    res.json({ message: "UserRole deleted successfully", id });
+  } catch (error) {
+    internalServerError(res, error);
+  }
+};
+
+module.exports = {
+  getUserRoles,
+  getUserRolesWithoutBody,
+  getUserRoleById,
+  createUserRole,
+  updateUserRole,
+  deleteUserRole,
 };

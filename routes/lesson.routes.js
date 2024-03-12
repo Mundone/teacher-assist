@@ -1,7 +1,8 @@
 // subjectRoutes.js
-const express = require('express');
-const lessonController = require('../controllers/lessonController');
-const paginationMiddleware = require('../middlewares/paginationMiddleware'); // Ensure correct path
+const express = require("express");
+const lessonController = require("../controllers/lessonController");
+const paginationMiddleware = require("../middlewares/paginationMiddleware"); // Ensure correct path
+const { accessControl } = require("../middlewares/authMiddleware");
 const router = express.Router();
 
 /**
@@ -29,7 +30,18 @@ const router = express.Router();
  *         description: Internal Server Error
  */
 
-router.post('/get_lessons', paginationMiddleware, lessonController.getLessons);
+router.post(
+  "/get_lessons",
+  accessControl([1, 2, 3]),
+  paginationMiddleware,
+  lessonController.getLessons
+);
+
+// router.get(
+//   "/get_lesson_assessments",
+//   accessControl([1, 2, 3]),
+//   lessonController.getLessons
+// );
 
 /**
  * @swagger
@@ -58,7 +70,11 @@ router.post('/get_lessons', paginationMiddleware, lessonController.getLessons);
  *         description: Internal Server Error
  */
 
-router.get('/get_lesson/:id', lessonController.getLesson);
+router.get(
+  "/get_lesson/:id",
+  accessControl([1, 2, 3]),
+  lessonController.getLessonById
+);
 
 /**
  * @swagger
@@ -87,8 +103,11 @@ router.get('/get_lesson/:id', lessonController.getLesson);
  *       - Authorization: []
  */
 
-router.post('/create_lesson', lessonController.createLesson);
-
+router.post(
+  "/create_lesson",
+  accessControl([1, 2, 3]),
+  lessonController.createLesson
+);
 
 /**
  * @swagger
@@ -129,7 +148,11 @@ router.post('/create_lesson', lessonController.createLesson);
  *       - Authorization: []
  */
 
-router.put('/update_lesson/:id', lessonController.updateLesson);
+router.put(
+  "/update_lesson/:id",
+  accessControl([1, 2, 3]),
+  lessonController.updateLesson
+);
 
 /**
  * @swagger
@@ -165,6 +188,10 @@ router.put('/update_lesson/:id', lessonController.updateLesson);
  *       - Authorization: []
  */
 
-router.delete('/delete_lesson/:id', lessonController.deleteLesson);
+router.delete(
+  "/delete_lesson/:id",
+  accessControl([1, 2, 3]),
+  lessonController.deleteLesson
+);
 
 module.exports = router;

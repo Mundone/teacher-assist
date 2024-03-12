@@ -1,7 +1,8 @@
-const express = require('express');
-const userRoleController = require('../controllers/userRoleController');
+const express = require("express");
+const userRoleController = require("../controllers/userRoleController");
 const router = express.Router();
-const paginationMiddleware = require('../middlewares/paginationMiddleware');
+const paginationMiddleware = require("../middlewares/paginationMiddleware");
+const { accessControl } = require("../middlewares/authMiddleware");
 
 /**
  * @swagger
@@ -28,7 +29,40 @@ const paginationMiddleware = require('../middlewares/paginationMiddleware');
  *         description: Internal Server Error
  */
 
-router.post('/get_user_roles', paginationMiddleware, userRoleController.getUserRoles);
-// other routes like POST, PUT, DELETE
+router.post(
+  "/get_user_roles",
+  paginationMiddleware,
+  userRoleController.getUserRoles
+);
+
+router.get(
+  "/get_user_roles",
+  accessControl([1, 2, 3]),
+  userRoleController.getUserRolesWithoutBody
+);
+
+router.get(
+  "/get_user_role/:id",
+  accessControl([1, 2, 3]),
+  userRoleController.getUserRoleById
+);
+
+router.post(
+  "/create_user_role",
+  accessControl([1]),
+  userRoleController.createUserRole
+);
+
+router.put(
+  "/update_user_role/:id",
+  accessControl([1]),
+  userRoleController.updateUserRole
+);
+
+router.delete(
+  "/delete_user_role/:id",
+  accessControl([1]),
+  userRoleController.deleteUserRole
+);
 
 module.exports = router;

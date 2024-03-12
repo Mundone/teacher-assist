@@ -7,7 +7,7 @@ const session = require("express-session");
 const passport = require("passport");
 const flash = require("connect-flash");
 const cors = require("cors");
-const methodCheckMiddleware = require('./middlewares/authMiddleware');
+const { methodCheckMiddleware } = require("./middlewares/authMiddleware");
 require("dotenv").config();
 require("./config/passport-setup");
 
@@ -17,7 +17,7 @@ const app = express();
 app.use(cors());
 app.use(logger("dev"));
 app.use(express.json());
-app.use(express.urlencoded({ extended: true  }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(

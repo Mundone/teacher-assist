@@ -6,14 +6,14 @@ const getAllStudents = async ({
   limit,
   offset,
   order,
-  userId,
+  // userId,
   subjectScheduleId,
+  isWithoutBody,
 }) => {
   const isUserIncludeSchedule = await allModels.SubjectSchedule.findOne({
     where: { id: subjectScheduleId },
-
   }).then((ss) => {
-    if(ss != null){
+    if (ss != null) {
       return true;
     }
     return false;
@@ -24,6 +24,19 @@ const getAllStudents = async ({
     error.statusCode = 403;
     throw error;
   }
+
+  // if (isWithoutBody) {
+  //   return await allModels.Student.findAll({
+  //     attributes: ["id", "name", "student_code", "createdAt"],
+  //     include: [
+  //       {
+  //         model: allModels.StudentSubjectSchedule,
+  //         attributes: ["id", "subject_schedule_id"],
+  //         where: { id: subjectScheduleId },
+  //       },
+  //     ],
+  //   });
+  // }
 
   let { count: totalStudents, rows: students } =
     await allModels.Student.findAndCountAll({
@@ -63,15 +76,15 @@ const getAllStudents = async ({
 };
 
 const getStudentById = async (id) => {
-  return await Student.findByPk(id);
+  return await allModels.Student.findByPk(id);
 };
 
 const createStudent = async (data) => {
-  return await Student.create(data);
+  return await allModels.Student.create(data);
 };
 
 const updateStudent = async (id, data) => {
-  const student = await Student.findByPk(id);
+  const student = await allModels.Student.findByPk(id);
   if (student) {
     return await student.update(data);
   }
@@ -79,7 +92,7 @@ const updateStudent = async (id, data) => {
 };
 
 const deleteStudent = async (id) => {
-  const student = await Student.findByPk(id);
+  const student = await allModels.Student.findByPk(id);
   if (student) {
     await student.destroy();
     return true;

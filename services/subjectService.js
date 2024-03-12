@@ -36,22 +36,22 @@ const getAllSubjects = async ({ where, limit, offset, order }) => {
 // Service
 const createSubject = async (subjectData, user_id) => {
   // Add the user_id to the subjectData object
-  return await Subject.create({ ...subjectData, user_id });
+  return await allModels.Subject.create({ ...subjectData, user_id });
 };
 
 
 const updateSubject = async (id, subjectData) => {
-  return await Subject.update(subjectData, {
+  return await allModels.Subject.update(subjectData, {
     where: { id: id },
   });
 };
 
 const getSubjectById = async (id) => {
-  return await Subject.findByPk(id);
+  return await allModels.Subject.findByPk(id);
 };
 
 const deleteSubject = async (id) => {
-  return await Subject.destroy({
+  return await allModels.Subject.destroy({
     where: { id: id },
   });
 };

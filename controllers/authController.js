@@ -36,7 +36,7 @@ const login = async (req, res) => {
     const { code, password } = req.body;
     const { user, token } = await authService.authenticateUser(code, password);
     res.status(200).json({
-      message: 'Login successful',
+      message: 'Амжилттай нэвтэрлээ.',
       accessToken: token,
       user,
     });
@@ -49,12 +49,12 @@ const login = async (req, res) => {
 const getAuthInfo = async (req, res) => {
   const token = req.headers.authorization?.split(" ")[1];
   if (!token) {
-    return res.status(401).json({ message: "No token provided" });
+    return res.status(401).json({ message: "Токен ирүүлээгүй байна." });
   }
 
   jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
     if (err) {
-      return res.status(403).json({ message: "Token is not valid" });
+      return res.status(403).json({ message: "Токений хугацаа дууссан байна." });
     }
     try {
       // Use the decoded ID to fetch the user and refresh the token
@@ -62,7 +62,7 @@ const getAuthInfo = async (req, res) => {
       res.json({ user, token: newToken });
     } catch (error) {
       const statusCode = error.statusCode || 500;
-      const message = error.message || 'Internal server error';
+      const message = error.message || 'Backend-ийн алдаа, Мөнх-Очиртой холбоо барина уу.';
       res.status(statusCode).json({ message });
     }
   });

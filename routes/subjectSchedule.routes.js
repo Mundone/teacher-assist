@@ -1,22 +1,22 @@
-// routes/studentRoutes.js
+// subjectRoutes.js
 const express = require("express");
-const studentController = require("../controllers/studentController");
+const subjectScheduleController = require("../controllers/subjectScheduleController");
 const paginationMiddleware = require("../middlewares/paginationMiddleware");
 const { accessControl } = require("../middlewares/authMiddleware");
 const router = express.Router();
 
 /**
  * @swagger
- * /get_students:
+ * /get_subject_schedules:
  *   get:
- *     summary: Retrieve all student
- *     tags: [Student]
+ *     summary: Retrieve all subjectSchedule
+ *     tags: [SubjectSchedule]
  *     parameters:
  *     - in: query
  *       name: search
  *       schema:
  *         type: string
- *       description: Optional search term to filter student
+ *       description: Optional search term to filter subjectSchedule
  *     responses:
  *       200:
  *         description: OK
@@ -25,30 +25,31 @@ const router = express.Router();
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/Student'
+ *                 $ref: '#/components/schemas/SubjectSchedule'
  *       500:
  *         description: Internal Server Error
  */
 
 router.post(
-  "/get_students",
+  "/get_subject_schedules",
   accessControl([1, 2, 3]),
   paginationMiddleware,
-  studentController.getStudents
+  subjectScheduleController.getSubjectSchedules
 );
 
-// router.get(
-//   "/get_students",
-//   accessControl([1, 2, 3]),
-//   studentController.getStudentsWithoutBody
-// );
+router.get(
+  "/get_subject_schedules",
+  accessControl([1, 2, 3]),
+  paginationMiddleware,
+  subjectScheduleController.getSubjectSchedulesWithoutBody
+);
 
 /**
  * @swagger
- * /get_student/{id}:
+ * /get_subject_schedule/{id}:
  *   get:
- *     summary: Retrieve a single student by ID
- *     tags: [Student]
+ *     summary: Retrieve a single subjectSchedule by ID
+ *     tags: [SubjectSchedule]
  *     parameters:
  *       - in: path
  *         name: id
@@ -56,14 +57,14 @@ router.post(
  *         schema:
  *           type: integer
  *           minimum: 1
- *         description: The ID of the student
+ *         description: The ID of the subjectSchedule
  *     responses:
  *       200:
  *         description: OK
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Student'
+ *               $ref: '#/components/schemas/SubjectSchedule'
  *       404:
  *         description: Not Found
  *       500:
@@ -71,30 +72,29 @@ router.post(
  */
 
 router.get(
-  "/get_student/:id",
-  accessControl([1, 2, 3]),
-  studentController.getStudentById
+  "/get_subject_schedule/:id",
+  subjectScheduleController.getSubjectSchedule
 );
 
 /**
  * @swagger
- * /create_student:
+ * /create_subject_schedule:
  *   post:
- *     summary: Create a new student
- *     tags: [Student]
+ *     summary: Create a new subjectSchedule
+ *     tags: [SubjectSchedule]
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Student'
+ *             $ref: '#/components/schemas/SubjectSchedule'
  *     responses:
  *       201:
  *         description: Created
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Student'
+ *               $ref: '#/components/schemas/SubjectSchedule'
  *       400:
  *         description: Bad request
  *       500:
@@ -104,24 +104,23 @@ router.get(
  */
 
 router.post(
-  "/create_student",
-  accessControl([1, 2, 3]),
-  studentController.createStudent
+  "/create_subject_schedule",
+  subjectScheduleController.createSubjectSchedule
 );
 
 /**
  * @swagger
- * /update_student/{id}:
+ * /update_subject_schedule/{id}:
  *   put:
  *     tags:
- *       - Student
- *     summary: "Update an student by ID"
- *     description: "This endpoint updates an existing student's information."
+ *       - SubjectSchedule
+ *     summary: "Update an subjectSchedule by ID"
+ *     description: "This endpoint updates an existing subjectSchedule's information."
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: "ID of the student to update"
+ *         description: "ID of the subjectSchedule to update"
  *         schema:
  *           type: integer
  *     requestBody:
@@ -130,40 +129,40 @@ router.post(
  *       content:
  *         application/json:
  *           schema:
- *             $ref: "#/components/schemas/Student"
+ *             $ref: "#/components/schemas/SubjectSchedule"
  *     responses:
  *       200:
  *         description: "updated successfully"
  *         content:
  *           application/json:
  *             schema:
- *               $ref: "#/components/schemas/Student"
+ *               $ref: "#/components/schemas/SubjectSchedule"
  *       400:
  *         description: "Invalid request"
  *       404:
  *         description: "not found"
  *       500:
- *         description: "Error updating student"
+ *         description: "Error updating subjectSchedule"
  *     security:
  *       - Authorization: []
  */
+
 router.put(
-  "/update_student/:id",
-  accessControl([1, 2, 3]),
-  studentController.updateStudent
+  "/update_subject_schedule/:id",
+  subjectScheduleController.updateSubjectSchedule
 );
 
 /**
  * @swagger
- * /delete_student/{id}:
+ * /delete_subject_schedule/{id}:
  *   delete:
- *     summary: Delete an student by its ID
- *     tags: [Student]
+ *     summary: Delete an subjectSchedule by its ID
+ *     tags: [SubjectSchedule]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: ID of the student to delete
+ *         description: ID of the subjectSchedule to delete
  *         schema:
  *           type: integer
  *           format: int64
@@ -178,7 +177,7 @@ router.put(
  *                 message:
  *                   type: string
  *                   description: A message indicating the successful deletion
- *                   example: Student was deleted successfully!
+ *                   example: SubjectSchedule was deleted successfully!
  *       404:
  *         description: not found
  *       500:
@@ -186,10 +185,10 @@ router.put(
  *     security:
  *       - Authorization: []
  */
+
 router.delete(
-  "/delete_student/:id",
-  accessControl([1, 2, 3]),
-  studentController.deleteStudent
+  "/delete_subject_schedule/:id",
+  subjectScheduleController.deleteSubjectSchedule
 );
 
 module.exports = router;

@@ -1,6 +1,7 @@
-const express = require('express');
-const lessonAssessmentController = require('../controllers/lessonAssessmentController');
-const paginationMiddleware = require('../middlewares/paginationMiddleware');
+const express = require("express");
+const lessonAssessmentController = require("../controllers/lessonAssessmentController");
+const paginationMiddleware = require("../middlewares/paginationMiddleware");
+const { accessControl } = require("../middlewares/authMiddleware");
 const router = express.Router();
 
 /**
@@ -28,7 +29,18 @@ const router = express.Router();
  *         description: Internal Server Error
  */
 
-router.post('/get_lesson_assessments', paginationMiddleware, lessonAssessmentController.getLessonAssessments);
+router.post(
+  "/get_lesson_assessments",
+  accessControl([1, 2, 3]),
+  paginationMiddleware,
+  lessonAssessmentController.getLessonAssessments
+);
+
+router.get(
+  "/get_lesson_assessments",
+  accessControl([1, 2, 3]),
+  lessonAssessmentController.getLessonAssessmentsWithoutBody
+);
 
 /**
  * @swagger
@@ -57,8 +69,11 @@ router.post('/get_lesson_assessments', paginationMiddleware, lessonAssessmentCon
  *         description: Internal Server Error
  */
 
-router.get('/get_lesson_assessment/:id', lessonAssessmentController.getLessonAssessmentById);
-
+router.get(
+  "/get_lesson_assessment/:id",
+  accessControl([1, 2, 3]),
+  lessonAssessmentController.getLessonAssessmentById
+);
 
 /**
  * @swagger
@@ -87,7 +102,11 @@ router.get('/get_lesson_assessment/:id', lessonAssessmentController.getLessonAss
  *       - Authorization: []
  */
 
-router.post('/create_lesson_assessment', lessonAssessmentController.createLessonAssessment);
+router.post(
+  "/create_lesson_assessment",
+  accessControl([1]),
+  lessonAssessmentController.createLessonAssessment
+);
 
 /**
  * @swagger
@@ -127,8 +146,11 @@ router.post('/create_lesson_assessment', lessonAssessmentController.createLesson
  *     security:
  *       - Authorization: []
  */
-router.put('/update_lesson_assessment/:id', lessonAssessmentController.updateLessonAssessment);
-
+router.put(
+  "/update_lesson_assessment/:id",
+  accessControl([1]),
+  lessonAssessmentController.updateLessonAssessment
+);
 
 /**
  * @swagger
@@ -163,6 +185,10 @@ router.put('/update_lesson_assessment/:id', lessonAssessmentController.updateLes
  *     security:
  *       - Authorization: []
  */
-router.delete('/delete_lesson_assessment/:id', lessonAssessmentController.deleteLessonAssessment);
+router.delete(
+  "/delete_lesson_assessment/:id",
+  accessControl([1]),
+  lessonAssessmentController.deleteLessonAssessment
+);
 
 module.exports = router;

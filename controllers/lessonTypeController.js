@@ -1,14 +1,14 @@
-const lessonTypeService = require('../services/lessonTypeService');
+const lessonTypeService = require("../services/lessonTypeService");
 const buildWhereOptions = require("../utils/sequelizeUtil");
-
+const { internalServerError } = require("../utils/responseUtil");
 
 const getLessonTypes = async (req, res, next) => {
   try {
     const userId = req.user && req.user.role_id;
-    if (userId != 1 ) {
-      return res.status(403).json({ message: 'Authentication is required.' });
+    if (userId != 1 && userId != 2 && userId != 3) {
+      return res.status(403).json({ message: "Зөвшөөрөлгүй хандалт." });
     }
-    
+
     const { pageNo, pageSize, sortBy, sortOrder, filters } = req.pagination;
 
     const queryOptions = {
@@ -19,9 +19,8 @@ const getLessonTypes = async (req, res, next) => {
       order: [[sortBy, sortOrder]],
     };
 
-    const { totalLessonTypes, lessonTypes } = await lessonTypeService.getAllLessonTypes(
-      queryOptions
-    );
+    const { totalLessonTypes, lessonTypes } =
+      await lessonTypeService.getAllLessonTypes(queryOptions);
 
     res.json({
       pagination: {
@@ -33,12 +32,74 @@ const getLessonTypes = async (req, res, next) => {
       data: lessonTypes,
     });
   } catch (error) {
-    console.error("Error fetching lessonTypes:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    internalServerError(res, error);
   }
 };
 
+const getLessonTypesWithoutBody = async (req, res, next) => {
+  try {
+    const lessonTypes =
+      await lessonTypeService.getAllLessonTypes({
+        isWithoutBody: true,
+      });
+    res.json(lessonTypes);
+  } catch (error) {
+    internalServerError(res, error);
+  }
+};
+
+const getLessonTypeById = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const lessonType = await lessonTypeService.getLessonTypeById(id);
+    if (!lessonType) {
+      return res.status(404).json({ message: "LessonType not found" });
+    }
+    res.json(lessonType);
+  } catch (error) {
+    internalServerError(res, error);
+  }
+};
+
+const createLessonType = async (req, res, next) => {
+  try {
+    const newLessonType = await lessonTypeService.createLessonType(req.body);
+    res
+      .status(201)
+      .json({ message: "LessonType created successfully", newLessonType });
+  } catch (error) {
+    internalServerError(res, error);
+  }
+};
+
+const updateLessonType = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    await lessonTypeService.updateLessonType(
+      id,
+      req.body
+    );
+    res.json({ message: "LessonType updated successfully" });
+  } catch (error) {
+    internalServerError(res, error);
+  }
+};
+
+const deleteLessonType = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    await lessonTypeService.deleteLessonType(id);
+    res.json({ message: "LessonType deleted successfully", id });
+  } catch (error) {
+    internalServerError(res, error);
+  }
+};
 
 module.exports = {
-  getLessonTypes
+  getLessonTypes,
+  getLessonTypesWithoutBody,
+  getLessonTypeById,
+  createLessonType,
+  updateLessonType,
+  deleteLessonType,
 };

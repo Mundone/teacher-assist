@@ -1,6 +1,7 @@
-const express = require('express');
-const lessonTypeController = require('../controllers/lessonTypeController');
-const paginationMiddleware = require('../middlewares/paginationMiddleware');
+const express = require("express");
+const lessonTypeController = require("../controllers/lessonTypeController");
+const paginationMiddleware = require("../middlewares/paginationMiddleware");
+const { accessControl } = require("../middlewares/authMiddleware");
 const router = express.Router();
 
 /**
@@ -28,7 +29,41 @@ const router = express.Router();
  *         description: Internal Server Error
  */
 
-router.post('/get_lesson_types', paginationMiddleware, lessonTypeController.getLessonTypes);
-// other routes like POST, PUT, DELETE
+router.post(
+  "/get_lesson_types",
+  accessControl([1, 2, 3]),
+  paginationMiddleware,
+  lessonTypeController.getLessonTypes
+);
+
+router.get(
+  "/get_lesson_types",
+  accessControl([1, 2, 3]),
+  lessonTypeController.getLessonTypesWithoutBody
+);
+
+router.get(
+  "/get_lesson_type/:id",
+  accessControl([1, 2, 3]),
+  lessonTypeController.getLessonTypeById
+);
+
+router.post(
+  "/create_lesson_type",
+  accessControl([1]),
+  lessonTypeController.createLessonType
+);
+
+router.put(
+  "/update_lesson_type/:id",
+  accessControl([1]),
+  lessonTypeController.updateLessonType
+);
+
+router.delete(
+  "/delete_lesson_type/:id",
+  accessControl([1]),
+  lessonTypeController.deleteLessonType
+);
 
 module.exports = router;

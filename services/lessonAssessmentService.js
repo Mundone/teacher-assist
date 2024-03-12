@@ -1,8 +1,22 @@
 const allModels = require("../models");
 
-const getAllLessonAssessments = async ({ where, limit, offset, order }) => {
-
-  console.log(where);
+const getAllLessonAssessments = async ({
+  where,
+  limit,
+  offset,
+  order,
+  isWithoutBody,
+}) => {
+  if (isWithoutBody) {
+    return await allModels.LessonAssessment.findAll({
+      attributes: [
+        "id",
+        "lesson_assessment_code",
+        "lesson_assessment_description",
+        "lesson_type_id",
+      ],
+    });
+  }
 
   const { count: totalLessonAssessments, rows: lessonAssessments } =
     await allModels.LessonAssessment.findAndCountAll({
@@ -33,17 +47,17 @@ const createLessonAssessment = async (data) => {
 };
 
 const updateLessonAssessment = async (id, data) => {
-  const lessonAssessment = await allModels.LessonAssessment.findByPk(id);
-  if (lessonAssessment) {
-    return await lessonAssessment.update(data);
+  const currentModel = await allModels.LessonAssessment.findByPk(id);
+  if (currentModel) {
+    return await currentModel.update(data);
   }
   return null;
 };
 
 const deleteLessonAssessment = async (id) => {
-  const lessonAssessment = await allModels.LessonAssessment.findByPk(id);
-  if (lessonAssessment) {
-    await lessonAssessment.destroy();
+  const currentModel = await allModels.LessonAssessment.findByPk(id);
+  if (currentModel) {
+    await currentModel.destroy();
     return true;
   }
   return false;
