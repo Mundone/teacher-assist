@@ -1,60 +1,80 @@
-const { Grade, Student, Subject, Lab, Assignment } = require("../models");
+const allModels = require("../models");
 
-const transformScores = (grade) => {
-  const lectureScores = JSON.parse(grade.lecture_scores || "[]");
-  const labScores = JSON.parse(grade.lab_scores || "[]");
-  const assignmentScores = JSON.parse(grade.assignment_scores || "[]");
-
-  const scoresTransformed = {
-    student_code: grade.student.student_code,
-    student_name: grade.student.name,
-    extra_point: grade.extra_point || 0,
-  };
-
-  lectureScores.forEach((lecScore, index) => {
-    scoresTransformed[`lec${index + 1}_score`] = lecScore;
+const getAllStudentGrades = async ({
+  where,
+  limit,
+  offset,
+  order,
+  userId,
+  subjectId,
+}) => {
+  const isUserIncludeSubject = await allModels.Subject.findOne({
+    where: { id: subjectId, user_id: userId },
   });
 
-  labScores.forEach((lab, index) => {
-    scoresTransformed[`lab${index + 1}_score`] = lab.grade;
-  });
+  if (!isUserIncludeSubject) {
+    throw new Error("Зөвшөөрөлгүй хандалт.", { statusCode: 403 });
+  }
 
-  assignmentScores.forEach((ass, index) => {
-    scoresTransformed[`ass${index + 1}_score`] = ass.grade;
-  });
+  let { count: totalGrades, rows: grades } =
+    await allModels.Grade.findAndCountAll({
+      include: [
+        {
+          model: allModels.Student,
+          attributes: ["id", "name", "student_code", "createdAt"],
+        },
+        {
+          model: allModels.Lesson,
+          attributes: [
+            "id",
+            "subject_id",
+            "lesson_assessment_id",
+            "week_number",
+            "lesson_number",
+            "createdAt",
+            "lesson_type_id",
+          ],
+          where: { subject_id: subjectId },
+        },
+      ],
+      attributes: ["id", "student_id", "lesson_id", "grade"],
 
-  return scoresTransformed;
-};
-
-
-const getAllStudentScoresForSubject = async (subjectId, pageNo, pageSize, sortBy, sortOrder) => {
-  const offset = pageNo * pageSize;
-  const { count: totalScores, rows: grades } = await Grade.findAndCountAll({
-    where: { subject_id: subjectId },
-    include: [
-      {
-        model: Student,
-        attributes: ["student_code", "name"],
-      },
-    ],
-    limit: pageSize,
-    offset: offset,
-    order: [[sortBy, sortOrder]],
-  });
+      where: where,
+      limit: limit,
+      offset: offset,
+      order: order,
+      distinct: true,
+    });
 
   return {
-    totalScores,
-    grades: grades.map(transformScores),
+    totalGrades,
+    grades,
   };
 };
 
-const updateStudentScore = async (scoreId, updatedScoreData) => {
-  return await Grade.update(updatedScoreData, {
-    where: { id: scoreId },
-  });
+const updateGrade = async ({ student_id, lesson_id, grade }) => {
+  try {
+    const result = await allModels.Grade.update(
+      { grade },
+      {
+        where: {
+          student_id: student_id,
+          lesson_id: lesson_id,
+        },
+      }
+    );
+
+    if (result[0] > 0) {
+      return { message: "Grade updated successfully." };
+    } else {
+      throw new Error("Grade not found or no changes made.");
+    }
+  } catch (error) {
+    throw error;
+  }
 };
 
 module.exports = {
-  getAllStudentScoresForSubject,
-  updateStudentScore,
+  getAllStudentGrades,
+  updateGrade,
 };

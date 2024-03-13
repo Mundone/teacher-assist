@@ -195,7 +195,6 @@ const insertRandomData = async () => {
     lesson_type_id: lessonTypeNames.length,
   });
 
-  
   await models.User.create({
     name: "Ulziimaa",
     email: "zma@gmail.com",
@@ -230,26 +229,27 @@ const insertRandomData = async () => {
     const exampleSubject = await models.Subject.create({
       subject_name: subjectNames[i],
       main_teacher_id: exampleUser.id,
-      user_id: i % 2 == 0 ? 1 : 3
+      user_id: i % 2 == 0 ? 1 : 3,
     });
 
     // Additional teachers as assistant teachers
 
-    var randomLessonTypeId1 = Math.floor(Math.random() * lessonTypeNames.length) + 1;
+    var randomLessonTypeId1 =
+      Math.floor(Math.random() * lessonTypeNames.length) + 1;
 
     await models.SubjectLessonType.create({
       subject_id: exampleSubject.id,
       lesson_type_id: randomLessonTypeId1, // Random lesson type
     });
 
-    var randomLessonTypeId2 = Math.floor(Math.random() * lessonTypeNames.length) + 1;
-    
-    if(randomLessonTypeId1 != randomLessonTypeId2){
+    var randomLessonTypeId2 =
+      Math.floor(Math.random() * lessonTypeNames.length) + 1;
+
+    if (randomLessonTypeId1 != randomLessonTypeId2) {
       await models.SubjectLessonType.create({
         subject_id: exampleSubject.id,
         lesson_type_id: randomLessonTypeId2, // Random lesson type
       });
-
     }
 
     // Create a lesson type (assuming lesson types are predefined and have specific IDs)
@@ -315,8 +315,12 @@ const insertRandomData = async () => {
     }
   }
 
-  
-
+  await models.Semester.create({
+    semester_code: "2024B - Хаврын улирал",
+    start_date: new Date("2024-01-24"),
+    is_active: true,
+    user_id: 2,
+  });
 };
 
 main();

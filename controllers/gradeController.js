@@ -1,52 +1,98 @@
 const gradeService = require("../services/gradeService");
-const { Grade } = require("../models");
+const buildWhereOptions = require("../utils/sequelizeUtil");
+const { internalServerError } = require("../utils/responseUtil");
 
-const getGrades = async (req, res, next) => {
+const getGradesController = async (req, res, next) => {
   try {
-    const { subjectId } = req.query;
-    const { pageNo, pageSize, sortBy, sortOrder } = req.pagination;
+    const userId = req.user && req.user.id;
 
-    const subjectIdInt = parseInt(subjectId);
+    const subjectId = req.body.subject_id ?? null;
 
-    if (isNaN(subjectIdInt)) {
-      return res.status(400).json({ error: "Invalid subjectId." });
+    if (subjectId == null) {
+        return res.status(400).json({"error": "subject_id -аа явуулаарай body-оороо."});
     }
 
-    const { totalScores, grades } = await gradeService.getAllStudentScoresForSubject(
-      subjectIdInt, pageNo, pageSize, sortBy, sortOrder
+    const { pageNo, pageSize, sortBy, sortOrder, filters } = req.pagination;
+
+    const queryOptions = {
+      where: buildWhereOptions(filters),
+      limit: pageSize,
+      offset: pageNo * pageSize,
+      order: [[sortBy, sortOrder]],
+      userId: userId,
+      subjectId: subjectId,
+    };
+
+    const { totalGrades, grades } = await gradeService.getAllStudentGrades(
+      queryOptions
     );
 
-    const totalPages = Math.ceil(totalScores / pageSize);
+    // Transform grades into a structure grouped by students
+    let studentData = {};
+    grades.forEach(grade => {
+      const { student, lesson, grade: gradeValue } = grade;
+      if (!studentData[student.id]) {
+        studentData[student.id] = {
+          student_id: student.id,
+          name: student.name,
+          student_code: student.student_code,
+          grades: {}
+        };
+      }
+      studentData[student.id].grades[lesson.id] = {
+        id: lesson.id,
+        grade: gradeValue,
+        week_number: lesson.week_number,
+        lesson_number: lesson.lesson_number
+      };
+    });
 
     res.json({
       pagination: {
-        current_page_no: pageNo,
-        total_pages: totalPages,
+        current_page_no: pageNo + 1,
+        total_pages: Math.ceil(totalGrades / pageSize),
         per_page: pageSize,
-        total_elements: totalScores,
+        total_elements: totalGrades
       },
-      sort: `${sortBy} ${sortOrder}`,
-      data: grades,
+      data: Object.values(studentData) // Convert the object to an array for the response
     });
+
+    
+    // res.json({
+    //   pagination: {
+    //     current_page_no: pageNo + 1, // Since pageNo in the response should be one-based
+    //     total_pages: Math.ceil(totalGrades / pageSize),
+    //     per_page: pageSize,
+    //     total_elements: totalGrades,
+    //   },
+    //   data: grades,
+    // });
   } catch (error) {
-    console.error('Error fetching grades:', error);
-    return res.status(500).json({ error: 'Internal Server Error' });
+    internalServerError(res, error);
   }
 };
 
 
 
-const updateScore = async (req, res, next) => {
+const updateGradeController = async (req, res) => {
   try {
-    const { id } = req.params;
-    const updatedScore = await gradeService.updateStudentScore(id, req.body);
-    res.json(updatedScore);
+    const { student_id, lesson_id, grade } = req.body;
+
+    // You might want to add validation here to ensure the data is correct
+    if (!student_id || !lesson_id || grade === undefined) {
+      return res.status(400).json({ error: 'Missing studentId, lessonId, or grade in request body.' });
+    }
+
+    const result = await gradeService.updateGrade({ student_id, lesson_id, grade });
+
+    res.json({ message: result.message });
   } catch (error) {
-    next(error);
+    res.status(500).json({ error: error.message });
   }
 };
+
 
 module.exports = {
-  getGrades,
-  updateScore,
+  getGradesController,
+  updateGradeController,
 };

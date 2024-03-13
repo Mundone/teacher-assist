@@ -1,8 +1,8 @@
-const express = require('express');
-const gradeController = require('../controllers/gradeController');
-const paginationMiddleware = require('../middlewares/paginationMiddleware');
+const express = require("express");
+const gradeController = require("../controllers/gradeController");
+const paginationMiddleware = require("../middlewares/paginationMiddleware");
+const { accessControl } = require("../middlewares/authMiddleware");
 const router = express.Router();
-
 
 /**
  * @swagger
@@ -29,9 +29,12 @@ const router = express.Router();
  *         description: Internal Server Error
  */
 
-router.get('/grades', paginationMiddleware, gradeController.getGrades); // Get grades for a specific week and subject
-
-
+router.post(
+  "/get_grades",
+  accessControl([1, 2, 3]),
+  paginationMiddleware,
+  gradeController.getGradesController
+);
 
 /**
  * @swagger
@@ -60,6 +63,10 @@ router.get('/grades', paginationMiddleware, gradeController.getGrades); // Get g
  *         description: Internal Server Error
  */
 
-router.put('/grades/:id', paginationMiddleware, gradeController.updateScore); // Update a specific grade
+router.put(
+  "/update_grade",
+  accessControl([1, 2, 3]),
+  gradeController.updateGradeController
+); // Update a specific grade
 
 module.exports = router;

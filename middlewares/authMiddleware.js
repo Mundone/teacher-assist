@@ -27,7 +27,8 @@ const methodCheckMiddleware = (req, res, next) => {
   const bypassRoutes = [
     { method: "POST", path: "/login" },
     { method: "POST", path: "/register" },
-    { method: "GET", path: "/get_auth_info" },
+    // { method: "GET", path: "/get_auth_info" },
+    { method: "GET", path: "/get_current_week" },
   ];
 
   // Define the GET routes that require authentication

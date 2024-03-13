@@ -41,8 +41,11 @@ class User extends Model {
   static associate(models) {
     this.belongsTo(models.UserRole, { foreignKey: "role_id" });
     this.hasMany(models.UserFile, { foreignKey: "user_id" });
-    this.hasMany(models.Lesson, {
-      foreignKey: "subject_id",
+    this.hasMany(models.Subject, {
+      foreignKey: "user_id",
+    });
+    this.hasMany(models.Semester, {
+      foreignKey: "user_id",
     });
   }
 }

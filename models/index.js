@@ -7,6 +7,7 @@ const Grade = require("./grade");
 const Lesson = require("./lesson");
 const LessonAssessment = require("./lessonAssessment");
 const LessonType = require("./lessonType");
+const Semester = require("./semester");
 const Student = require("./student");
 const StudentSubjectSchedule = require("./studentSubjectSchedule");
 const Subject = require("./subject");
@@ -14,7 +15,7 @@ const SubjectSchedule = require("./subjectSchedule");
 const User = require("./user");
 const UserFile = require("./userFile");
 const UserRole = require("./userRole");
-const SubjectLessonType = require('./subjectLessonType');
+const SubjectLessonType = require("./subjectLessonType");
 
 // Initialize models in order respecting foreign key dependencies
 AttendanceResponse.init(sequelize, Sequelize.DataTypes);
@@ -22,6 +23,7 @@ Grade.init(sequelize, Sequelize.DataTypes);
 Lesson.init(sequelize, Sequelize.DataTypes);
 LessonType.init(sequelize, Sequelize.DataTypes);
 LessonAssessment.init(sequelize, Sequelize.DataTypes);
+Semester.init(sequelize, Sequelize.DataTypes);
 Student.init(sequelize, Sequelize.DataTypes);
 StudentSubjectSchedule.init(sequelize, Sequelize.DataTypes);
 Subject.init(sequelize, Sequelize.DataTypes);
@@ -38,6 +40,7 @@ const models = {
   Lesson,
   LessonAssessment,
   LessonType,
+  Semester,
   Student,
   StudentSubjectSchedule,
   Subject,
@@ -45,7 +48,7 @@ const models = {
   User,
   UserFile,
   UserRole,
-  SubjectLessonType
+  SubjectLessonType,
 };
 
 Object.keys(models).forEach((modelName) => {

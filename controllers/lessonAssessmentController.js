@@ -33,7 +33,6 @@ const getLessonAssessments = async (req, res, next) => {
 
 const getLessonAssessmentsWithoutBody = async (req, res, next) => {
   try {
-
     const lessonAssessments =
       await lessonAssessmentService.getAllLessonAssessments({
         isWithoutBody: true,
