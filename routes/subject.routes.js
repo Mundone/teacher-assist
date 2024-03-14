@@ -1,7 +1,8 @@
 // subjectRoutes.js
-const express = require('express');
-const subjectController = require('../controllers/subjectController');
-const paginationMiddleware = require('../middlewares/paginationMiddleware');
+const express = require("express");
+const subjectController = require("../controllers/subjectController");
+const paginationMiddleware = require("../middlewares/paginationMiddleware");
+const { accessControl } = require("../middlewares/authMiddleware");
 const router = express.Router();
 
 /**
@@ -29,7 +30,12 @@ const router = express.Router();
  *         description: Internal Server Error
  */
 
-router.post('/get_subjects', paginationMiddleware, subjectController.getSubjects);
+router.post(
+  "/get_subjects",
+  paginationMiddleware,
+  accessControl([1, 2, 3]),
+  subjectController.getSubjects
+);
 
 /**
  * @swagger
@@ -58,7 +64,11 @@ router.post('/get_subjects', paginationMiddleware, subjectController.getSubjects
  *         description: Internal Server Error
  */
 
-router.get('/get_subject/:id', subjectController.getSubject);
+router.get(
+  "/get_subject/:id",
+  accessControl([1, 2, 3]),
+  subjectController.getSubject
+);
 
 /**
  * @swagger
@@ -87,8 +97,11 @@ router.get('/get_subject/:id', subjectController.getSubject);
  *       - Authorization: []
  */
 
-router.post('/create_subject', subjectController.createSubject);
-
+router.post(
+  "/create_subject",
+  accessControl([1, 2, 3]),
+  subjectController.createSubject
+);
 
 /**
  * @swagger
@@ -129,7 +142,11 @@ router.post('/create_subject', subjectController.createSubject);
  *       - Authorization: []
  */
 
-router.put('/update_subject/:id', subjectController.updateSubject);
+router.put(
+  "/update_subject/:id",
+  accessControl([1, 2, 3]),
+  subjectController.updateSubject
+);
 
 /**
  * @swagger
@@ -165,6 +182,10 @@ router.put('/update_subject/:id', subjectController.updateSubject);
  *       - Authorization: []
  */
 
-router.delete('/delete_subject/:id', subjectController.deleteSubject);
+router.delete(
+  "/delete_subject/:id",
+  accessControl([1, 2, 3]),
+  subjectController.deleteSubject
+);
 
 module.exports = router;

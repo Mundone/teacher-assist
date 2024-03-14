@@ -7,6 +7,7 @@ const Grade = require("./grade");
 const Lesson = require("./lesson");
 const LessonAssessment = require("./lessonAssessment");
 const LessonType = require("./lessonType");
+const Menu = require("./menu");
 const Semester = require("./semester");
 const Student = require("./student");
 const StudentSubjectSchedule = require("./studentSubjectSchedule");
@@ -14,6 +15,7 @@ const Subject = require("./subject");
 const SubjectSchedule = require("./subjectSchedule");
 const User = require("./user");
 const UserFile = require("./userFile");
+const UserRoleMenu = require("./userRoleMenu");
 const UserRole = require("./userRole");
 const SubjectLessonType = require("./subjectLessonType");
 
@@ -22,6 +24,7 @@ AttendanceResponse.init(sequelize, Sequelize.DataTypes);
 Grade.init(sequelize, Sequelize.DataTypes);
 Lesson.init(sequelize, Sequelize.DataTypes);
 LessonType.init(sequelize, Sequelize.DataTypes);
+Menu.init(sequelize, Sequelize.DataTypes);
 LessonAssessment.init(sequelize, Sequelize.DataTypes);
 Semester.init(sequelize, Sequelize.DataTypes);
 Student.init(sequelize, Sequelize.DataTypes);
@@ -30,6 +33,7 @@ Subject.init(sequelize, Sequelize.DataTypes);
 SubjectSchedule.init(sequelize, Sequelize.DataTypes);
 User.init(sequelize, Sequelize.DataTypes);
 UserFile.init(sequelize, Sequelize.DataTypes);
+UserRoleMenu.init(sequelize, Sequelize.DataTypes);
 UserRole.init(sequelize, Sequelize.DataTypes);
 SubjectLessonType.init(sequelize, Sequelize.DataTypes);
 
@@ -40,6 +44,7 @@ const models = {
   Lesson,
   LessonAssessment,
   LessonType,
+  Menu,
   Semester,
   Student,
   StudentSubjectSchedule,
@@ -47,6 +52,7 @@ const models = {
   SubjectSchedule,
   User,
   UserFile,
+  UserRoleMenu,
   UserRole,
   SubjectLessonType,
 };

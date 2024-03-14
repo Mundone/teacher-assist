@@ -2,6 +2,7 @@ const models = require("./models/index");
 const moment = require("moment-timezone");
 const sequelize = require("./config/sequelizeConfig");
 const bcrypt = require("bcryptjs");
+const { Sequelize } = require("sequelize");
 
 const main = async () => {
   try {
@@ -321,6 +322,97 @@ const insertRandomData = async () => {
     is_active: true,
     user_id: 2,
   });
+
+  await models.Menu.create({
+    menu_code: "08",
+    parent_id: 0,
+    menu_name: "ХЯНАЛТ",
+    router_link: "",
+    sorted_order: 0,
+  });
+  await models.Menu.create({
+    menu_code: "0801",
+    parent_id: 1,
+    menu_name: "Дашбоард",
+    router_link: "/dashboard",
+    sorted_order: 1,
+  });
+
+  await models.Menu.create({
+    menu_code: "01",
+    parent_id: 0,
+    menu_name: "ТОХИРГОО",
+    router_link: "",
+    sorted_order: 1,
+  });
+  await models.Menu.create({
+    menu_code: "0101",
+    parent_id: 3,
+    menu_name: "Үндсэн тохиргоо",
+    router_link: "/dashboard/constant",
+    sorted_order: 1,
+  });
+
+  await models.Menu.create({
+    menu_code: "02",
+    parent_id: 0,
+    menu_name: "ХАРИЛЦАГЧ",
+    router_link: "",
+    sorted_order: 2,
+  });
+  await models.Menu.create({
+    menu_code: "0201",
+    parent_id: 5,
+    menu_name: "Аймаг ЗДТГ-ийн бүртгэл",
+    router_link: "/dashboard/aimag-register",
+    sorted_order: 1,
+  });
+  await models.Menu.create({
+    menu_code: "0202",
+    parent_id: 5,
+    menu_name: "Аялал жуулчлалын компаний бүртгэл",
+    router_link: "/dashboard/tour-company",
+    sorted_order: 2,
+  });
+  await models.Menu.create({
+    menu_code: "0203",
+    parent_id: 5,
+    menu_name: "Малчны бүртгэл",
+    router_link: "/dashboard/herder",
+    sorted_order: 3,
+  });
+
+  const adminMenus = await models.Menu.findAll({
+    where: {
+      [Sequelize.Op.or]: [
+        { menu_code: { [Sequelize.Op.like]: "02%" } },
+        { menu_code: { [Sequelize.Op.like]: "01%" } },
+      ],
+    },
+  });
+
+  for (const adminMenu of adminMenus) {
+    await models.UserRoleMenu.create({
+      user_role_id: 1,
+      menu_id: adminMenu.id,
+    });
+  }
+
+  const teacherMenus = await models.Menu.findAll({
+    where: {
+      [Sequelize.Op.or]: [
+        { menu_code: { [Sequelize.Op.like]: "02%" } },
+        { menu_code: { [Sequelize.Op.like]: "08%" } },
+      ],
+    },
+  });
+
+  for (const adminMenu of teacherMenus) {
+    await models.UserRoleMenu.create({
+      user_role_id: 2,
+      menu_id: adminMenu.id,
+    });
+  }
 };
 
 main();

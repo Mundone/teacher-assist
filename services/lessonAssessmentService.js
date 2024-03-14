@@ -15,6 +15,12 @@ const getAllLessonAssessments = async ({
         "lesson_assessment_description",
         "lesson_type_id",
       ],
+      include: [
+        {
+          model: allModels.LessonType,
+          attributes: ["id", "lesson_type_name"],
+        },
+      ],
     });
   }
 
@@ -25,6 +31,12 @@ const getAllLessonAssessments = async ({
         "lesson_assessment_code",
         "lesson_assessment_description",
         "lesson_type_id",
+      ],
+      include: [
+        {
+          model: allModels.LessonType,
+          attributes: ["id", "lesson_type_name"],
+        },
       ],
       where: where, // Use the where options built from filters
       limit: limit,

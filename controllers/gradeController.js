@@ -54,7 +54,7 @@ const getGradesController = async (req, res, next) => {
         per_page: pageSize,
         total_elements: totalGrades
       },
-      data: Object.values(studentData) // Convert the object to an array for the response
+      data: Object.values(grades) // Convert the object to an array for the response
     });
 
     

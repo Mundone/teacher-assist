@@ -1,15 +1,9 @@
 const subjectService = require("../services/subjectService");
 const buildWhereOptions = require("../utils/sequelizeUtil");
-const { internalServerError } = require('../utils/responseUtil');
+const { internalServerError } = require("../utils/responseUtil");
 
 exports.getSubjects = async (req, res, next) => {
   try {
-    const userId = req.user && req.user.role_id;
-    if (userId != 1 && userId != 2 && userId != 3) {
-      return res.status(403).json({ message: "Зөвшөөрөлгүй хандалт." });
-    }
-
-    // Include the user ID in the pagination filters
     req.pagination.filters.push({
       fieldName: "user_id",
       operation: "eq",

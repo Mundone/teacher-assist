@@ -1,0 +1,358 @@
+{
+    "user_id": "d0595041-5fc7-469a-b1a5-dc014c1f6ef3",
+    "user_name": "Enkhmanlai Amarbayar (ADMIN)",
+    "login_name": "kevin",
+    "user_group_id": "96ca1db3-7f4c-48e2-97a7-69a750c29b3a",
+    "user_group_name": "Төслийн нэгж",
+    "user_group_type_id": 1,
+    "user_group_type_name": "Төслийн нэгж",
+    "aimag_id": 52,
+    "aimag_name": "Улаанбаатар",
+    "language_id": 60,
+    "language_name": "Mongolian",
+    "sum_id": 1037,
+    "sum_name": "Сүхбаатар",
+    "horoo_id": 7,
+    "horoo_name": "7-р хороо",
+    "last_connected_date": "2024-03-13T01:34:39.185931Z",
+    "UserMenus": [
+        {
+            "id": 25,
+            "menu_code": "08",
+            "parent_id": 0,
+            "menu_name": "ХЯНАЛТ",
+            "icon_name": "",
+            "router_link": "",
+            "sorted_order": 0,
+            "ChildMenu": [
+                {
+                    "id": 26,
+                    "menu_code": "0801",
+                    "parent_id": 25,
+                    "menu_name": "Дашбоард",
+                    "icon_name": "",
+                    "router_link": "/dashboard",
+                    "sorted_order": 1
+                }
+            ]
+        },
+        {
+            "id": 1,
+            "menu_code": "01",
+            "parent_id": 0,
+            "menu_name": "ТОХИРГОО",
+            "icon_name": "",
+            "router_link": "",
+            "sorted_order": 1,
+            "ChildMenu": [
+                {
+                    "id": 8,
+                    "menu_code": "0101",
+                    "parent_id": 1,
+                    "menu_name": "Үндсэн тохиргоо",
+                    "icon_name": "",
+                    "router_link": "/dashboard/constant",
+                    "sorted_order": 1
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "menu_code": "02",
+            "parent_id": 0,
+            "menu_name": "ХАРИЛЦАГЧ",
+            "icon_name": "",
+            "router_link": "",
+            "sorted_order": 2,
+            "ChildMenu": [
+                {
+                    "id": 20,
+                    "menu_code": "0201",
+                    "parent_id": 2,
+                    "menu_name": "Аймаг ЗДТГ-ийн бүртгэл",
+                    "icon_name": "",
+                    "router_link": "/dashboard/aimag-register",
+                    "sorted_order": 1
+                },
+                {
+                    "id": 21,
+                    "menu_code": "0202",
+                    "parent_id": 2,
+                    "menu_name": "Аялал жуулчлалын компаний бүртгэл",
+                    "icon_name": "",
+                    "router_link": "/dashboard/tour-company",
+                    "sorted_order": 2
+                },
+                {
+                    "id": 22,
+                    "menu_code": "0203",
+                    "parent_id": 2,
+                    "menu_name": "Малчны бүртгэл",
+                    "icon_name": "",
+                    "router_link": "/dashboard/herder",
+                    "sorted_order": 3
+                },
+                {
+                    "id": 34,
+                    "menu_code": "0204",
+                    "parent_id": 2,
+                    "menu_name": "Жуулчны бүртгэл",
+                    "icon_name": "",
+                    "router_link": "/dashboard/tourist",
+                    "sorted_order": 4
+                },
+                {
+                    "id": 36,
+                    "menu_code": "0205",
+                    "parent_id": 2,
+                    "menu_name": "Бүлэг жуулчны бүртгэл",
+                    "icon_name": "",
+                    "router_link": "/dashboard/tourist-group",
+                    "sorted_order": 5
+                }
+            ]
+        },
+        {
+            "id": 3,
+            "menu_code": "03",
+            "parent_id": 0,
+            "menu_name": "ХҮСЭЛТ",
+            "icon_name": "",
+            "router_link": "",
+            "sorted_order": 3,
+            "ChildMenu": [
+                {
+                    "id": 37,
+                    "menu_code": "0301",
+                    "parent_id": 3,
+                    "menu_name": "Өргөдөл, Санал гомдол",
+                    "icon_name": "",
+                    "router_link": "/dashboard/petition",
+                    "sorted_order": 1
+                },
+                {
+                    "id": 40,
+                    "menu_code": "0302",
+                    "parent_id": 3,
+                    "menu_name": "Пост хянах",
+                    "icon_name": "",
+                    "router_link": "/dashboard/post",
+                    "sorted_order": 2
+                }
+            ]
+        },
+        {
+            "id": 4,
+            "menu_code": "04",
+            "parent_id": 0,
+            "menu_name": "БҮРТГЭЛ",
+            "icon_name": "",
+            "router_link": "",
+            "sorted_order": 4,
+            "ChildMenu": [
+                {
+                    "id": 23,
+                    "menu_code": "0401",
+                    "parent_id": 4,
+                    "menu_name": "Брэндийн бүртгэл",
+                    "icon_name": "",
+                    "router_link": "/dashboard/brand",
+                    "sorted_order": 1
+                },
+                {
+                    "id": 29,
+                    "menu_code": "0403",
+                    "parent_id": 4,
+                    "menu_name": "Мэдээ оруулах",
+                    "icon_name": "",
+                    "router_link": "/dashboard/news",
+                    "sorted_order": 3
+                },
+                {
+                    "id": 30,
+                    "menu_code": "0404",
+                    "parent_id": 4,
+                    "menu_name": "Санал асуулга",
+                    "icon_name": "",
+                    "router_link": "/dashboard/survey",
+                    "sorted_order": 4
+                },
+                {
+                    "id": 31,
+                    "menu_code": "0405",
+                    "parent_id": 4,
+                    "menu_name": "Баннер удирдах",
+                    "icon_name": "",
+                    "router_link": "/dashboard/banner",
+                    "sorted_order": 5
+                },
+                {
+                    "id": 32,
+                    "menu_code": "0406",
+                    "parent_id": 4,
+                    "menu_name": "Үйлчилгээний бүртгэл",
+                    "icon_name": "",
+                    "router_link": "/dashboard/service",
+                    "sorted_order": 6
+                },
+                {
+                    "id": 38,
+                    "menu_code": "0407",
+                    "parent_id": 4,
+                    "menu_name": "Дурсгалт газрын бүртгэл",
+                    "icon_name": "",
+                    "router_link": "/dashboard/aimag-route",
+                    "sorted_order": 7
+                },
+                {
+                    "id": 39,
+                    "menu_code": "0408",
+                    "parent_id": 4,
+                    "menu_name": "Хөтөлбөр бүртгэл",
+                    "icon_name": "",
+                    "router_link": "/dashboard/program",
+                    "sorted_order": 8
+                }
+            ]
+        },
+        {
+            "id": 6,
+            "menu_code": "06",
+            "parent_id": 0,
+            "menu_name": "АДМИНИСТРАТОР",
+            "icon_name": "",
+            "router_link": "",
+            "sorted_order": 6,
+            "ChildMenu": [
+                {
+                    "id": 18,
+                    "menu_code": "0601",
+                    "parent_id": 6,
+                    "menu_name": "Хэрэглэгч үүсгэх",
+                    "icon_name": "",
+                    "router_link": "/dashboard/user",
+                    "sorted_order": 1
+                },
+                {
+                    "id": 19,
+                    "menu_code": "0602",
+                    "parent_id": 6,
+                    "menu_name": "Хэрэглэгчийн бүлэг",
+                    "icon_name": "",
+                    "router_link": "/dashboard/user-group",
+                    "sorted_order": 2
+                }
+            ]
+        },
+        {
+            "id": 7,
+            "menu_code": "07",
+            "parent_id": 0,
+            "menu_name": "ЛАВЛАХ",
+            "icon_name": "",
+            "router_link": "",
+            "sorted_order": 7,
+            "ChildMenu": [
+                {
+                    "id": 9,
+                    "menu_code": "0701",
+                    "parent_id": 7,
+                    "menu_name": "Аймаг, хотын бүртгэл",
+                    "icon_name": "",
+                    "router_link": "/dashboard/aimag",
+                    "sorted_order": 1
+                },
+                {
+                    "id": 10,
+                    "menu_code": "0702",
+                    "parent_id": 7,
+                    "menu_name": "Сум, дүүргийн бүртгэл",
+                    "icon_name": "",
+                    "router_link": "/dashboard/sum",
+                    "sorted_order": 2
+                },
+                {
+                    "id": 11,
+                    "menu_code": "0703",
+                    "parent_id": 7,
+                    "menu_name": "Баг, хорооны бүртгэл",
+                    "icon_name": "",
+                    "router_link": "/dashboard/horoo",
+                    "sorted_order": 3
+                },
+                {
+                    "id": 12,
+                    "menu_code": "0704",
+                    "parent_id": 7,
+                    "menu_name": "Хобби",
+                    "icon_name": "",
+                    "router_link": "/dashboard/hobby",
+                    "sorted_order": 4
+                },
+                {
+                    "id": 13,
+                    "menu_code": "0705",
+                    "parent_id": 7,
+                    "menu_name": "Хөгжмийн урсгал",
+                    "icon_name": "",
+                    "router_link": "/dashboard/music",
+                    "sorted_order": 5
+                },
+                {
+                    "id": 14,
+                    "menu_code": "0706",
+                    "parent_id": 7,
+                    "menu_name": "Киноны жанар",
+                    "icon_name": "",
+                    "router_link": "/dashboard/cinema",
+                    "sorted_order": 6
+                },
+                {
+                    "id": 16,
+                    "menu_code": "0707",
+                    "parent_id": 7,
+                    "menu_name": "Монголд хийх сонирхол",
+                    "icon_name": "",
+                    "router_link": "/dashboard/interest",
+                    "sorted_order": 7
+                },
+                {
+                    "id": 17,
+                    "menu_code": "0708",
+                    "parent_id": 7,
+                    "menu_name": "Үйл ажиллагааны чиглэл",
+                    "icon_name": "",
+                    "router_link": "/dashboard/activity",
+                    "sorted_order": 8
+                },
+                {
+                    "id": 27,
+                    "menu_code": "0709",
+                    "parent_id": 7,
+                    "menu_name": "Мэдээний төрөл",
+                    "icon_name": "",
+                    "router_link": "/dashboard/news-type",
+                    "sorted_order": 9
+                },
+                {
+                    "id": 33,
+                    "menu_code": "0710",
+                    "parent_id": 7,
+                    "menu_name": "Улс орны бүртгэл",
+                    "icon_name": "",
+                    "router_link": "/dashboard/country",
+                    "sorted_order": 10
+                },
+                {
+                    "id": 28,
+                    "menu_code": "0711",
+                    "parent_id": 7,
+                    "menu_name": "Валютын бүртгэл",
+                    "icon_name": "",
+                    "router_link": "/dashboard/currency",
+                    "sorted_order": 11
+                }
+            ]
+        }
+    ]
+}

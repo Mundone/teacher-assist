@@ -1,7 +1,9 @@
 // routes/userRoutes.js
-const express = require('express');
+const express = require("express");
+const userController = require("../controllers/userController");
+const paginationMiddleware = require("../middlewares/paginationMiddleware");
+const { accessControl } = require("../middlewares/authMiddleware");
 const router = express.Router();
-const userController = require('../controllers/userController');
 
 /**
  * @swagger
@@ -22,7 +24,18 @@ const userController = require('../controllers/userController');
  *         description: Internal Server Error
  */
 
-router.get('/get_users', userController.getUsers);
+router.post(
+  "/get_users",
+  paginationMiddleware,
+  accessControl([1]),
+  userController.getUsers
+);
+
+router.get(
+  "/get_users",
+  accessControl([1]),
+  userController.getUsersWithoutBody
+);
 
 /**
  * @swagger
@@ -46,7 +59,7 @@ router.get('/get_users', userController.getUsers);
  *         description: Internal Server Error
  */
 
-router.get('/get_user/:id', userController.getUser);
+router.get("/get_user/:id", accessControl([1]), userController.getUser);
 
 /**
  * @swagger
@@ -71,7 +84,7 @@ router.get('/get_user/:id', userController.getUser);
  *       - Authorization: []
  */
 
-router.post('/create_user', userController.createUser);
+router.post("/create_user", accessControl([1]), userController.createUser);
 
 /**
  * @swagger
@@ -111,7 +124,7 @@ router.post('/create_user', userController.createUser);
  *       - Authorization: []
  */
 
-router.put('/update_user/:id', userController.updateUser);
+router.put("/update_user/:id", accessControl([1]), userController.updateUser);
 
 /**
  * @swagger
@@ -137,6 +150,10 @@ router.put('/update_user/:id', userController.updateUser);
  *       - Authorization: []
  */
 
-router.delete('/delete_user/:id', userController.deleteUser);
+router.delete(
+  "/delete_user/:id",
+  accessControl([1]),
+  userController.deleteUser
+);
 
 module.exports = router;

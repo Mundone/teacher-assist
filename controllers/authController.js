@@ -1,6 +1,7 @@
 const authService = require('../services/authService');
 const { validatePassword } = require('../utils/validation'); // Import the validatePassword function
 const jwt = require("jsonwebtoken");
+const { internalServerError } = require("../utils/responseUtil");
 
 const register = async (req, res) => {
   try {
@@ -26,7 +27,7 @@ const register = async (req, res) => {
     const { password: _, ...userInfo } = newUser.toJSON();
     res.status(201).send(userInfo);
   } catch (error) {
-    res.status(500).send({ message: error.message });
+    internalServerError(res, error);
   }
 };
 
@@ -41,7 +42,7 @@ const login = async (req, res) => {
       user,
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    internalServerError(res, error);
   }
 };
 
@@ -58,17 +59,13 @@ const getAuthInfo = async (req, res) => {
     }
     try {
       // Use the decoded ID to fetch the user and refresh the token
-      const { user, token: newToken } = await authService.refreshToken(decoded.id);
-      res.json({ user, token: newToken });
+      const { user, UserMenus } = await authService.refreshToken(decoded.id);
+      res.json({ user, UserMenus });
     } catch (error) {
-      const statusCode = error.statusCode || 500;
-      const message = error.message || 'Backend-ийн алдаа, Мөнх-Очиртой холбоо барина уу.';
-      res.status(statusCode).json({ message });
+      internalServerError(res, error);
     }
   });
 };
-
-
 
 module.exports = {
   register,

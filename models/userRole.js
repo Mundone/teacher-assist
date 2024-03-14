@@ -21,6 +21,7 @@ class UserRole extends Model {
 
   static associate(models) {
     this.hasMany(models.User, { foreignKey: 'role_id' });
+    this.hasMany(models.UserRoleMenu, { foreignKey: "user_role_id" });
   }
 }
 

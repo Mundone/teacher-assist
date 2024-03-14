@@ -26,6 +26,7 @@ const getLessonAssessments = async (req, res, next) => {
       },
       data: lessonAssessments,
     });
+    
   } catch (error) {
     internalServerError(res, error);
   }

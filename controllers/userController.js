@@ -1,19 +1,57 @@
 // controllers/teacherController.js
-const UserService = require('../services/userService');
+const userService = require("../services/userService");
+const buildWhereOptions = require("../utils/sequelizeUtil");
+const { internalServerError } = require("../utils/responseUtil");
 
-exports.getUsers = async (req, res, next) => {
+const getUsers = async (req, res, next) => {
   try {
-    const users = await UserService.getAllUsers();
-    res.json(users);
+    const { pageNo, pageSize, sortBy, sortOrder, filters } = req.pagination;
+
+    const queryOptions = {
+      // Assuming you have a function that translates filters to Sequelize where options
+      where: buildWhereOptions(filters),
+      limit: pageSize,
+      offset: pageNo * pageSize,
+      order: [[sortBy, sortOrder]],
+    };
+
+    // console.log(req);
+
+    const { totalObjects, objects } = await userService.getAllUsers(
+      queryOptions
+    );
+
+    res.json({
+      pagination: {
+        current_page_no: pageNo + 1, // Since pageNo in the response should be one-based
+        total_pages: Math.ceil(totalObjects / pageSize),
+        per_page: pageSize,
+        total_elements: totalObjects,
+      },
+      data: objects,
+    });
   } catch (error) {
-    next(error);
+    internalServerError(res, error);
   }
 };
 
-exports.getUser = async (req, res, next) => {
+
+const getUsersWithoutBody = async (req, res, next) => {
+  try {
+    const users =
+      await userService.getAllUsers({
+        isWithoutBody: true,
+      });
+    res.json(users);
+  } catch (error) {
+    internalServerError(res, error);
+  }
+};
+
+const getUser = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const user = await UserService.getUserById(id);
+    const user = await userService.getUserById(id);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -23,31 +61,41 @@ exports.getUser = async (req, res, next) => {
   }
 };
 
-exports.createUser = async (req, res, next) => {
+const createUser = async (req, res, next) => {
   try {
-    const newUser = await UserService.createUser(req.body);
+    const newUser = await userService.createUser(req.body);
     res.status(201).json(newUser);
   } catch (error) {
-    next(error);
+    internalServerError(res, error);
   }
 };
 
-exports.updateUser = async (req, res, next) => {
+const updateUser = async (req, res, next) => {
   try {
     const { id } = req.params;
-    await UserService.updateUser(id, req.body);
-    res.json({ message: "User updated successfully" });
+    await userService.updateUser(id, req.body);
+    res.json({ message: "User updated successfully", data: {...req.body, id: (Number(id))}});
   } catch (error) {
-    next(error);
+    internalServerError(res, error);
   }
 };
 
-exports.deleteUser = async (req, res, next) => {
+const deleteUser = async (req, res, next) => {
   try {
     const { id } = req.params;
-    await UserService.deleteUser(id);
+    await userService.deleteUser(id);
     res.json({ message: "User deleted successfully" });
   } catch (error) {
-    next(error);
+    internalServerError(res, error);
   }
+};
+
+
+module.exports = {
+  getUsers,
+  getUsersWithoutBody,
+  getUser,
+  createUser,
+  updateUser,
+  deleteUser,
 };

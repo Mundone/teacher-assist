@@ -1,9 +1,9 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const { User } = require("../models"); // adjust the path as needed
+const allModels = require("../models");
 
 const registerUser = async ({ code, name, password, roleID }) => {
-  const existingUser = await User.findOne({ where: { code } });
+  const existingUser = await allModels.User.findOne({ where: { code } });
   if (existingUser) {
     throw new Error("Хэрэглэгчийн код давтагдаж байна.");
   }
@@ -20,7 +20,7 @@ const registerUser = async ({ code, name, password, roleID }) => {
 };
 
 const authenticateUser = async (code, password) => {
-  const inputUser = await User.findOne({ where: { code } });
+  const inputUser = await allModels.User.findOne({ where: { code } });
   if (!inputUser) {
     error.statusCode = 404;
     throw new Error("Хэрэглэгч олдсонгүй.");
@@ -37,7 +37,7 @@ const authenticateUser = async (code, password) => {
     process.env.JWT_SECRET,
     { expiresIn: "72h" }
   );
-  
+
   var user = {
     id: inputUser.id,
     name: inputUser.name,
@@ -45,26 +45,72 @@ const authenticateUser = async (code, password) => {
     code: inputUser.code,
     role_id: inputUser.role_id,
   };
-  
+
   return { user, token };
 };
 
 // Service
 const refreshToken = async (userId) => {
-  const user = await User.findByPk(userId);
+  const user = await allModels.User.findByPk(userId, {
+    include: [
+      {
+        model: allModels.UserRole,
+        attributes: ["id", "role_name"],
+      },
+    ],
+    attributes: ["id", "name", "email", ["code", "teacher_code"], "role_id"],
+  });
   if (!user) {
     const error = new Error("User not found.");
     error.statusCode = 404;
     throw error;
   }
 
-  const newToken = jwt.sign(
-    { id: user.id, code: user.code, role_id: user.role_id },
-    process.env.JWT_SECRET,
-    { expiresIn: "1h" }
+  const userMenus = await allModels.Menu.findAll({
+    include: [
+      {
+        model: allModels.UserRoleMenu,
+        where: { user_role_id: user.role_id },
+        include: [
+          {
+            model: allModels.UserRole,
+            where: { id: user.role_id },
+            attributes: [],
+          },
+        ],
+        attributes: [],
+      },
+    ],
+    order: [
+      ["parent_id", "ASC"],
+      ["sorted_order", "ASC"],
+    ],
+  });
+
+  const menusJson = userMenus.map((menu) => menu.toJSON());
+
+  let menuMap = {};
+  menusJson.forEach((menu) => {
+    if (menu.parent_id === 0) {
+      menu.ChildMenu = [];
+    }
+    menuMap[menu.id] = menu;
+
+    if (menu.parent_id !== 0) {
+      if (menuMap[menu.parent_id]) {
+        menuMap[menu.parent_id].ChildMenu.push(menu);
+        delete menu.ChildMenu;
+      } else {
+        menuMap[menu.parent_id] = { ChildMenu: [menu] };
+      }
+    }
+  });
+
+  let topLevelMenus = Object.values(menuMap).filter(
+    (menu) => menu.parent_id === 0
   );
 
-  return { user, token: newToken };
+  return { user, UserMenus: topLevelMenus };
 };
 
 module.exports = {
