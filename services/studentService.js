@@ -8,7 +8,7 @@ const getAllStudents = async ({
   order,
   // userId,
   subjectScheduleId,
-  isWithoutBody,
+  // isWithoutBody,
 }) => {
   const isUserIncludeSchedule = await allModels.SubjectSchedule.findOne({
     where: { id: subjectScheduleId },
@@ -20,7 +20,7 @@ const getAllStudents = async ({
   });
 
   if (!isUserIncludeSchedule) {
-    const error = new Error("Зөвшөөрөлгүй хандалт.");
+    const error = new Error("Зөвшөөрөлгүй хандалт");
     error.statusCode = 403;
     throw error;
   }
@@ -43,12 +43,18 @@ const getAllStudents = async ({
       include: [
         {
           model: allModels.StudentSubjectSchedule,
-          attributes: ["id", "subject_schedule_id"],
-          where: { id: subjectScheduleId },
+          attributes: [
+            "id",
+            // "subject_schedule_id"
+          ],
           include: [
             {
               model: allModels.SubjectSchedule,
-              attributes: ["id", "subject_id"],
+              attributes: [
+                "id",
+                // "subject_id"
+              ],
+              where: { id: subjectScheduleId },
               include: [
                 {
                   model: allModels.Subject,
@@ -79,8 +85,60 @@ const getStudentById = async (id) => {
   return await allModels.Student.findByPk(id);
 };
 
-const createStudent = async (data) => {
-  return await allModels.Student.create(data);
+const createStudent = async (data, subjectScheduleId) => {
+  const isUserIncludeSchedule = await allModels.SubjectSchedule.findOne({
+    where: { id: subjectScheduleId },
+  }).then((ss) => {
+    if (ss != null) {
+      return true;
+    }
+    return false;
+  });
+
+  if (!isUserIncludeSchedule) {
+    const error = new Error("Зөвшөөрөлгүй хандалт");
+    error.statusCode = 403;
+    throw error;
+  }
+
+  const newObject = await allModels.Student.create(data);
+
+  await allModels.StudentSubjectSchedule.create({
+    student_id: newObject.id,
+    subject_schedule_id: subjectScheduleId,
+  });
+
+  return newObject;
+};
+
+const createStudentBulkService = async (data, subjectScheduleId) => {
+  console.log(subjectScheduleId);
+
+  const isUserIncludeSchedule = await allModels.SubjectSchedule.findOne({
+    where: { id: subjectScheduleId },
+  }).then((ss) => {
+    if (ss != null) {
+      return true;
+    }
+    return false;
+  });
+
+  if (!isUserIncludeSchedule) {
+    const error = new Error("Зөвшөөрөлгүй хандалт");
+    error.statusCode = 403;
+    throw error;
+  }
+
+  const newObjects = await allModels.Student.bulkCreate(data);
+
+  for (const newObject of newObjects) {
+    await allModels.StudentSubjectSchedule.create({
+      student_id: newObject.id,
+      subject_schedule_id: subjectScheduleId,
+    });
+  }
+
+  return newObjects;
 };
 
 const updateStudent = async (id, data) => {
@@ -104,6 +162,7 @@ module.exports = {
   getAllStudents,
   getStudentById,
   createStudent,
+  createStudentBulkService,
   updateStudent,
   deleteStudent,
 };

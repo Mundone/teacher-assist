@@ -22,10 +22,7 @@ class UserFile extends Model {
         type: DataTypes.STRING(255),
       },
       file_type: {
-        type: DataTypes.STRING(50),
-      },
-      upload_date: {
-        type: DataTypes.DATE,
+        type: DataTypes.STRING(255),
       },
     }, {
       sequelize,

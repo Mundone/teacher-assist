@@ -1,7 +1,7 @@
 // controllers/studentController.js
 const studentService = require("../services/studentService");
 const buildWhereOptions = require("../utils/sequelizeUtil");
-const { internalServerError } = require("../utils/responseUtil");
+const responses = require("../utils/responseUtil");
 
 const getStudents = async (req, res, next) => {
   try {
@@ -10,7 +10,9 @@ const getStudents = async (req, res, next) => {
     const subjectScheduleId = req.body.subject_schedule_id ?? null;
 
     if (subjectScheduleId == null) {
-        return res.status(400).json({"error": "subject_schedule_id -аа явуулаарай body-оороо."});
+      return res
+        .status(400)
+        .json({ error: "subject_schedule_id -аа явуулаарай body-оороо." });
     }
 
     const { pageNo, pageSize, sortBy, sortOrder, filters } = req.pagination;
@@ -41,7 +43,7 @@ const getStudents = async (req, res, next) => {
       data: students,
     });
   } catch (error) {
-    internalServerError(res, error);
+    responses.internalServerError(res, error);
   }
 };
 
@@ -56,7 +58,7 @@ const getStudents = async (req, res, next) => {
 //     });
 //     res.json(students);
 //   } catch (error) {
-//     internalServerError(res, error);
+//     responses.internalServerError(res, error);
 //   }
 // };
 
@@ -65,22 +67,51 @@ const getStudentById = async (req, res, next) => {
     const { id } = req.params;
     const student = await studentService.getStudentById(id);
     if (!student) {
-      return res.status(404).json({ message: "Student not found" });
+      // return res.status(404).json({ message: "Student not found" });
+      responses.notFound(res);
     }
     res.json(student);
   } catch (error) {
-    internalServerError(res, error);
+    responses.internalServerError(res, error);
   }
 };
 
 const createStudent = async (req, res, next) => {
   try {
-    const newStudent = await studentService.createStudent(req.body);
-    res
-      .status(201)
-      .json({ message: "Student created successfully", newStudent });
+    const subjectScheduleId = req.body.subject_schedule_id ?? null;
+
+    if (subjectScheduleId == null) {
+      return res
+        .status(400)
+        .json({ error: "subject_schedule_id -аа явуулаарай body-оороо." });
+    }
+
+    const newObject = await studentService.createStudent(
+      req.body,
+      subjectScheduleId
+    );
+    responses.created(res, newObject);
   } catch (error) {
-    internalServerError(res, error);
+    responses.internalServerError(res, error);
+  }
+};
+
+const createStudentBulkController = async (req, res, next) => {
+  try {
+    const subjectScheduleId = req.body.subject_schedule_id ?? null;
+
+    if (subjectScheduleId == null) {
+      return res
+        .status(400)
+        .json({ error: "subject_schedule_id -аа явуулаарай body-оороо." });
+    }
+    const newObject = await studentService.createStudentBulkService(
+      req.body.students,
+      subjectScheduleId
+    );
+    responses.created(res, newObject);
+  } catch (error) {
+    responses.internalServerError(res, error);
   }
 };
 
@@ -88,9 +119,9 @@ const updateStudent = async (req, res, next) => {
   try {
     const { id } = req.params;
     const updatedStudent = await studentService.updateStudent(id, req.body);
-    res.json({ message: "Student updated successfully", updatedStudent });
+    responses.updated(res, req.body);
   } catch (error) {
-    internalServerError(res, error);
+    responses.internalServerError(res, error);
   }
 };
 
@@ -98,9 +129,9 @@ const deleteStudent = async (req, res, next) => {
   try {
     const { id } = req.params;
     await studentService.deleteStudent(id);
-    res.json({ message: "Student deleted successfully", id });
+    responses.deleted(res, { id: id });
   } catch (error) {
-    internalServerError(res, error);
+    responses.internalServerError(res, error);
   }
 };
 
@@ -109,6 +140,7 @@ module.exports = {
   // getStudentsWithoutBody,
   getStudentById,
   createStudent,
+  createStudentBulkController,
   updateStudent,
   deleteStudent,
 };

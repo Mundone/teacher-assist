@@ -1,26 +1,22 @@
 const allModels = require("../models");
 
 const getAllSubjects = async ({ where, limit, offset, order }) => {
-
   let { count: totalSubjects, rows: subjects } =
     await allModels.Subject.findAndCountAll({
       include: [
         {
           model: allModels.SubjectLessonType,
-          attributes: ["lesson_type_id"], // Include other necessary fields from the join table if needed
-          include: [{
-            model: allModels.LessonType,
-            attributes: ["lesson_type_name"] // Adjust "name" to the actual field name of the lesson type's name
-          }]
+          attributes: ["lesson_type_id"],
+          include: [
+            {
+              model: allModels.LessonType,
+              attributes: ["lesson_type_name"],
+            },
+          ],
         },
       ],
-      attributes: [
-        "id",
-        "subject_name",
-        "createdAt",
-      ],
-
-      where: where, // Use the where options built from filters
+      attributes: ["id", "subject_name", "createdAt"],
+      where: where,
       limit: limit,
       offset: offset,
       order: order,
@@ -33,28 +29,38 @@ const getAllSubjects = async ({ where, limit, offset, order }) => {
   };
 };
 
-// Service
-const createSubject = async (subjectData, user_id) => {
-  // Add the user_id to the subjectData object
-  return await allModels.Subject.create({ ...subjectData, user_id });
+const getSubjectById = async (id, userId) => {
+  await checkIfUserCorrect(id, userId);
+  return await allModels.Subject.findByPk(id);
 };
 
+const createSubject = async (data, user_id) => {
+  return await allModels.Subject.create({ ...data, user_id });
+};
 
-const updateSubject = async (id, subjectData) => {
-  return await allModels.Subject.update(subjectData, {
+const updateSubject = async (id, data, userId) => {
+  await checkIfUserCorrect(id, userId);
+  return await allModels.Subject.update(data, {
     where: { id: id },
   });
 };
 
-const getSubjectById = async (id) => {
-  return await allModels.Subject.findByPk(id);
-};
-
-const deleteSubject = async (id) => {
+const deleteSubject = async (id, userId) => {
+  await checkIfUserCorrect(id, userId);
   return await allModels.Subject.destroy({
     where: { id: id },
   });
 };
+
+async function checkIfUserCorrect(id, userId) {
+  const isUserCorrect = await allModels.Subject.findOne({
+    where: { id: id, user_id: userId },
+  });
+
+  if (!isUserCorrect) {
+    throw new Error("Зөвшөөрөлгүй хандалт.", { statusCode: 403 });
+  }
+}
 
 module.exports = {
   getAllSubjects,

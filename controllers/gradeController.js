@@ -1,6 +1,6 @@
 const gradeService = require("../services/gradeService");
 const buildWhereOptions = require("../utils/sequelizeUtil");
-const { internalServerError } = require("../utils/responseUtil");
+const responses = require("../utils/responseUtil");
 
 const getGradesController = async (req, res, next) => {
   try {
@@ -68,7 +68,7 @@ const getGradesController = async (req, res, next) => {
     //   data: grades,
     // });
   } catch (error) {
-    internalServerError(res, error);
+    responses.internalServerError(res, error);
   }
 };
 
@@ -87,7 +87,7 @@ const updateGradeController = async (req, res) => {
 
     res.json({ message: result.message });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    responses.internalServerError(res, error);
   }
 };
 

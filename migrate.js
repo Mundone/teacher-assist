@@ -226,6 +226,14 @@ const insertRandomData = async () => {
       role_id: exampleRole.id,
     });
 
+    // Create a exampleUser
+    await models.UserFile.create({
+      user_id: exampleUser.id,
+      file_name: i + "-р файл",
+      file_path: Math.floor(i * Math.random()),
+      file_type: (i % 4) + "-р гэрчилгээ",
+    });
+
     // Create a exampleSubject
     const exampleSubject = await models.Subject.create({
       subject_name: subjectNames[i],
@@ -413,6 +421,19 @@ const insertRandomData = async () => {
       menu_id: adminMenu.id,
     });
   }
+
+  await models.UserFile.create({
+    user_id: 1,
+    file_name: "1-р файл",
+    file_path: Math.floor(Math.random()),
+    file_type: "1-р гэрчилгээ",
+  });
+  await models.UserFile.create({
+    user_id: 1,
+    file_name: "2-р файл",
+    file_path: Math.floor(Math.random()),
+    file_type: "1-р гэрчилгээ",
+  });
 };
 
 main();

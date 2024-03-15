@@ -40,10 +40,64 @@ const getCurrentWeekService = async () => {
   semester.weekNumber = weekCount + 1;
 
   return {
-    semester
+    semester,
   };
+};
+
+const getAllSemestersService = async ({ where, limit, offset, order }) => {
+  let { count: totalObjects, rows: objects } =
+    await allModels.Semester.findAndCountAll({
+      attributes: [
+        "id",
+        "semester_code",
+        "start_date",
+        "is_active",
+        // "user_id",
+        "createdAt",
+      ],
+      include: {
+        model: allModels.User,
+        attributes: ["id", "name", "email", "code"],
+      },
+
+      where: where,
+      limit: limit,
+      offset: offset,
+      order: order,
+      distinct: true,
+    });
+
+  return {
+    totalObjects,
+    objects,
+  };
+};
+
+const getSemesterByIdService = async (id) => {
+  return await allModels.Semester.findByPk(id);
+};
+
+const createSemesterService = async (objectData, user_id) => {
+  return await allModels.Semester.create({ ...objectData, user_id });
+};
+
+const updateSemesterService = async (id, objectData) => {
+  return await allModels.Semester.update(objectData, {
+    where: { id: id },
+  });
+};
+
+const deleteSemesterService = async (id) => {
+  return await allModels.Semester.destroy({
+    where: { id: id },
+  });
 };
 
 module.exports = {
   getCurrentWeekService,
+  getAllSemestersService,
+  getSemesterByIdService,
+  createSemesterService,
+  updateSemesterService,
+  deleteSemesterService,
 };

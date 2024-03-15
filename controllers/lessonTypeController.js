@@ -1,12 +1,12 @@
 const lessonTypeService = require("../services/lessonTypeService");
 const buildWhereOptions = require("../utils/sequelizeUtil");
-const { internalServerError } = require("../utils/responseUtil");
+const responses = require("../utils/responseUtil");
 
 const getLessonTypes = async (req, res, next) => {
   try {
     const userId = req.user && req.user.role_id;
     if (userId != 1 && userId != 2 && userId != 3) {
-      return res.status(403).json({ message: "Зөвшөөрөлгүй хандалт." });
+      responses.forbidden(res);
     }
 
     const { pageNo, pageSize, sortBy, sortOrder, filters } = req.pagination;
@@ -32,7 +32,7 @@ const getLessonTypes = async (req, res, next) => {
       data: lessonTypes,
     });
   } catch (error) {
-    internalServerError(res, error);
+    responses.internalServerError(res, error);
   }
 };
 
@@ -44,7 +44,7 @@ const getLessonTypesWithoutBody = async (req, res, next) => {
       });
     res.json(lessonTypes);
   } catch (error) {
-    internalServerError(res, error);
+    responses.internalServerError(res, error);
   }
 };
 
@@ -53,22 +53,21 @@ const getLessonTypeById = async (req, res, next) => {
     const { id } = req.params;
     const lessonType = await lessonTypeService.getLessonTypeById(id);
     if (!lessonType) {
-      return res.status(404).json({ message: "LessonType not found" });
+      // return res.status(404).json({ message: "LessonType not found" });
+      responses.notFound(res);
     }
     res.json(lessonType);
   } catch (error) {
-    internalServerError(res, error);
+    responses.internalServerError(res, error);
   }
 };
 
 const createLessonType = async (req, res, next) => {
   try {
-    const newLessonType = await lessonTypeService.createLessonType(req.body);
-    res
-      .status(201)
-      .json({ message: "LessonType created successfully", newLessonType });
+    const newObject = await lessonTypeService.createLessonType(req.body);
+    responses.created(res, newObject);
   } catch (error) {
-    internalServerError(res, error);
+    responses.internalServerError(res, error);
   }
 };
 
@@ -79,9 +78,9 @@ const updateLessonType = async (req, res, next) => {
       id,
       req.body
     );
-    res.json({ message: "LessonType updated successfully" });
+    responses.updated(res, req.body);
   } catch (error) {
-    internalServerError(res, error);
+    responses.internalServerError(res, error);
   }
 };
 
@@ -89,9 +88,9 @@ const deleteLessonType = async (req, res, next) => {
   try {
     const { id } = req.params;
     await lessonTypeService.deleteLessonType(id);
-    res.json({ message: "LessonType deleted successfully", id });
+    responses.deleted(res, {id: id});
   } catch (error) {
-    internalServerError(res, error);
+    responses.internalServerError(res, error);
   }
 };
 

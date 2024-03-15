@@ -1,21 +1,18 @@
 // controllers/teacherController.js
 const userService = require("../services/userService");
 const buildWhereOptions = require("../utils/sequelizeUtil");
-const { internalServerError } = require("../utils/responseUtil");
+const responses = require("../utils/responseUtil");
 
 const getUsers = async (req, res, next) => {
   try {
     const { pageNo, pageSize, sortBy, sortOrder, filters } = req.pagination;
 
     const queryOptions = {
-      // Assuming you have a function that translates filters to Sequelize where options
       where: buildWhereOptions(filters),
       limit: pageSize,
       offset: pageNo * pageSize,
       order: [[sortBy, sortOrder]],
     };
-
-    // console.log(req);
 
     const { totalObjects, objects } = await userService.getAllUsers(
       queryOptions
@@ -23,7 +20,7 @@ const getUsers = async (req, res, next) => {
 
     res.json({
       pagination: {
-        current_page_no: pageNo + 1, // Since pageNo in the response should be one-based
+        current_page_no: pageNo + 1,
         total_pages: Math.ceil(totalObjects / pageSize),
         per_page: pageSize,
         total_elements: totalObjects,
@@ -31,7 +28,7 @@ const getUsers = async (req, res, next) => {
       data: objects,
     });
   } catch (error) {
-    internalServerError(res, error);
+    responses.internalServerError(res, error);
   }
 };
 
@@ -44,7 +41,7 @@ const getUsersWithoutBody = async (req, res, next) => {
       });
     res.json(users);
   } catch (error) {
-    internalServerError(res, error);
+    responses.internalServerError(res, error);
   }
 };
 
@@ -53,7 +50,7 @@ const getUser = async (req, res, next) => {
     const { id } = req.params;
     const user = await userService.getUserById(id);
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      responses.notFound(res);
     }
     res.json(user);
   } catch (error) {
@@ -63,10 +60,10 @@ const getUser = async (req, res, next) => {
 
 const createUser = async (req, res, next) => {
   try {
-    const newUser = await userService.createUser(req.body);
-    res.status(201).json(newUser);
+    const newObject = await userService.createUser(req.body);
+    responses.created(res, newObject);
   } catch (error) {
-    internalServerError(res, error);
+    responses.internalServerError(res, error);
   }
 };
 
@@ -74,9 +71,9 @@ const updateUser = async (req, res, next) => {
   try {
     const { id } = req.params;
     await userService.updateUser(id, req.body);
-    res.json({ message: "User updated successfully", data: {...req.body, id: (Number(id))}});
+    responses.updated(res, req.body);
   } catch (error) {
-    internalServerError(res, error);
+    responses.internalServerError(res, error);
   }
 };
 
@@ -84,9 +81,9 @@ const deleteUser = async (req, res, next) => {
   try {
     const { id } = req.params;
     await userService.deleteUser(id);
-    res.json({ message: "User deleted successfully" });
+    responses.deleted(res, {id: id});
   } catch (error) {
-    internalServerError(res, error);
+    responses.internalServerError(res, error);
   }
 };
 

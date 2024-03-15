@@ -109,6 +109,13 @@ router.post(
   studentController.createStudent
 );
 
+
+router.post(
+  "/create_student_bulk",
+  accessControl([1, 2, 3]),
+  studentController.createStudentBulkController
+);
+
 /**
  * @swagger
  * /update_student/{id}:

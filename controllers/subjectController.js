@@ -2,8 +2,9 @@ const subjectService = require("../services/subjectService");
 const buildWhereOptions = require("../utils/sequelizeUtil");
 const { internalServerError } = require("../utils/responseUtil");
 
-exports.getSubjects = async (req, res, next) => {
+const getSubjects = async (req, res, next) => {
   try {
+    const userId = req.user && req.user.id;
     req.pagination.filters.push({
       fieldName: "user_id",
       operation: "eq",
@@ -40,51 +41,53 @@ exports.getSubjects = async (req, res, next) => {
   }
 };
 
-// Controller
-exports.createSubject = async (req, res, next) => {
+const getSubject = async (req, res, next) => {
   try {
-    // Assuming the authenticated user's ID is stored in req.user.id
-    // You should adjust the following line according to how your authentication system works
-    const userId = req.user && req.user.id; // Replace with your method of retrieving the user ID
-    if (!userId) {
-      return res
-        .status(403)
-        .json({ message: "User ID is required to create a subject." });
-    }
-
-    const newSubject = await subjectService.createSubject(req.body, userId);
-    res.status(201).json(newSubject);
-  } catch (error) {
-    internalServerError(res, error);
-  }
-};
-
-exports.updateSubject = async (req, res, next) => {
-  try {
+    const userId = req.user && req.user.id;
     const { id } = req.params;
-    await subjectService.updateSubject(id, req.body);
-    res.status(200).json({ message: "Subject updated successfully" });
-  } catch (error) {
-    internalServerError(res, error);
-  }
-};
-
-exports.getSubject = async (req, res, next) => {
-  try {
-    const { id } = req.params;
-    const subject = await subjectService.getSubjectById(id);
+    const subject = await subjectService.getSubjectById(id, userId);
     res.json(subject);
   } catch (error) {
     internalServerError(res, error);
   }
 };
 
-exports.deleteSubject = async (req, res, next) => {
+const createSubject = async (req, res, next) => {
   try {
+    const userId = req.user && req.user.id;
+    const newObject = await subjectService.createSubject(req.body, userId);
+    res.status(201).json(newObject);
+  } catch (error) {
+    internalServerError(res, error);
+  }
+};
+
+const updateSubject = async (req, res, next) => {
+  try {
+    const userId = req.user && req.user.id;
     const { id } = req.params;
-    await subjectService.deleteSubject(id);
+    await subjectService.updateSubject(id, req.body, userId);
+    res.status(200).json({ message: "Subject updated successfully" });
+  } catch (error) {
+    internalServerError(res, error);
+  }
+};
+
+const deleteSubject = async (req, res, next) => {
+  try {
+    const userId = req.user && req.user.id;
+    const { id } = req.params;
+    await subjectService.deleteSubject(id, userId);
     res.status(200).json({ message: "Subject deleted successfully" });
   } catch (error) {
     internalServerError(res, error);
   }
+};
+
+module.exports = {
+  getSubjects,
+  getSubject,
+  createSubject,
+  updateSubject,
+  deleteSubject,
 };

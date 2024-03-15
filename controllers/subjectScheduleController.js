@@ -1,6 +1,6 @@
 const subjectScheduleService = require("../services/subjectScheduleService");
 const buildWhereOptions = require("../utils/sequelizeUtil");
-const { internalServerError } = require('../utils/responseUtil');
+const responses = require("../utils/responseUtil");
 
 exports.getSubjectSchedules = async (req, res, next) => {
   try {
@@ -46,7 +46,7 @@ exports.getSubjectSchedules = async (req, res, next) => {
       data: subjectSchedules,
     });
   } catch (error) {
-    internalServerError(res, error);
+    responses.internalServerError(res, error);
   }
 };
 
@@ -60,36 +60,7 @@ exports.getSubjectSchedulesWithoutBody = async (req, res, next) => {
     res.json(subjectSchedules);
 
   } catch (error) {
-    internalServerError(res, error);
-  }
-};
-
-// Controller
-exports.createSubjectSchedule = async (req, res, next) => {
-  try {
-    // Assuming the authenticated user's ID is stored in req.user.id
-    // You should adjust the following line according to how your authentication system works
-    const userId = req.user && req.user.id; // Replace with your method of retrieving the user ID
-    if (!userId) {
-      return res
-        .status(403)
-        .json({ message: "User ID is required to create a subjectSchedule." });
-    }
-
-    const newSubjectSchedule = await subjectScheduleService.createSubjectSchedule(req.body, userId);
-    res.status(201).json(newSubjectSchedule);
-  } catch (error) {
-    internalServerError(res, error);
-  }
-};
-
-exports.updateSubjectSchedule = async (req, res, next) => {
-  try {
-    const { id } = req.params;
-    await subjectScheduleService.updateSubjectSchedule(id, req.body);
-    res.status(200).json({ message: "SubjectSchedule updated successfully" });
-  } catch (error) {
-    internalServerError(res, error);
+    responses.internalServerError(res, error);
   }
 };
 
@@ -99,7 +70,33 @@ exports.getSubjectSchedule = async (req, res, next) => {
     const subjectSchedule = await subjectScheduleService.getSubjectById(id);
     res.json(subjectSchedule);
   } catch (error) {
-    internalServerError(res, error);
+    responses.internalServerError(res, error);
+  }
+};
+
+exports.createSubjectSchedule = async (req, res, next) => {
+  try {
+    const userId = req.user && req.user.id;
+    if (!userId) {
+      return res
+        .status(403)
+        .json({ message: "User ID is required to create a subjectSchedule." });
+    }
+
+    const newObject = await subjectScheduleService.createSubjectSchedule(req.body, userId);
+    responses.created(res, newObject);
+  } catch (error) {
+    responses.internalServerError(res, error);
+  }
+};
+
+exports.updateSubjectSchedule = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    await subjectScheduleService.updateSubjectSchedule(id, req.body);
+    responses.updated(res, req.body);
+  } catch (error) {
+    responses.internalServerError(res, error);
   }
 };
 
@@ -107,8 +104,8 @@ exports.deleteSubjectSchedule = async (req, res, next) => {
   try {
     const { id } = req.params;
     await subjectScheduleService.deleteSubjectSchedule(id);
-    res.status(200).json({ message: "SubjectSchedule deleted successfully" });
+    responses.deleted(res, {id: id});
   } catch (error) {
-    internalServerError(res, error);
+    responses.internalServerError(res, error);
   }
 };

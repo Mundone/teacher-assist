@@ -1,6 +1,6 @@
 const userRoleService = require("../services/userRoleService");
 const buildWhereOptions = require("../utils/sequelizeUtil");
-const { internalServerError } = require("../utils/responseUtil");
+const responses = require("../utils/responseUtil");
 
 const getUserRoles = async (req, res, next) => {
   try {
@@ -25,7 +25,7 @@ const getUserRoles = async (req, res, next) => {
       data: userRoles,
     });
   } catch (error) {
-    internalServerError;
+    responses.internalServerError;
   }
 };
 
@@ -38,31 +38,31 @@ const getUserRolesWithoutBody = async (req, res, next) => {
       });
     res.json(userRoles);
   } catch (error) {
-    internalServerError(res, error);
+    responses.internalServerError(res, error);
   }
 };
 
 const getUserRoleById = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const student = await userRoleService.getUserRoleById(id);
-    if (!student) {
-      return res.status(404).json({ message: "UserRole not found" });
+    const userRole = await userRoleService.getUserRoleById(id);
+    if (!userRole) {
+      responses.notFound(res);
     }
-    res.json(student);
+    res.json(userRole);
   } catch (error) {
-    internalServerError(res, error);
+    responses.internalServerError(res, error);
   }
 };
 
 const createUserRole = async (req, res, next) => {
   try {
-    const newUserRole = await userRoleService.createUserRole(
+    const newObject = await userRoleService.createUserRole(
       req.body
     );
-    res.status(201).json({ message: "UserRole created successfully", newUserRole });
+    responses.created(res, newObject);
   } catch (error) {
-    internalServerError(res, error);
+    responses.internalServerError(res, error);
   }
 };
 
@@ -70,9 +70,9 @@ const updateUserRole = async (req, res, next) => {
   try {
     const { id } = req.params;
     await userRoleService.updateUserRole(id, req.body);
-    res.json({ message: "UserRole updated successfully", data: req.body });
+    responses.updated(res, req.body);
   } catch (error) {
-    internalServerError(res, error);
+    responses.internalServerError(res, error);
   }
 };
 
@@ -80,9 +80,9 @@ const deleteUserRole = async (req, res, next) => {
   try {
     const { id } = req.params;
     await userRoleService.deleteUserRole(id);
-    res.json({ message: "UserRole deleted successfully", id });
+    responses.deleted(res, {id: id});
   } catch (error) {
-    internalServerError(res, error);
+    responses.internalServerError(res, error);
   }
 };
 

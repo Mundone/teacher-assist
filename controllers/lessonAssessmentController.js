@@ -1,6 +1,6 @@
 const lessonAssessmentService = require("../services/lessonAssessmentService");
 const buildWhereOptions = require("../utils/sequelizeUtil");
-const { internalServerError } = require('../utils/responseUtil');
+const responses = require("../utils/responseUtil");
 
 const getLessonAssessments = async (req, res, next) => {
   try {
@@ -28,7 +28,7 @@ const getLessonAssessments = async (req, res, next) => {
     });
     
   } catch (error) {
-    internalServerError(res, error);
+    responses.internalServerError(res, error);
   }
 };
 
@@ -40,41 +40,42 @@ const getLessonAssessmentsWithoutBody = async (req, res, next) => {
       });
     res.json(lessonAssessments);
   } catch (error) {
-    internalServerError(res, error);
+    responses.internalServerError(res, error);
   }
 };
 
 const getLessonAssessmentById = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const student = await lessonAssessmentService.getLessonAssessmentById(id);
-    if (!student) {
-      return res.status(404).json({ message: "LessonAssessment not found" });
+    const object = await lessonAssessmentService.getLessonAssessmentById(id);
+    if (!object) {
+      // return res.status(404).json({ message: "LessonAssessment not found" });
+      responses.notFound(res);
     }
-    res.json(student);
+    res.json(object);
   } catch (error) {
-    internalServerError(res, error);
+    responses.internalServerError(res, error);
   }
 };
 
 const createLessonAssessment = async (req, res, next) => {
   try {
-    const newLessonAssessment = await lessonAssessmentService.createLessonAssessment(
+    const newObject = await lessonAssessmentService.createLessonAssessment(
       req.body
     );
-    res.status(201).json({ message: "LessonAssessment created successfully", newLessonAssessment });
+    responses.created(res, newObject);
   } catch (error) {
-    internalServerError(res, error);
+    responses.internalServerError(res, error);
   }
 };
 
 const updateLessonAssessment = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const updatedStudent = await lessonAssessmentService.updateLessonAssessment(id, req.body);
-    res.json({ message: "LessonAssessment updated successfully", updatedStudent });
+    await lessonAssessmentService.updateLessonAssessment(id, req.body);
+    responses.updated(res, req.body);
   } catch (error) {
-    internalServerError(res, error);
+    responses.internalServerError(res, error);
   }
 };
 
@@ -82,9 +83,9 @@ const deleteLessonAssessment = async (req, res, next) => {
   try {
     const { id } = req.params;
     await lessonAssessmentService.deleteLessonAssessment(id);
-    res.json({ message: "LessonAssessment deleted successfully", id });
+    responses.deleted(res, {id: id});
   } catch (error) {
-    internalServerError(res, error);
+    responses.internalServerError(res, error);
   }
 };
 

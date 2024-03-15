@@ -1,7 +1,7 @@
 const authService = require('../services/authService');
 const { validatePassword } = require('../utils/validation'); // Import the validatePassword function
 const jwt = require("jsonwebtoken");
-const { internalServerError } = require("../utils/responseUtil");
+const responses = require("../utils/responseUtil");
 
 const register = async (req, res) => {
   try {
@@ -20,14 +20,15 @@ const register = async (req, res) => {
 
     const passwordError = validatePassword(password);
     if (passwordError) {
-      return res.status(400).send({ message: passwordError });
+      // return res.status(400).send({ message: passwordError });
+      responses.badRequest(res);
     }
 
     const newUser = await authService.registerUser({ code, name, password, roleID });
     const { password: _, ...userInfo } = newUser.toJSON();
     res.status(201).send(userInfo);
   } catch (error) {
-    internalServerError(res, error);
+    responses.internalServerError(res, error);
   }
 };
 
@@ -42,7 +43,7 @@ const login = async (req, res) => {
       user,
     });
   } catch (error) {
-    internalServerError(res, error);
+    responses.internalServerError(res, error);
   }
 };
 
@@ -50,19 +51,21 @@ const login = async (req, res) => {
 const getAuthInfo = async (req, res) => {
   const token = req.headers.authorization?.split(" ")[1];
   if (!token) {
-    return res.status(401).json({ message: "Токен ирүүлээгүй байна." });
+    // return res.status(401).json({ message: "Токен ирүүлээгүй байна." });
+    responses.unauthorized(res);
   }
 
   jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
     if (err) {
-      return res.status(403).json({ message: "Токений хугацаа дууссан байна." });
+      // return res.status(403).json({ message: "Токений хугацаа дууссан байна." });
+      responses.forbidden(res);
     }
     try {
       // Use the decoded ID to fetch the user and refresh the token
       const { user, UserMenus } = await authService.refreshToken(decoded.id);
       res.json({ user, UserMenus });
     } catch (error) {
-      internalServerError(res, error);
+      responses.internalServerError(res, error);
     }
   });
 };
