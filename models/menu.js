@@ -23,6 +23,9 @@ class Menu extends Model {
       sorted_order: {
         type: DataTypes.INTEGER,
       },
+      icon_name: {
+        type: DataTypes.STRING(255),
+      },
     }, {
       sequelize,
       modelName: 'menu',
