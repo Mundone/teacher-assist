@@ -58,7 +58,7 @@ const createUser = async (data) => {
     email: data.email,
     name: data.name,
     password: hashedPassword,
-    role_id: data.roleID,
+    role_id: data.role_id,
   });
 };
 
