@@ -12,6 +12,9 @@ class Subject extends Model {
         subject_name: {
           type: DataTypes.STRING(255),
         },
+        subject_code: {
+          type: DataTypes.STRING(255),
+        },
         main_teacher_id: {
           type: DataTypes.INTEGER,
           references: {

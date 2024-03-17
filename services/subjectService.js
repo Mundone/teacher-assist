@@ -43,7 +43,9 @@ const getAllSubjects = async ({
 
 const getSubjectById = async (id, userId) => {
   await checkIfUserCorrect(id, userId);
-  return await allModels.Subject.findByPk(id);
+  return await allModels.Subject.findByPk(id, {
+    attributes: ["id", "subject_name", "createdAt"],
+  });
 };
 
 const createSubject = async (data, user_id) => {

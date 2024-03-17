@@ -16,10 +16,11 @@ exports.getSubjectSchedules = async (req, res, next) => {
     //   operation: "eq",
     //   value: userId,
     // });
-    const subjectId = req.body.subject_id ?? null;
+    // const subjectId = req.body.subject_id ?? null;
 
     const { pageNo, pageSize, sortBy, sortOrder, filters } = req.pagination;
 
+    const { subjectId } = req.params;
     const queryOptions = {
       // Assuming you have a function that translates filters to Sequelize where options
       where: buildWhereOptions(filters),
@@ -27,14 +28,13 @@ exports.getSubjectSchedules = async (req, res, next) => {
       offset: pageNo * pageSize,
       order: [[sortBy, sortOrder]],
       userId: userId,
-      subjectId: subjectId
+      subjectId: subjectId,
     };
 
     // console.log(req);
 
-    const { totalSubjectSchedules, subjectSchedules } = await subjectScheduleService.getAllSubjectSchedules(
-      queryOptions
-    );
+    const { totalSubjectSchedules, subjectSchedules } =
+      await subjectScheduleService.getAllSubjectSchedules(queryOptions);
 
     res.json({
       pagination: {
@@ -52,13 +52,15 @@ exports.getSubjectSchedules = async (req, res, next) => {
 
 exports.getSubjectSchedulesWithoutBody = async (req, res, next) => {
   try {
-    
+    const userId = req.user && req.user.id;
+    const { subjectId } = req.params;
     const subjectSchedules =
       await subjectScheduleService.getAllSubjectSchedules({
+        subjectId,
         isWithoutBody: true,
+        userId,
       });
-    res.json(subjectSchedules);
-
+    res.json({ data: subjectSchedules });
   } catch (error) {
     responses.internalServerError(res, error);
   }
@@ -67,7 +69,9 @@ exports.getSubjectSchedulesWithoutBody = async (req, res, next) => {
 exports.getSubjectSchedule = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const subjectSchedule = await subjectScheduleService.getSubjectById(id);
+    const subjectSchedule = await subjectScheduleService.getSubjectScheduleById(
+      id
+    );
     res.json(subjectSchedule);
   } catch (error) {
     responses.internalServerError(res, error);
@@ -83,7 +87,10 @@ exports.createSubjectSchedule = async (req, res, next) => {
         .json({ message: "User ID is required to create a subjectSchedule." });
     }
 
-    const newObject = await subjectScheduleService.createSubjectSchedule(req.body, userId);
+    const newObject = await subjectScheduleService.createSubjectSchedule(
+      req.body,
+      userId
+    );
     responses.created(res, newObject);
   } catch (error) {
     responses.internalServerError(res, error);
@@ -104,7 +111,7 @@ exports.deleteSubjectSchedule = async (req, res, next) => {
   try {
     const { id } = req.params;
     await subjectScheduleService.deleteSubjectSchedule(id);
-    responses.deleted(res, {id: id});
+    responses.deleted(res, { id: id });
   } catch (error) {
     responses.internalServerError(res, error);
   }

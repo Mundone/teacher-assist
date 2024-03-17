@@ -9,7 +9,6 @@ const getAllSubjectSchedules = async ({
   subjectId,
   isWithoutBody,
 }) => {
-
   const isUserIncludeSchedule = await allModels.Subject.findOne({
     where: { id: subjectId, user_id: userId },
   }).then((ss) => {
@@ -35,6 +34,13 @@ const getAllSubjectSchedules = async ({
         "lecture_time",
         "createdAt",
       ],
+      include: [
+        {
+          model: allModels.Subject,
+          attributes: ["id", "subject_name"],
+          where: { id: subjectId },
+        },
+      ],
     });
   }
 
@@ -54,7 +60,7 @@ const getAllSubjectSchedules = async ({
         {
           model: allModels.Subject,
           attributes: ["id", "subject_name"], // Include other necessary fields from the join table if needed
-          where: { id: subjectId},
+          where: { id: subjectId },
         },
       ],
       attributes: [
@@ -79,6 +85,19 @@ const getAllSubjectSchedules = async ({
   };
 };
 
+const getSubjectScheduleById = async (id) => {
+  return await allModels.SubjectSchedule.findByPk(id, {
+    attributes: [
+      "id",
+      "subject_id",
+      "lesson_type_id",
+      "lecture_day",
+      "lecture_time",
+      "createdAt",
+    ],
+  });
+};
+
 // Service
 const createSubjectSchedule = async (subjectScheduleData, user_id) => {
   // Add the user_id to the subjectScheduleData object
@@ -92,10 +111,6 @@ const updateSubjectSchedule = async (id, subjectScheduleData) => {
   return await allModels.SubjectSchedule.update(subjectScheduleData, {
     where: { id: id },
   });
-};
-
-const getSubjectScheduleById = async (id) => {
-  return await allModels.SubjectSchedule.findByPk(id);
 };
 
 const deleteSubjectSchedule = async (id) => {

@@ -11,7 +11,7 @@ const localConfig = {
     host: process.env.LOCAL_DB_HOST,
     dialect: "mysql",
     logging: false,
-    timezone: '+08:00', // for writing to database
+    timezone: "+08:00", // for writing to database
   },
   jwtSecret: process.env.LOCAL_JWT_SECRET,
 };
@@ -30,7 +30,7 @@ const productionConfig = {
         rejectUnauthorized: false,
       },
     },
-    timezone: '+08:00', // for writing to database
+    timezone: "+08:00", // for writing to database
   },
   jwtSecret: process.env.JWT_SECRET,
 };

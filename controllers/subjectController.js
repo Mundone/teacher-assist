@@ -1,6 +1,6 @@
 const subjectService = require("../services/subjectService");
 const buildWhereOptions = require("../utils/sequelizeUtil");
-const { internalServerError } = require("../utils/responseUtil");
+const responses = require("../utils/responseUtil");
 
 const getSubjects = async (req, res, next) => {
   try {
@@ -37,7 +37,7 @@ const getSubjects = async (req, res, next) => {
       data: subjects,
     });
   } catch (error) {
-    internalServerError(res, error);
+    responses.internalServerError(res, error);
   }
 };
 
@@ -59,7 +59,7 @@ const getSubject = async (req, res, next) => {
     const subject = await subjectService.getSubjectById(id, userId);
     res.json(subject);
   } catch (error) {
-    internalServerError(res, error);
+    responses.internalServerError(res, error);
   }
 };
 
@@ -67,9 +67,9 @@ const createSubject = async (req, res, next) => {
   try {
     const userId = req.user && req.user.id;
     const newObject = await subjectService.createSubject(req.body, userId);
-    res.status(201).json(newObject);
+    responses.created(res, newObject);
   } catch (error) {
-    internalServerError(res, error);
+    responses.internalServerError(res, error);
   }
 };
 
@@ -78,9 +78,9 @@ const updateSubject = async (req, res, next) => {
     const userId = req.user && req.user.id;
     const { id } = req.params;
     await subjectService.updateSubject(id, req.body, userId);
-    res.status(200).json({ message: "Subject updated successfully" });
+    responses.updated(res, req.body);
   } catch (error) {
-    internalServerError(res, error);
+    responses.internalServerError(res, error);
   }
 };
 
@@ -89,9 +89,9 @@ const deleteSubject = async (req, res, next) => {
     const userId = req.user && req.user.id;
     const { id } = req.params;
     await subjectService.deleteSubject(id, userId);
-    res.status(200).json({ message: "Subject deleted successfully" });
+    responses.deleted(res, {id: id});
   } catch (error) {
-    internalServerError(res, error);
+    responses.internalServerError(res, error);
   }
 };
 

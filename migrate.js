@@ -144,6 +144,20 @@ lessonAssessmentCodes = [
   "CD9",
 ];
 
+
+const subjectCodes = [
+  "F.CS101",
+  "F.CS102",
+  "S.ML103",
+  "S.MT101",
+  "S.PH101",
+  "S.SS102",
+  "F.CS100",
+  "S.CE102",
+  "F.EE101",
+  "S.MT102",
+];
+
 lessonAssessmentDescriptions = [
   "Цаг төлөвлөлт, хариуцлага",
   "Сурах хүсэл эрмэлзлэл, өөрийгөө илэрхийлэх",
@@ -237,6 +251,7 @@ const insertRandomData = async () => {
     // Create a exampleSubject
     const exampleSubject = await models.Subject.create({
       subject_name: subjectNames[i],
+      subject_code: subjectCodes[i],
       main_teacher_id: exampleUser.id,
       user_id: i % 2 == 0 ? 1 : 3,
     });
