@@ -46,7 +46,51 @@ const authenticateUser = async (code, password) => {
     role_id: inputUser.role_id,
   };
 
-  return { user, token };
+  const userMenus = await allModels.Menu.findAll({
+    include: [
+      {
+        model: allModels.UserRoleMenu,
+        where: { user_role_id: user.role_id },
+        include: [
+          {
+            model: allModels.UserRole,
+            where: { id: user.role_id },
+            attributes: [],
+          },
+        ],
+        attributes: [],
+      },
+    ],
+    order: [
+      ["parent_id", "ASC"],
+      ["sorted_order", "ASC"],
+    ],
+  });
+
+  const menusJson = userMenus.map((menu) => menu.toJSON());
+
+  let menuMap = {};
+  menusJson.forEach((menu) => {
+    if (menu.parent_id === 0) {
+      menu.ChildMenu = [];
+    }
+    menuMap[menu.id] = menu;
+
+    if (menu.parent_id !== 0) {
+      if (menuMap[menu.parent_id]) {
+        menuMap[menu.parent_id].ChildMenu.push(menu);
+        delete menu.ChildMenu;
+      } else {
+        menuMap[menu.parent_id] = { ChildMenu: [menu] };
+      }
+    }
+  });
+
+  let topLevelMenus = Object.values(menuMap).filter(
+    (menu) => menu.parent_id === 0
+  );
+
+  return { user, token, UserMenus: topLevelMenus };
 };
 
 // Service

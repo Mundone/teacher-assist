@@ -1,5 +1,5 @@
-const authService = require('../services/authService');
-const { validatePassword } = require('../utils/validation'); // Import the validatePassword function
+const authService = require("../services/authService");
+const { validatePassword } = require("../utils/validation"); // Import the validatePassword function
 const jwt = require("jsonwebtoken");
 const responses = require("../utils/responseUtil");
 
@@ -24,7 +24,12 @@ const register = async (req, res) => {
       responses.badRequest(res);
     }
 
-    const newUser = await authService.registerUser({ code, name, password, roleID });
+    const newUser = await authService.registerUser({
+      code,
+      name,
+      password,
+      roleID,
+    });
     const { password: _, ...userInfo } = newUser.toJSON();
     res.status(201).send(userInfo);
   } catch (error) {
@@ -32,15 +37,18 @@ const register = async (req, res) => {
   }
 };
 
-
 const login = async (req, res) => {
   try {
     const { code, password } = req.body;
-    const { user, token } = await authService.authenticateUser(code, password);
+    const { user, token, UserMenus } = await authService.authenticateUser(
+      code,
+      password
+    );
     res.status(200).json({
-      message: 'Амжилттай нэвтэрлээ.',
+      message: "Амжилттай нэвтэрлээ.",
       accessToken: token,
       user,
+      UserMenus
     });
   } catch (error) {
     responses.internalServerError(res, error);
