@@ -11,6 +11,40 @@ const getAllSubjects = async ({
     return await allModels.Subject.findAll({
       attributes: ["id", "subject_name", "createdAt"],
       where: where,
+      include: [
+        {
+          model: allModels.SubjectLessonType,
+          attributes: ["lesson_type_id"],
+          include: [
+            {
+              model: allModels.LessonType,
+              attributes: ["lesson_type_name"],
+            },
+          ],
+        },
+        {
+          model: allModels.SubjectSchedule,
+          attributes: ["lesson_type_id"],
+          include: [
+            {
+              model: allModels.Subject,
+              attributes: ["id", "subject_name"],
+            },
+            {
+              model: allModels.LessonType,
+              attributes: ["id", "lesson_type_name"],
+            },
+          ],
+          attributes: [
+            "id",
+            "subject_id",
+            "lesson_type_id",
+            "lecture_day",
+            "lecture_time",
+            "createdAt",
+          ],
+        },
+      ],
     });
   }
 
@@ -25,6 +59,28 @@ const getAllSubjects = async ({
               model: allModels.LessonType,
               attributes: ["lesson_type_name"],
             },
+          ],
+        },
+        {
+          model: allModels.SubjectSchedule,
+          attributes: ["lesson_type_id"],
+          include: [
+            {
+              model: allModels.Subject,
+              attributes: ["id", "subject_name"],
+            },
+            {
+              model: allModels.LessonType,
+              attributes: ["id", "lesson_type_name"],
+            },
+          ],
+          attributes: [
+            "id",
+            "subject_id",
+            "lesson_type_id",
+            "lecture_day",
+            "lecture_time",
+            "createdAt",
           ],
         },
       ],

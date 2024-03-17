@@ -116,7 +116,8 @@ const createSubjectSchedule = async (subjectScheduleData, user_id) => {
 };
 
 const updateSubjectSchedule = async (id, subjectScheduleData) => {
-  return await allModels.SubjectSchedule.update(subjectScheduleData, {
+  const { subject_id, ...updateData } = subjectScheduleData;
+  return await allModels.SubjectSchedule.update(updateData, {
     where: { id: id },
   });
 };
