@@ -1,5 +1,4 @@
 const allModels = require("../models");
-const { Sequelize } = require("sequelize");
 
 const getAllSubjects = async ({
   where,
@@ -10,47 +9,94 @@ const getAllSubjects = async ({
 }) => {
   if (isWithoutBody) {
     return await allModels.Subject.findAll({
-      attributes: [
-        "id", 
-        "subject_name", 
-        "createdAt",
-        [Sequelize.fn("COUNT", Sequelize.col("subject_schedules.student_subject_schedules.student_id")), "studentCount"]
+      attributes: ["id", "subject_name", "createdAt"],
+      where: where,
+      include: [
+        {
+          model: allModels.SubjectLessonType,
+          attributes: ["lesson_type_id"],
+          include: [
+            {
+              model: allModels.LessonType,
+              attributes: ["lesson_type_name"],
+            },
+          ],
+        },
+        {
+          model: allModels.SubjectSchedule,
+          attributes: ["lesson_type_id"],
+          include: [
+            {
+              model: allModels.StudentSubjectSchedule,
+              attributes: [
+                "id",
+                "student_id",
+                "subject_schedule_id",
+                "createdAt",
+              ],
+              include: [
+                {
+                  model: allModels.Student,
+                },
+              ],
+            },
+            {
+              model: allModels.LessonType,
+              attributes: ["id", "lesson_type_name"],
+            },
+          ],
+          attributes: [
+            "id",
+            "subject_id",
+            "lesson_type_id",
+            "lecture_day",
+            "lecture_time",
+            "createdAt",
+          ],
+        },
       ],
-      include: [{
-        model: allModels.SubjectSchedule,
-        attributes: [],
-        include: [{
-          model: allModels.StudentSubjectSchedule,
-          attributes: []
-        }]
-      }],
-      group: ["subject.id", "subject_schedules.id"],
-      raw: true,
     });
-    
   }
 
   let { count: totalSubjects, rows: subjects } =
     await allModels.Subject.findAndCountAll({
-      attributes: [
-        "id", 
-        "subject_name", 
-        "createdAt",
-        [Sequelize.fn("COUNT", Sequelize.col("subject_schedules.student_subject_schedules.student_id")), "studentCount"]
-      ],
-      include: [{
-        model: allModels.SubjectSchedule,
-        attributes: [],
-        include: [{
-          model: allModels.StudentSubjectSchedule,
-          attributes: [
+      include: [
+        {
+          model: allModels.SubjectLessonType,
+          attributes: ["lesson_type_id"],
+          include: [
+            {
+              model: allModels.LessonType,
+              attributes: ["lesson_type_name"],
+            },
           ],
-        }]
-      }],
-      group: ["subject.id", "subject_schedules.id"],
-      raw: true,
+        },
+        {
+          model: allModels.SubjectSchedule,
+          attributes: ["lesson_type_id"],
+          include: [
+            {
+              model: allModels.Subject,
+              attributes: ["id", "subject_name"],
+            },
+            {
+              model: allModels.LessonType,
+              attributes: ["id", "lesson_type_name"],
+            },
+          ],
+          attributes: [
+            "id",
+            "subject_id",
+            "lesson_type_id",
+            "lecture_day",
+            "lecture_time",
+            "createdAt",
+          ],
+        },
+      ],
+      attributes: ["id", "subject_name", "createdAt"],
       where: where,
-      // limit: limit,
+      limit: limit,
       offset: offset,
       order: order,
       distinct: true,
