@@ -2,7 +2,7 @@ const subjectScheduleService = require("../services/subjectScheduleService");
 const buildWhereOptions = require("../utils/sequelizeUtil");
 const responses = require("../utils/responseUtil");
 
-exports.getSubjectSchedules = async (req, res, next) => {
+const getSubjectSchedules = async (req, res, next) => {
   try {
     const userId = req.user && req.user.id;
     // const roleId = req.user && req.user.role_id;
@@ -50,7 +50,7 @@ exports.getSubjectSchedules = async (req, res, next) => {
   }
 };
 
-exports.getSubjectSchedulesWithoutBody = async (req, res, next) => {
+const getSubjectSchedulesWithoutBody = async (req, res, next) => {
   try {
     const userId = req.user && req.user.id;
     const { subjectId } = req.params;
@@ -66,11 +66,13 @@ exports.getSubjectSchedulesWithoutBody = async (req, res, next) => {
   }
 };
 
-exports.getSubjectSchedule = async (req, res, next) => {
+const getSubjectSchedule = async (req, res, next) => {
   try {
+    const userId = req.user && req.user.id;
     const { id } = req.params;
     const subjectSchedule = await subjectScheduleService.getSubjectScheduleById(
-      id
+      id,
+      userId
     );
     res.json(subjectSchedule);
   } catch (error) {
@@ -78,14 +80,14 @@ exports.getSubjectSchedule = async (req, res, next) => {
   }
 };
 
-exports.createSubjectSchedule = async (req, res, next) => {
+const createSubjectSchedule = async (req, res, next) => {
   try {
     const userId = req.user && req.user.id;
-    if (!userId) {
-      return res
-        .status(403)
-        .json({ message: "User ID is required to create a subjectSchedule." });
-    }
+    // if (!userId) {
+    //   return res
+    //     .status(403)
+    //     .json({ message: "User ID is required to create a subjectSchedule." });
+    // }
 
     const newObject = await subjectScheduleService.createSubjectSchedule(
       req.body,
@@ -97,22 +99,33 @@ exports.createSubjectSchedule = async (req, res, next) => {
   }
 };
 
-exports.updateSubjectSchedule = async (req, res, next) => {
+const updateSubjectSchedule = async (req, res, next) => {
   try {
+    const userId = req.user && req.user.id;
     const { id } = req.params;
-    await subjectScheduleService.updateSubjectSchedule(id, req.body);
+    await subjectScheduleService.updateSubjectSchedule(id, req.body, userId);
     responses.updated(res, req.body);
   } catch (error) {
     responses.internalServerError(res, error);
   }
 };
 
-exports.deleteSubjectSchedule = async (req, res, next) => {
+const deleteSubjectSchedule = async (req, res, next) => {
   try {
+    const userId = req.user && req.user.id;
     const { id } = req.params;
-    await subjectScheduleService.deleteSubjectSchedule(id);
+    await subjectScheduleService.deleteSubjectSchedule(id, userId);
     responses.deleted(res, { id: id });
   } catch (error) {
     responses.internalServerError(res, error);
   }
+};
+
+module.exports = {
+  getSubjectSchedules,
+  getSubjectSchedulesWithoutBody,
+  getSubjectSchedule,
+  createSubjectSchedule,
+  updateSubjectSchedule,
+  deleteSubjectSchedule,
 };

@@ -4,13 +4,14 @@ const responses = require("../utils/responseUtil");
 
 const getLessons = async (req, res, next) => {
   try {
-    const userId = req.user && req.user.role_id;
+    const userId = req.user && req.user.id;
     if (userId != 1 && userId != 2 && userId != 3) {
       // return res.status(403).json({ message: "Authentication is required." });
       responses.forbidden(res);
     }
 
-    const subjectId = req.body.subject_id ?? null;
+    // const subjectId = req.body.subject_id ?? null;
+    const { subjectId } = req.params;
 
     if (subjectId == null) {
       return res
@@ -52,8 +53,12 @@ const getLessons = async (req, res, next) => {
 
 const getLessonsWithoutBody = async (req, res, next) => {
   try {
+    const userId = req.user && req.user.id;
+    const { subjectId } = req.params;
     const lessons = await lessonService.getAllLessons({
       isWithoutBody: true,
+      subjectId,
+      userId,
     });
     res.json(lessons);
   } catch (error) {
@@ -63,8 +68,9 @@ const getLessonsWithoutBody = async (req, res, next) => {
 
 const getLessonById = async (req, res, next) => {
   try {
+    const userId = req.user && req.user.id;
     const { id } = req.params;
-    const subject = await lessonService.getLessonById(id);
+    const subject = await lessonService.getLessonById(id, userId);
     res.json(subject);
   } catch (error) {
     next(error);
@@ -73,7 +79,8 @@ const getLessonById = async (req, res, next) => {
 
 const createLesson = async (req, res, next) => {
   try {
-    const newObject = await lessonService.createLesson(req.body);
+    const userId = req.user && req.user.id;
+    const newObject = await lessonService.createLesson(req.body, userId);
     responses.created(res, newObject);
   } catch (error) {
     responses.internalServerError(res, error);
@@ -82,8 +89,9 @@ const createLesson = async (req, res, next) => {
 
 const updateLesson = async (req, res, next) => {
   try {
+    const userId = req.user && req.user.id;
     const { id } = req.params;
-    await lessonService.updateLesson(id, req.body);
+    await lessonService.updateLesson(id, req.body, userId);
     responses.updated(res, req.body);
   } catch (error) {
     responses.internalServerError(res, error);
@@ -92,8 +100,9 @@ const updateLesson = async (req, res, next) => {
 
 const deleteLesson = async (req, res, next) => {
   try {
+    const userId = req.user && req.user.id;
     const { id } = req.params;
-    await lessonService.deleteLesson(id);
+    await lessonService.deleteLesson(id, userId);
     responses.deleted(res, { id: id });
   } catch (error) {
     responses.internalServerError(res, error);

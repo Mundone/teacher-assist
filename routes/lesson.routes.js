@@ -31,11 +31,19 @@ const router = express.Router();
  */
 
 router.post(
-  "/get_lessons",
+  "/get_lessons/:subjectId",
   accessControl([1, 2, 3]),
   paginationMiddleware,
   lessonController.getLessons
 );
+
+router.get(
+  "/get_lessons/:subjectId",
+  accessControl([1, 2, 3]),
+  paginationMiddleware,
+  lessonController.getLessonsWithoutBody
+);
+
 
 // router.get(
 //   "/get_lesson_assessments",

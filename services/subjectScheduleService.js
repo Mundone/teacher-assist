@@ -9,20 +9,7 @@ const getAllSubjectSchedules = async ({
   subjectId,
   isWithoutBody,
 }) => {
-  const isUserIncludeSchedule = await allModels.Subject.findOne({
-    where: { id: subjectId, user_id: userId },
-  }).then((ss) => {
-    if (ss != null) {
-      return true;
-    }
-    return false;
-  });
-
-  if (!isUserIncludeSchedule) {
-    const error = new Error("Зөвшөөрөлгүй хандалт.");
-    error.statusCode = 403;
-    throw error;
-  }
+  await checkIfUserCorrect(subjectId, userId);
 
   if (isWithoutBody) {
     return await allModels.SubjectSchedule.findAll({
@@ -93,8 +80,8 @@ const getAllSubjectSchedules = async ({
   };
 };
 
-const getSubjectScheduleById = async (id) => {
-  return await allModels.SubjectSchedule.findByPk(id, {
+const getSubjectScheduleById = async (id, userId) => {
+  const returnObject = await allModels.SubjectSchedule.findByPk(id, {
     attributes: [
       "id",
       "subject_id",
@@ -104,29 +91,51 @@ const getSubjectScheduleById = async (id) => {
       "createdAt",
     ],
   });
+
+  await checkIfUserCorrect(returnObject.subject_id, userId);
+  return returnObject;
 };
 
 // Service
-const createSubjectSchedule = async (subjectScheduleData, user_id) => {
+const createSubjectSchedule = async (
+  subjectScheduleData,
+   userId
+) => {
   // Add the user_id to the subjectScheduleData object
+  const returnObject = await allModels.Lesson.findByPk(subjectScheduleData.subject_id);
+  await checkIfUserCorrect(returnObject.subject_id, userId);
   return await allModels.SubjectSchedule.create({
     ...subjectScheduleData,
-    user_id,
+    // user_id,
   });
 };
 
-const updateSubjectSchedule = async (id, subjectScheduleData) => {
+const updateSubjectSchedule = async (id, subjectScheduleData, userId) => {
+  const returnObject = await allModels.Lesson.findByPk(id);
+  await checkIfUserCorrect(returnObject.subject_id, userId);
   const { subject_id, ...updateData } = subjectScheduleData;
   return await allModels.SubjectSchedule.update(updateData, {
     where: { id: id },
   });
 };
 
-const deleteSubjectSchedule = async (id) => {
+const deleteSubjectSchedule = async (id, userId) => {
+  const returnObject = await allModels.Lesson.findByPk(id);
+  await checkIfUserCorrect(returnObject.subject_id, userId);
   return await allModels.SubjectSchedule.destroy({
     where: { id: id },
   });
 };
+
+async function checkIfUserCorrect(subjectId, userId) {
+  const isUserCorrect = await allModels.Subject.findOne({
+    where: { id: subjectId, user_id: userId },
+  });
+
+  if (!isUserCorrect) {
+    throw new Error("Зөвшөөрөлгүй хандалт.", { statusCode: 403 });
+  }
+}
 
 module.exports = {
   getAllSubjectSchedules,
