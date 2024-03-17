@@ -396,6 +396,14 @@ const insertRandomData = async () => {
     sorted_order: 4,
     icon_name: "material-symbols-light:subject",
   });
+  await models.Menu.create({
+    menu_code: "0105",
+    parent_id: 2,
+    menu_name: "Оюутнууд",
+    router_link: "/dashboard/students",
+    sorted_order: 4,
+    icon_name: "material-symbols-light:subject",
+  });
 
   await models.Menu.create({
     menu_code: "0201",
@@ -411,6 +419,14 @@ const insertRandomData = async () => {
     menu_name: "Хэрэглэгчийн бүлэг",
     router_link: "/dashboard/userRole",
     sorted_order: 2,
+    icon_name: "material-symbols-light:subject",
+  });
+  await models.Menu.create({
+    menu_code: "0203",
+    parent_id: 3,
+    menu_name: "Багшийн портфолио",
+    router_link: "/dashboard/userFile",
+    sorted_order: 3,
     icon_name: "material-symbols-light:subject",
   });
 

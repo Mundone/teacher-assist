@@ -41,6 +41,17 @@ const getSubjects = async (req, res, next) => {
   }
 };
 
+const getSubjectWithoutBody = async (req, res, next) => {
+  try {
+    const objects = await subjectService.getAllSubjects({
+      isWithoutBody: true,
+    });
+    res.json(objects);
+  } catch (error) {
+    responses.internalServerError(res, error);
+  }
+};
+
 const getSubject = async (req, res, next) => {
   try {
     const userId = req.user && req.user.id;
@@ -86,6 +97,7 @@ const deleteSubject = async (req, res, next) => {
 
 module.exports = {
   getSubjects,
+  getSubjectWithoutBody,
   getSubject,
   createSubject,
   updateSubject,

@@ -37,6 +37,12 @@ router.post(
   subjectController.getSubjects
 );
 
+router.get(
+  "/get_subjects",
+  accessControl([1, 2, 3]),
+  subjectController.getSubjectWithoutBody
+);
+
 /**
  * @swagger
  * /get_subject/{id}:

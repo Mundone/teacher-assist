@@ -1,6 +1,18 @@
 const allModels = require("../models");
 
-const getAllSubjects = async ({ where, limit, offset, order }) => {
+const getAllSubjects = async ({
+  where,
+  limit,
+  offset,
+  order,
+  isWithoutBody,
+}) => {
+  if (isWithoutBody) {
+    return await allModels.Subject.findAll({
+      attributes: ["id", "subject_name", "createdAt"],
+    });
+  }
+
   let { count: totalSubjects, rows: subjects } =
     await allModels.Subject.findAndCountAll({
       include: [
