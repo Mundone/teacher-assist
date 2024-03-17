@@ -43,7 +43,17 @@ const getSubjects = async (req, res, next) => {
 
 const getSubjectWithoutBody = async (req, res, next) => {
   try {
+    const userId = req.user && req.user.id;
+    const filters = [
+      {
+        fieldName: "user_id",
+        operation: "eq",
+        value: userId,
+      },
+    ];
+
     const objects = await subjectService.getAllSubjects({
+      where: buildWhereOptions(filters),
       isWithoutBody: true,
     });
     res.json(objects);
@@ -89,7 +99,7 @@ const deleteSubject = async (req, res, next) => {
     const userId = req.user && req.user.id;
     const { id } = req.params;
     await subjectService.deleteSubject(id, userId);
-    responses.deleted(res, {id: id});
+    responses.deleted(res, { id: id });
   } catch (error) {
     responses.internalServerError(res, error);
   }

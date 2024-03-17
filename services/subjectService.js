@@ -10,6 +10,7 @@ const getAllSubjects = async ({
   if (isWithoutBody) {
     return await allModels.Subject.findAll({
       attributes: ["id", "subject_name", "createdAt"],
+      where: where,
     });
   }
 

@@ -40,6 +40,10 @@ const getAllSubjectSchedules = async ({
           attributes: ["id", "subject_name"],
           where: { id: subjectId },
         },
+        {
+          model: allModels.LessonType,
+          attributes: ["id", "lesson_type_name"],
+        },
       ],
     });
   }
@@ -61,6 +65,10 @@ const getAllSubjectSchedules = async ({
           model: allModels.Subject,
           attributes: ["id", "subject_name"], // Include other necessary fields from the join table if needed
           where: { id: subjectId },
+        },
+        {
+          model: allModels.LessonType,
+          attributes: ["id", "lesson_type_name"],
         },
       ],
       attributes: [
