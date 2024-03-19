@@ -17,27 +17,42 @@ const getAllStudentGrades = async ({
   }
 
   let { count: totalGrades, rows: grades } =
-    await allModels.Grade.findAndCountAll({
+    await allModels.Student.findAndCountAll({
       include: [
         {
-          model: allModels.Student,
-          attributes: ["id", "name", "student_code", "createdAt"],
-        },
-        {
-          model: allModels.Lesson,
+          model: allModels.Grade,
           attributes: [
-            "id",
-            "subject_id",
-            "lesson_assessment_id",
-            "week_number",
-            "lesson_number",
-            "createdAt",
-            "lesson_type_id",
+            // "id",
+            // "student_id",
+            //  "lesson_id",
+            "grade",
           ],
-          where: { subject_id: subjectId },
+
+          include: {
+            model: allModels.Lesson,
+            attributes: [
+              // "id",
+              // "subject_id",
+              "lesson_assessment_id",
+              "week_number",
+              // "lesson_number",
+              "createdAt",
+              // "lesson_type_id",
+            ],
+            include: {
+              model: allModels.LessonAssessment,
+              attributes: ["lesson_type_id"],
+              include: {
+                model: allModels.LessonType,
+                attributes: ["id", "lesson_type_name"],
+              },
+            },
+            where: { subject_id: subjectId },
+            
+          },
         },
       ],
-      attributes: ["id", "student_id", "lesson_id", "grade"],
+      attributes: ["id", "name", "student_code", "createdAt"],
 
       where: where,
       limit: limit,
@@ -45,6 +60,35 @@ const getAllStudentGrades = async ({
       order: order,
       distinct: true,
     });
+
+  // await allModels.Grade.findAndCountAll({
+  //   include: [
+  //     {
+  //       model: allModels.Student,
+  //       attributes: ["id", "name", "student_code", "createdAt"],
+  //     },
+  //     {
+  //       model: allModels.Lesson,
+  //       attributes: [
+  //         "id",
+  //         "subject_id",
+  //         "lesson_assessment_id",
+  //         "week_number",
+  //         "lesson_number",
+  //         "createdAt",
+  //         "lesson_type_id",
+  //       ],
+  //       where: { subject_id: subjectId },
+  //     },
+  //   ],
+  //   attributes: ["id", "student_id", "lesson_id", "grade"],
+
+  //   where: where,
+  //   limit: limit,
+  //   offset: offset,
+  //   order: order,
+  //   distinct: true,
+  // });
 
   return {
     totalGrades,

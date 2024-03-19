@@ -28,24 +28,24 @@ const getGradesController = async (req, res, next) => {
     );
 
     // Transform grades into a structure grouped by students
-    let studentData = {};
-    grades.forEach(grade => {
-      const { student, lesson, grade: gradeValue } = grade;
-      if (!studentData[student.id]) {
-        studentData[student.id] = {
-          student_id: student.id,
-          name: student.name,
-          student_code: student.student_code,
-          grades: {}
-        };
-      }
-      studentData[student.id].grades[lesson.id] = {
-        id: lesson.id,
-        grade: gradeValue,
-        week_number: lesson.week_number,
-        lesson_number: lesson.lesson_number
-      };
-    });
+    // let studentData = {};
+    // grades.forEach(grade => {
+    //   const { student, lesson, grade: gradeValue } = grade;
+    //   if (!studentData[student.id]) {
+    //     studentData[student.id] = {
+    //       student_id: student.id,
+    //       name: student.name,
+    //       student_code: student.student_code,
+    //       grades: {}
+    //     };
+    //   }
+    //   studentData[student.id].grades[lesson.id] = {
+    //     id: lesson.id,
+    //     grade: gradeValue,
+    //     week_number: lesson.week_number,
+    //     lesson_number: lesson.lesson_number
+    //   };
+    // });
 
     res.json({
       pagination: {
