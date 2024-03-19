@@ -490,6 +490,19 @@ const insertRandomData = async () => {
     file_path: Math.floor(Math.random()),
     file_type: "1-р гэрчилгээ",
   });
+
+  
+  const attendanceObject = await models.Attendance.create({
+    lesson_id: 1,
+    subject_schedule_id: 1,
+    qr: "asdqw"
+  });
+  await models.AttendanceResponse.create({
+    user_id: attendanceObject.id,
+    submitted_name: "Мөнх-Очир",
+    submitted_code: "B200910045",
+    attendance_date: new Date()
+  });
 };
 
 main();

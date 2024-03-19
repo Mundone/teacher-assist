@@ -2,6 +2,7 @@ const { Sequelize } = require("sequelize");
 const sequelize = require("../config/sequelizeConfig"); // Adjust the path as needed
 
 // Import models as classes
+const Attendance = require("./attendance");
 const AttendanceResponse = require("./attendanceResponse");
 const Grade = require("./grade");
 const Lesson = require("./lesson");
@@ -20,6 +21,7 @@ const UserRole = require("./userRole");
 const SubjectLessonType = require("./subjectLessonType");
 
 // Initialize models in order respecting foreign key dependencies
+Attendance.init(sequelize, Sequelize.DataTypes);
 AttendanceResponse.init(sequelize, Sequelize.DataTypes);
 Grade.init(sequelize, Sequelize.DataTypes);
 Lesson.init(sequelize, Sequelize.DataTypes);
@@ -39,6 +41,7 @@ SubjectLessonType.init(sequelize, Sequelize.DataTypes);
 
 // Set up associations
 const models = {
+  Attendance,
   AttendanceResponse,
   Grade,
   Lesson,

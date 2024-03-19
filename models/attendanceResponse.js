@@ -8,17 +8,10 @@ class AttendanceResponse extends Model {
         primaryKey: true,
         autoIncrement: true,
       },
-      lesson_id: {
+      attendance_id: {
         type: DataTypes.INTEGER,
         references: {
-          model: 'lesson', // Ensure this matches your Subject model name
-          key: 'id',
-        },
-      },
-      subject_schedule_id: {
-        type: DataTypes.INTEGER,
-        references: {
-          model: 'subject_schedule', // Ensure this matches your Subject model name
+          model: 'attendance',
           key: 'id',
         },
       },
@@ -33,15 +26,14 @@ class AttendanceResponse extends Model {
       },
     }, {
       sequelize,
-      modelName: 'attendance_record',
-      tableName: 'attendance_record', 
+      modelName: 'attendance_response',
+      tableName: 'attendance_response', 
       timestamps: true,
     });
   }
 
   static associate(models) {
-    this.belongsTo(models.Lesson, { foreignKey: 'lesson_id' });
-    this.belongsTo(models.SubjectSchedule, { foreignKey: 'subject_schedule_id' });
+    this.belongsTo(models.Attendance, { foreignKey: 'attendance_id' });
   }
 }
 

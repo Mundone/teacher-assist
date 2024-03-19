@@ -108,6 +108,67 @@ const getAllSubjects = async ({
   };
 };
 
+// const getAllSubjects = async ({
+//   where,
+//   limit,
+//   offset,
+//   order,
+//   isWithoutBody,
+// }) => {
+//   if (isWithoutBody) {
+//     return await allModels.Subject.findAll({
+//       attributes: [
+//         "id", 
+//         "subject_name", 
+//         "createdAt",
+//         [Sequelize.fn("COUNT", Sequelize.col("subject_schedules.student_subject_schedules.student_id")), "studentCount"]
+//       ],
+//       include: [{
+//         model: allModels.SubjectSchedule,
+//         attributes: [],
+//         include: [{
+//           model: allModels.StudentSubjectSchedule,
+//           attributes: []
+//         }]
+//       }],
+//       group: ["subject.id", "subject_schedules.id"],
+//       raw: true,
+//     });
+    
+//   }
+
+//   let { count: totalSubjects, rows: subjects } =
+//     await allModels.Subject.findAndCountAll({
+//       attributes: [
+//         "id", 
+//         "subject_name", 
+//         "createdAt",
+//         [Sequelize.fn("COUNT", Sequelize.col("subject_schedules.student_subject_schedules.student_id")), "studentCount"]
+//       ],
+//       include: [{
+//         model: allModels.SubjectSchedule,
+//         attributes: [],
+//         include: [{
+//           model: allModels.StudentSubjectSchedule,
+//           attributes: [
+//           ],
+//         }]
+//       }],
+//       group: ["subject.id", "subject_schedules.id"],
+//       raw: true,
+//       where: where,
+//       // limit: limit,
+//       offset: offset,
+//       order: order,
+//       distinct: true,
+//     });
+
+//   return {
+//     totalSubjects,
+//     subjects,
+//   };
+// };
+
 const getSubjectById = async (id, userId) => {
   await checkIfUserCorrect(id, userId);
   return await allModels.Subject.findByPk(id, {
