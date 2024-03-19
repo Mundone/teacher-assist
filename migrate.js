@@ -144,7 +144,6 @@ lessonAssessmentCodes = [
   "CD9",
 ];
 
-
 const subjectCodes = [
   "F.CS101",
   "F.CS102",
@@ -286,6 +285,15 @@ const insertRandomData = async () => {
       ],
     });
 
+    const exampleLessonType2 = await models.LessonType.findOne({
+      where: { id: Math.floor(Math.random() * lessonTypeNames.length) + 1 },
+      include: [
+        {
+          model: models.LessonAssessment,
+        },
+      ],
+    });
+
     // await exampleUser.addSubject(exampleSubject);
 
     // await models.TeacherSubject.create({
@@ -302,10 +310,25 @@ const insertRandomData = async () => {
       lecture_time: randomDataContainer.randomTime,
     });
 
+    const exampleSubjectSchedule2 = await models.SubjectSchedule.create({
+      subject_id: exampleSubject.id,
+      lesson_type_id: exampleLessonType2.id,
+      lecture_day: (randomDataContainer.randomDay * 5) % 7,
+      lecture_time: (randomDataContainer.randomTime * 6) % 7,
+    });
+
     // Create lessons
-    for (let week = 1; week <= 16; week++) {
+    for (let week = 1; week <= 4; week++) {
       if (exampleLessonType && exampleLessonType.lesson_assessments) {
         for (const assessment of exampleLessonType.lesson_assessments) {
+          await models.Lesson.create({
+            subject_id: exampleSubject.id,
+            lesson_assessment_id: assessment.id,
+            week_number: week,
+            lesson_number: week,
+          });
+        }
+        for (const assessment of exampleLessonType2.lesson_assessments) {
           await models.Lesson.create({
             subject_id: exampleSubject.id,
             lesson_assessment_id: assessment.id,
@@ -326,6 +349,10 @@ const insertRandomData = async () => {
     await models.StudentSubjectSchedule.create({
       student_id: student.id,
       subject_schedule_id: exampleSubjectSchedule.id,
+    });
+    await models.StudentSubjectSchedule.create({
+      student_id: student.id,
+      subject_schedule_id: exampleSubjectSchedule2.id,
     });
 
     const allLessons = await models.Lesson.findAll();
@@ -491,17 +518,16 @@ const insertRandomData = async () => {
     file_type: "1-р гэрчилгээ",
   });
 
-  
   const attendanceObject = await models.Attendance.create({
     lesson_id: 1,
     subject_schedule_id: 1,
-    qr: "asdqw"
+    qr: "asdqw",
   });
   await models.AttendanceResponse.create({
     user_id: attendanceObject.id,
     submitted_name: "Мөнх-Очир",
     submitted_code: "B200910045",
-    attendance_date: new Date()
+    attendance_date: new Date(),
   });
 };
 
