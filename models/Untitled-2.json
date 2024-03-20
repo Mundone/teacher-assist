@@ -1,0 +1,94 @@
+{
+  "pagination": {
+    "current_page_no": 1,
+    "total_pages": 6,
+    "per_page": 20,
+    "total_elements": 105
+  },
+  "table_header": [
+    {
+      "week_no": 1,
+      "lesson_no": 1,
+      "lesson_assessment_code": "BC1",
+      "lesson_assessment_sorted_order": 1
+    },
+    {
+      "week_no": 1,
+      "lesson_no": 1,
+      "lesson_assessment_code": "BC2",
+      "lesson_assessment_sorted_order": 2
+    },
+    {
+      "week_no": 2,
+      "lesson_no": 2,
+      "lesson_assessment_code": "BC1",
+      "lesson_assessment_sorted_order": 1
+    },
+    {
+      "week_no": 2,
+      "lesson_no": 2,
+      "lesson_assessment_code": "BC2",
+      "lesson_assessment_sorted_order": 2
+    },
+    {
+      "week_no": 3,
+      "lesson_no": 3,
+      "lesson_assessment_code": "BC1",
+      "lesson_assessment_sorted_order": 1
+    }
+  ],
+  "table_data": [
+    {
+      "student_name": "Хулан",
+      "student_code": "B200101045",
+      "grades": [
+        {
+          "grade_id": 97,
+          "grade": 6
+        },
+        {
+          "grade_id": 123,
+          "grade": 5
+        },
+        {
+          "grade_id": 145,
+          "grade": 4
+        },
+        {
+          "grade_id": 157,
+          "grade": 7
+        },
+        {
+          "grade_id": 178,
+          "grade": 2
+        }
+      ]
+    },
+    {
+      "student_name": "Батбилэгт",
+      "student_code": "B200101003",
+      "grades": [
+        {
+          "grade_id": 197,
+          "grade": 2
+        },
+        {
+          "grade_id": 223,
+          "grade": 8
+        },
+        {
+          "grade_id": 345,
+          "grade": 7
+        },
+        {
+          "grade_id": 457,
+          "grade": 7
+        },
+        {
+          "grade_id": 478,
+          "grade": 2
+        }
+      ]
+    }
+  ]
+}

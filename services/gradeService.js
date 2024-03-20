@@ -17,34 +17,42 @@ const getAllStudentGrades = async ({
   }
 
   let { count: totalGrades, rows: grades } =
-    await allModels.Lesson.findAndCountAll({
+    await allModels.Student.findAndCountAll({
       include: [
         {
           model: allModels.Grade,
           attributes: ["id", "grade"],
 
           include: {
-            model: allModels.Student,
-            attributes: ["name", "student_code"],
-          },
-        },
-        {
-          model: allModels.LessonAssessment,
-          attributes: ["lesson_type_id", "lesson_assessment_code"],
-          include: {
-            model: allModels.LessonType,
-            attributes: ["id", "lesson_type_name"],
+            model: allModels.Lesson,
+            attributes: [
+              "lesson_assessment_id",
+              "week_number",
+              "createdAt",
+              "lesson_number",
+            ],
+            where: { subject_id: subjectId },
+            include: [
+              {
+                model: allModels.LessonAssessment,
+                attributes: ["lesson_type_id", "lesson_assessment_code"],
+                include: {
+                  model: allModels.LessonType,
+                  attributes: ["id", "lesson_type_name"],
+                },
+              },
+            ],
           },
         },
       ],
-      attributes: ["lesson_assessment_id", "week_number", "createdAt"],
+      attributes: ["name", "student_code"],
 
       where: { subject_id: subjectId },
 
       where: where,
       limit: limit,
       offset: offset,
-      order: order,
+      order: [["student_code", "asc"]],
       distinct: true,
     });
 
@@ -53,6 +61,44 @@ const getAllStudentGrades = async ({
     grades,
   };
 };
+
+// await allModels.Lesson.findAndCountAll({
+//   include: [
+//     {
+//       model: allModels.Grade,
+//       attributes: ["id", "grade"],
+
+//       include: {
+//         model: allModels.Student,
+//         attributes: ["name", "student_code"],
+//       },
+//     },
+//     {
+//       model: allModels.LessonAssessment,
+//       attributes: ["lesson_type_id", "lesson_assessment_code"],
+//       include: {
+//         model: allModels.LessonType,
+//         attributes: ["id", "lesson_type_name"],
+//       },
+//     },
+//   ],
+//   attributes: ["lesson_assessment_id", "week_number", "createdAt"],
+
+//   where: { subject_id: subjectId },
+
+//   where: where,
+//   limit: limit,
+//   offset: offset,
+//   order: order,
+//   distinct: true,
+// });
+
+// return {
+// totalGrades,
+// grades,
+// };
+// };
+
 // await allModels.Student.findAndCountAll({
 //   include: [
 //     {

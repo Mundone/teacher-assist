@@ -137,11 +137,11 @@ lessonAssessmentCodes = [
   "CT3",
   "CT4",
   "CT5",
-  "CT5",
   "CT6",
-  "CD7",
-  "CD8",
-  "CD9",
+  "CT7",
+  "CT8",
+  "CT9",
+  "CT10",
 ];
 
 const subjectCodes = [
