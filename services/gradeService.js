@@ -42,7 +42,10 @@ const getAllStudentGrades = async ({
                 },
               },
             ],
+
           },
+          
+          order: [["id", "asc"]],
         },
       ],
       attributes: ["name", "student_code"],

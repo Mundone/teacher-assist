@@ -31,7 +31,7 @@ const getGradesController = async (req, res, next) => {
 
     const students = grades;
 
-    const newStudents = students.map((student) => {
+    var newStudents = students.map((student) => {
       const grades = student?.grades.map((innerGrade) => {
         return {
           grade_id: innerGrade?.id,
@@ -52,9 +52,29 @@ const getGradesController = async (req, res, next) => {
       };
     });
 
+    // console.log(newStudents);
+
+    newStudents.forEach((student) => {
+      student.grades.sort((a, b) => {
+        if (a.lesson_type_name !== b.lesson_type_name) {
+          return a.lesson_type_name.localeCompare(b.lesson_type_name);
+        } else if (a.week_no !== b.week_no) {
+          return a.week_no - b.week_no;
+        } else if (a.lesson_no !== b.lesson_no) {
+          return a.lesson_no - b.lesson_no;
+        } else {
+          return a.lesson_assessment_code.localeCompare(
+            b.lesson_assessment_code
+          );
+        }
+      });
+    });
+
+    console.log(newStudents);
+
     const headerData = newStudents.map((newStudent) => ({
       grades: newStudent.grades.map(
-        ({ week_no, lesson_no, lesson_assessment_code }) => ({
+        ({ week_no, lesson_no, lesson_assessment_code, lesson_type_name }) => ({
           lesson_type_name,
           week_no,
           lesson_no,
