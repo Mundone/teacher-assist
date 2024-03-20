@@ -20,7 +20,15 @@ const registerUser = async ({ code, name, password, roleID }) => {
 };
 
 const authenticateUser = async (code, password) => {
-  const inputUser = await allModels.User.findOne({ where: { code } });
+  const inputUser = await allModels.User.findOne({
+    where: { code },
+    include: [
+      {
+        model: allModels.UserRole,
+        attributes: ["id", "role_name"],
+      },
+    ],
+  });
   if (!inputUser) {
     error.statusCode = 404;
     throw new Error("Хэрэглэгч олдсонгүй.");
@@ -44,6 +52,7 @@ const authenticateUser = async (code, password) => {
     email: inputUser.email,
     code: inputUser.code,
     role_id: inputUser.role_id,
+    user_role: inputUser.user_role,
   };
 
   const userMenus = await allModels.Menu.findAll({
@@ -56,12 +65,6 @@ const authenticateUser = async (code, password) => {
             model: allModels.UserRole,
             where: { id: user.role_id },
             attributes: [],
-            include: [
-              {
-                model: allModels.UserRole,
-                attributes: ["id", "role_name"],
-              },
-            ],
           },
         ],
         attributes: [],
