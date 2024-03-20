@@ -56,6 +56,12 @@ const authenticateUser = async (code, password) => {
             model: allModels.UserRole,
             where: { id: user.role_id },
             attributes: [],
+            include: [
+              {
+                model: allModels.UserRole,
+                attributes: ["id", "role_name"],
+              },
+            ],
           },
         ],
         attributes: [],

@@ -40,6 +40,8 @@ const getGradesController = async (req, res, next) => {
           lesson_no: innerGrade?.lesson?.lesson_number,
           lesson_assessment_code:
             innerGrade?.lesson?.lesson_assessment.lesson_assessment_code,
+          lesson_type_name:
+            innerGrade?.lesson?.lesson_assessment.lesson_type.lesson_type_name,
         };
       });
 
@@ -53,6 +55,7 @@ const getGradesController = async (req, res, next) => {
     const headerData = newStudents.map((newStudent) => ({
       grades: newStudent.grades.map(
         ({ week_no, lesson_no, lesson_assessment_code }) => ({
+          lesson_type_name,
           week_no,
           lesson_no,
           lesson_assessment_code,
