@@ -7,6 +7,9 @@ const getCurrentWeekController = async (req, res, next) => {
     const objectData = await settingsService.getCurrentWeekService();
     res.json(objectData);
   } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res);
+    }
     responses.internalServerError(res, error);
   }
 };
@@ -36,6 +39,9 @@ const getSemestersController = async (req, res, next) => {
       data: objects,
     });
   } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res);
+    }
     responses.internalServerError(res, error);
   }
 };
@@ -49,6 +55,9 @@ const getSemesterController = async (req, res, next) => {
     }
     res.json(semester);
   } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res);
+    }
     responses.internalServerError(res, error);
   }
 };
@@ -62,6 +71,9 @@ const createSemesterController = async (req, res, next) => {
     );
     responses.created(res, newObject);
   } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res);
+    }
     responses.internalServerError(res, error);
   }
 };
@@ -72,6 +84,9 @@ const updateSemesterController = async (req, res, next) => {
     await settingsService.updateSemesterService(id, req.body);
     responses.updated(res, req.body);
   } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res);
+    }
     responses.internalServerError(res, error);
   }
 };
@@ -82,6 +97,9 @@ const deleteSemesterController = async (req, res, next) => {
     await settingsService.deleteSemesterService(id);
     responses.deleted(res, {id: id});
   } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res);
+    }
     responses.internalServerError(res, error);
   }
 };

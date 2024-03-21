@@ -32,6 +32,9 @@ const getLessonTypes = async (req, res, next) => {
       data: lessonTypes,
     });
   } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res);
+    }
     responses.internalServerError(res, error);
   }
 };
@@ -44,6 +47,9 @@ const getLessonTypesWithoutBody = async (req, res, next) => {
       });
     res.json(lessonTypes);
   } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res);
+    }
     responses.internalServerError(res, error);
   }
 };
@@ -58,6 +64,9 @@ const getLessonTypeById = async (req, res, next) => {
     }
     res.json(lessonType);
   } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res);
+    }
     responses.internalServerError(res, error);
   }
 };
@@ -67,6 +76,9 @@ const createLessonType = async (req, res, next) => {
     const newObject = await lessonTypeService.createLessonType(req.body);
     responses.created(res, newObject);
   } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res);
+    }
     responses.internalServerError(res, error);
   }
 };
@@ -80,6 +92,9 @@ const updateLessonType = async (req, res, next) => {
     );
     responses.updated(res, req.body);
   } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res);
+    }
     responses.internalServerError(res, error);
   }
 };
@@ -90,6 +105,9 @@ const deleteLessonType = async (req, res, next) => {
     await lessonTypeService.deleteLessonType(id);
     responses.deleted(res, {id: id});
   } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res);
+    }
     responses.internalServerError(res, error);
   }
 };

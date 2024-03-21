@@ -36,6 +36,9 @@ const getUserFilesController = async (req, res, next) => {
       data: objects,
     });
   } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res);
+    }
     responses.internalServerError(res, error);
   }
 };
@@ -50,6 +53,9 @@ const getUserFileController = async (req, res, next) => {
     }
     res.json(user);
   } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res);
+    }
     responses.internalServerError(res, error);
   }
 };
@@ -60,6 +66,9 @@ const createUserFileController = async (req, res, next) => {
     const newObject = await userFileService.createUserFileService(req.body, userId);
     responses.created(res, newObject);
   } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res);
+    }
     responses.internalServerError(res, error);
   }
 };
@@ -71,6 +80,9 @@ const updateUserFileController = async (req, res, next) => {
     await userFileService.updateUserFileService(id, req.body, userId);
     responses.updated(res, req.body);
   } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res);
+    }
     responses.internalServerError(res, error);
   }
 };
@@ -82,6 +94,9 @@ const deleteUserFileController = async (req, res, next) => {
     await userFileService.deleteUserFileService(id, userId);
     responses.deleted(res, { id: id });
   } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res);
+    }
     responses.internalServerError(res, error);
   }
 };

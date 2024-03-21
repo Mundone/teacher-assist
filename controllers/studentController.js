@@ -43,6 +43,9 @@ const getStudents = async (req, res, next) => {
       data: students,
     });
   } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res);
+    }
     responses.internalServerError(res, error);
   }
 };
@@ -72,6 +75,9 @@ const getStudentById = async (req, res, next) => {
     }
     res.json(student);
   } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res);
+    }
     responses.internalServerError(res, error);
   }
 };
@@ -92,6 +98,9 @@ const createStudent = async (req, res, next) => {
     );
     responses.created(res, newObject);
   } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res);
+    }
     responses.internalServerError(res, error);
   }
 };
@@ -111,6 +120,9 @@ const createStudentBulkController = async (req, res, next) => {
     );
     responses.created(res, newObject);
   } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res);
+    }
     responses.internalServerError(res, error);
   }
 };
@@ -121,6 +133,9 @@ const updateStudent = async (req, res, next) => {
     const updatedStudent = await studentService.updateStudent(id, req.body);
     responses.updated(res, req.body);
   } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res);
+    }
     responses.internalServerError(res, error);
   }
 };
@@ -131,6 +146,9 @@ const deleteStudent = async (req, res, next) => {
     await studentService.deleteStudent(id);
     responses.deleted(res, { id: id });
   } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res);
+    }
     responses.internalServerError(res, error);
   }
 };

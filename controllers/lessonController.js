@@ -47,6 +47,9 @@ const getLessons = async (req, res, next) => {
       data: lessons,
     });
   } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res);
+    }
     responses.internalServerError(res, error);
   }
 };
@@ -62,6 +65,9 @@ const getLessonsWithoutBody = async (req, res, next) => {
     });
     res.json(lessons);
   } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res);
+    }
     responses.internalServerError(res, error);
   }
 };
@@ -83,6 +89,9 @@ const createLesson = async (req, res, next) => {
     const newObject = await lessonService.createLesson(req.body, userId);
     responses.created(res, newObject);
   } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res);
+    }
     responses.internalServerError(res, error);
   }
 };
@@ -94,6 +103,9 @@ const updateLesson = async (req, res, next) => {
     await lessonService.updateLesson(id, req.body, userId);
     responses.updated(res, req.body);
   } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res);
+    }
     responses.internalServerError(res, error);
   }
 };
@@ -105,6 +117,9 @@ const deleteLesson = async (req, res, next) => {
     await lessonService.deleteLesson(id, userId);
     responses.deleted(res, { id: id });
   } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res);
+    }
     responses.internalServerError(res, error);
   }
 };

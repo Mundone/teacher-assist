@@ -28,6 +28,9 @@ const getUsers = async (req, res, next) => {
       data: objects,
     });
   } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res);
+    }
     responses.internalServerError(res, error);
   }
 };
@@ -41,6 +44,9 @@ const getUsersWithoutBody = async (req, res, next) => {
       });
     res.json(users);
   } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res);
+    }
     responses.internalServerError(res, error);
   }
 };
@@ -63,6 +69,9 @@ const createUser = async (req, res, next) => {
     const newObject = await userService.createUser(req.body);
     responses.created(res, newObject);
   } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res);
+    }
     responses.internalServerError(res, error);
   }
 };
@@ -73,6 +82,9 @@ const updateUser = async (req, res, next) => {
     await userService.updateUser(id, req.body);
     responses.updated(res, req.body);
   } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res);
+    }
     responses.internalServerError(res, error);
   }
 };
@@ -83,6 +95,9 @@ const deleteUser = async (req, res, next) => {
     await userService.deleteUser(id);
     responses.deleted(res, {id: id});
   } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res);
+    }
     responses.internalServerError(res, error);
   }
 };

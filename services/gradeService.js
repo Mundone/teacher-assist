@@ -13,7 +13,9 @@ const getAllStudentGrades = async ({
   });
 
   if (!isUserIncludeSubject) {
-    throw new Error("Зөвшөөрөлгүй хандалт.", { statusCode: 403 });
+    const error = new Error("Зөвшөөрөлгүй хандалт.");
+    error.statusCode = 403;
+    throw error;
   }
 
   let { count: totalGrades, rows: grades } =
@@ -42,9 +44,8 @@ const getAllStudentGrades = async ({
                 },
               },
             ],
-
           },
-          
+
           order: [["id", "asc"]],
         },
       ],
@@ -175,26 +176,37 @@ const getAllStudentGrades = async ({
 //   distinct: true,
 // });
 
-const updateGrade = async ({ student_id, lesson_id, grade }) => {
-  try {
-    const result = await allModels.Grade.update(
-      { grade },
+const updateGrade = async (id, data, userId) => {
+  const gradeObject = await allModels.Grade.findByPk(id, {
+    include: [
       {
-        where: {
-          student_id: student_id,
-          lesson_id: lesson_id,
+        model: allModels.Lesson,
+        attributes: ["subject_id"],
+        include: {
+          model: allModels.Subject,
+          attributes: ["id"],
         },
-      }
-    );
+      },
+    ],
+    attributes: ["lesson_id"],
+  });
+  const subjectId = gradeObject.lesson.subject.id;
 
-    if (result[0] > 0) {
-      return { message: "Grade updated successfully." };
-    } else {
-      throw new Error("Grade not found or no changes made.");
-    }
-  } catch (error) {
+  const isUserIncludeGrade = await allModels.Subject.findOne({
+    where: { id: subjectId, user_id: userId },
+  });
+
+  if (!isUserIncludeGrade) {
+    const error = new Error("Зөвшөөрөлгүй хандалт.");
+    error.statusCode = 403;
     throw error;
   }
+
+  const currentModel = await allModels.Grade.findByPk(id);
+  if (currentModel) {
+    return await currentModel.update(data);
+  }
+  return null;
 };
 
 module.exports = {

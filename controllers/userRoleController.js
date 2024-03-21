@@ -38,6 +38,9 @@ const getUserRolesWithoutBody = async (req, res, next) => {
       });
     res.json(userRoles);
   } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res);
+    }
     responses.internalServerError(res, error);
   }
 };
@@ -51,6 +54,9 @@ const getUserRoleById = async (req, res, next) => {
     }
     res.json(userRole);
   } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res);
+    }
     responses.internalServerError(res, error);
   }
 };
@@ -62,6 +68,9 @@ const createUserRole = async (req, res, next) => {
     );
     responses.created(res, newObject);
   } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res);
+    }
     responses.internalServerError(res, error);
   }
 };
@@ -72,6 +81,9 @@ const updateUserRole = async (req, res, next) => {
     await userRoleService.updateUserRole(id, req.body);
     responses.updated(res, req.body);
   } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res);
+    }
     responses.internalServerError(res, error);
   }
 };
@@ -82,6 +94,9 @@ const deleteUserRole = async (req, res, next) => {
     await userRoleService.deleteUserRole(id);
     responses.deleted(res, {id: id});
   } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res);
+    }
     responses.internalServerError(res, error);
   }
 };

@@ -54,7 +54,9 @@ async function checkIfUserCorrect(id, userId) {
   });
 
   if (!isUserCorrect) {
-    throw new Error("Зөвшөөрөлгүй хандалт.", { statusCode: 403 });
+    const error = new Error("Зөвшөөрөлгүй хандалт.");
+    error.statusCode = 403;
+    throw error;
   }
 }
 

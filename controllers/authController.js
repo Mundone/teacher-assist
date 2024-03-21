@@ -33,6 +33,9 @@ const register = async (req, res) => {
     const { password: _, ...userInfo } = newUser.toJSON();
     res.status(201).send(userInfo);
   } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res);
+    }
     responses.internalServerError(res, error);
   }
 };
@@ -51,6 +54,9 @@ const login = async (req, res) => {
       UserMenus
     });
   } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res);
+    }
     responses.internalServerError(res, error);
   }
 };

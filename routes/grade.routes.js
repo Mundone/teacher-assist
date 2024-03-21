@@ -64,7 +64,7 @@ router.post(
  */
 
 router.put(
-  "/update_grade",
+  "/update_grade/:id",
   accessControl([1, 2, 3]),
   gradeController.updateGradeController
 ); // Update a specific grade

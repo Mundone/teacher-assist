@@ -104,29 +104,24 @@ const getGradesController = async (req, res, next) => {
       table_data: tableData,
     });
   } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res);
+    }
     responses.internalServerError(res, error);
   }
 };
 
 const updateGradeController = async (req, res) => {
   try {
-    const { student_id, lesson_id, grade } = req.body;
+    const { id } = req.params;
+    const userId = req.user && req.user.id;
 
-    // You might want to add validation here to ensure the data is correct
-    if (!student_id || !lesson_id || grade === undefined) {
-      return res.status(400).json({
-        error: "Missing studentId, lessonId, or grade in request body.",
-      });
-    }
-
-    const result = await gradeService.updateGrade({
-      student_id,
-      lesson_id,
-      grade,
-    });
-
-    res.json({ message: result.message });
+    await gradeService.updateGrade(id, req.body, userId);
+    responses.updated(res, req.body);
   } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res);
+    }
     responses.internalServerError(res, error);
   }
 };
