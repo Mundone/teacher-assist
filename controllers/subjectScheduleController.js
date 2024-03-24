@@ -49,7 +49,9 @@ const getSubjectSchedules = async (req, res, next) => {
     if (error.statusCode == 403) {
       responses.forbidden(res);
     }
-    responses.internalServerError(res, error);
+    else{
+      responses.internalServerError(res, error);
+    }
   }
 };
 
@@ -68,7 +70,9 @@ const getSubjectSchedulesWithoutBody = async (req, res, next) => {
     if (error.statusCode == 403) {
       responses.forbidden(res);
     }
-    responses.internalServerError(res, error);
+    else{
+      responses.internalServerError(res, error);
+    }
   }
 };
 
@@ -85,7 +89,9 @@ const getSubjectSchedule = async (req, res, next) => {
     if (error.statusCode == 403) {
       responses.forbidden(res);
     }
-    responses.internalServerError(res, error);
+    else{
+      responses.internalServerError(res, error);
+    }
   }
 };
 
@@ -107,7 +113,9 @@ const createSubjectSchedule = async (req, res, next) => {
     if (error.statusCode == 403) {
       responses.forbidden(res);
     }
-    responses.internalServerError(res, error);
+    else{
+      responses.internalServerError(res, error);
+    }
   }
 };
 
@@ -121,7 +129,9 @@ const updateSubjectSchedule = async (req, res, next) => {
     if (error.statusCode == 403) {
       responses.forbidden(res);
     }
-    responses.internalServerError(res, error);
+    else{
+      responses.internalServerError(res, error);
+    }
   }
 };
 
@@ -135,7 +145,9 @@ const deleteSubjectSchedule = async (req, res, next) => {
     if (error.statusCode == 403) {
       responses.forbidden(res);
     }
-    responses.internalServerError(res, error);
+    else{
+      responses.internalServerError(res, error);
+    }
   }
 };
 

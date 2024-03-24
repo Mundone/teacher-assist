@@ -39,7 +39,9 @@ const getUserFilesController = async (req, res, next) => {
     if (error.statusCode == 403) {
       responses.forbidden(res);
     }
-    responses.internalServerError(res, error);
+    else{
+      responses.internalServerError(res, error);
+    }
   }
 };
 
@@ -56,7 +58,9 @@ const getUserFileController = async (req, res, next) => {
     if (error.statusCode == 403) {
       responses.forbidden(res);
     }
-    responses.internalServerError(res, error);
+    else{
+      responses.internalServerError(res, error);
+    }
   }
 };
 
@@ -69,7 +73,9 @@ const createUserFileController = async (req, res, next) => {
     if (error.statusCode == 403) {
       responses.forbidden(res);
     }
-    responses.internalServerError(res, error);
+    else{
+      responses.internalServerError(res, error);
+    }
   }
 };
 
@@ -83,7 +89,9 @@ const updateUserFileController = async (req, res, next) => {
     if (error.statusCode == 403) {
       responses.forbidden(res);
     }
-    responses.internalServerError(res, error);
+    else{
+      responses.internalServerError(res, error);
+    }
   }
 };
 
@@ -97,7 +105,9 @@ const deleteUserFileController = async (req, res, next) => {
     if (error.statusCode == 403) {
       responses.forbidden(res);
     }
-    responses.internalServerError(res, error);
+    else{
+      responses.internalServerError(res, error);
+    }
   }
 };
 

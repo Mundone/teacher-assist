@@ -30,20 +30,19 @@ const router = express.Router();
  *         description: Internal Server Error
  */
 
-router.post(
-  "/get_lessons/:subjectId",
-  accessControl([1, 2, 3]),
-  paginationMiddleware,
-  lessonController.getLessons
-);
+// router.post(
+//   "/get_lessons/:subjectId",
+//   accessControl([1, 2, 3]),
+//   paginationMiddleware,
+//   lessonController.getLessons
+// );
 
-router.get(
-  "/get_lessons/:subjectId",
-  accessControl([1, 2, 3]),
-  paginationMiddleware,
-  lessonController.getLessonsWithoutBody
-);
-
+// router.get(
+//   "/get_lessons/:subjectId",
+//   accessControl([1, 2, 3]),
+//   paginationMiddleware,
+//   lessonController.getLessonsWithoutBody
+// );
 
 // router.get(
 //   "/get_lesson_assessments",
@@ -78,11 +77,11 @@ router.get(
  *         description: Internal Server Error
  */
 
-router.get(
-  "/get_lesson/:id",
-  accessControl([1, 2, 3]),
-  lessonController.getLessonById
-);
+// router.get(
+//   "/get_lesson/:id",
+//   accessControl([1, 2, 3]),
+//   lessonController.getLessonById
+// );
 
 /**
  * @swagger
@@ -111,11 +110,11 @@ router.get(
  *       - Authorization: []
  */
 
-router.post(
-  "/create_lesson",
-  accessControl([1, 2, 3]),
-  lessonController.createLesson
-);
+// router.post(
+//   "/create_lesson",
+//   accessControl([1, 2, 3]),
+//   lessonController.createLesson
+// );
 
 /**
  * @swagger
@@ -156,11 +155,11 @@ router.post(
  *       - Authorization: []
  */
 
-router.put(
-  "/update_lesson/:id",
-  accessControl([1, 2, 3]),
-  lessonController.updateLesson
-);
+// router.put(
+//   "/update_lesson/:id",
+//   accessControl([1, 2, 3]),
+//   lessonController.updateLesson
+// );
 
 /**
  * @swagger
@@ -196,6 +195,39 @@ router.put(
  *       - Authorization: []
  */
 
+// router.delete(
+//   "/delete_lesson/:id",
+//   accessControl([1, 2, 3]),
+//   lessonController.deleteLesson
+// );
+
+router.post(
+  "/get_lessons/:subjectId",
+  accessControl([1, 2, 3]),
+  paginationMiddleware,
+  lessonController.getLessons
+);
+router.get(
+  "/get_lessons/:subjectId",
+  accessControl([1, 2, 3]),
+  paginationMiddleware,
+  lessonController.getLessonsWithoutBody
+);
+router.get(
+  "/get_lesson/:id",
+  accessControl([1, 2, 3]),
+  lessonController.getLessonById
+);
+router.post(
+  "/create_lesson",
+  accessControl([1, 2, 3]),
+  lessonController.createLesson
+);
+router.put(
+  "/update_lesson/:id",
+  accessControl([1, 2, 3]),
+  lessonController.updateLesson
+);
 router.delete(
   "/delete_lesson/:id",
   accessControl([1, 2, 3]),

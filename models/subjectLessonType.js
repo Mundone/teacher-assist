@@ -22,6 +22,12 @@ class SubjectLessonType extends Model {
           key: "id",
         },
       },
+      lesson_count: {
+        type: DataTypes.INTEGER,
+      },
+      max_score: {
+        type: DataTypes.FLOAT,
+      },
     }, {
       sequelize,
       modelName: 'SubjectLessonType',  // Change the modelName to match the class name

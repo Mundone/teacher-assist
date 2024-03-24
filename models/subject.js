@@ -15,14 +15,10 @@ class Subject extends Model {
         subject_code: {
           type: DataTypes.STRING(255),
         },
-        main_teacher_id: {
-          type: DataTypes.INTEGER,
-          references: {
-            model: "user", // Make sure this matches your User model name
-            key: "id",
-          },
+        isStarted: {
+          type: DataTypes.BOOLEAN,
         },
-        updatedBy: {
+        updated_by: {
           type: DataTypes.INTEGER,
           references: {
             model: "user",
@@ -40,11 +36,6 @@ class Subject extends Model {
   }
 
   static associate(models) {
-    // this.belongsTo(models.User, {
-    //   foreignKey: "main_teacher_id",
-    //   as: "MainTeacher", // Alias added here
-    // });
-    
     this.belongsTo(models.User, { foreignKey: "user_id" });
 
     this.hasMany(models.Lesson, {

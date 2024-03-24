@@ -36,7 +36,9 @@ const register = async (req, res) => {
     if (error.statusCode == 403) {
       responses.forbidden(res);
     }
-    responses.internalServerError(res, error);
+    else{
+      responses.internalServerError(res, error);
+    }
   }
 };
 
@@ -57,7 +59,9 @@ const login = async (req, res) => {
     if (error.statusCode == 403) {
       responses.forbidden(res);
     }
-    responses.internalServerError(res, error);
+    else{
+      responses.internalServerError(res, error);
+    }
   }
 };
 

@@ -31,7 +31,9 @@ const getLessonAssessments = async (req, res, next) => {
     if (error.statusCode == 403) {
       responses.forbidden(res);
     }
-    responses.internalServerError(res, error);
+    else{
+      responses.internalServerError(res, error);
+    }
   }
 };
 
@@ -46,7 +48,9 @@ const getLessonAssessmentsWithoutBody = async (req, res, next) => {
     if (error.statusCode == 403) {
       responses.forbidden(res);
     }
-    responses.internalServerError(res, error);
+    else{
+      responses.internalServerError(res, error);
+    }
   }
 };
 
@@ -63,7 +67,9 @@ const getLessonAssessmentById = async (req, res, next) => {
     if (error.statusCode == 403) {
       responses.forbidden(res);
     }
-    responses.internalServerError(res, error);
+    else{
+      responses.internalServerError(res, error);
+    }
   }
 };
 
@@ -77,7 +83,9 @@ const createLessonAssessment = async (req, res, next) => {
     if (error.statusCode == 403) {
       responses.forbidden(res);
     }
-    responses.internalServerError(res, error);
+    else{
+      responses.internalServerError(res, error);
+    }
   }
 };
 
@@ -90,7 +98,9 @@ const updateLessonAssessment = async (req, res, next) => {
     if (error.statusCode == 403) {
       responses.forbidden(res);
     }
-    responses.internalServerError(res, error);
+    else{
+      responses.internalServerError(res, error);
+    }
   }
 };
 
@@ -103,7 +113,9 @@ const deleteLessonAssessment = async (req, res, next) => {
     if (error.statusCode == 403) {
       responses.forbidden(res);
     }
-    responses.internalServerError(res, error);
+    else{
+      responses.internalServerError(res, error);
+    }
   }
 };
 

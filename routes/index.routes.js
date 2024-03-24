@@ -1,5 +1,6 @@
 const router = require("express").Router();
 
+const attendanceRouter = require('./attendance.routes');
 const authRouter = require('./auth.routes');
 // const attendanceRecordRouter = require('./attendanceRecord.routes');
 // const lectureScheduleRouter = require('./lectureSchedule.routes');
@@ -17,6 +18,8 @@ const userRoleRouter = require('./userRole.routes');
 
 // router.use('/', attendanceRecordRouter);
 // router.use('/', lectureScheduleRouter);
+router.use('/', attendanceRouter);
+router.use('/', authRouter);
 router.use('/', lessonRouter);
 router.use('/', lessonAssessmentRouter);
 router.use('/', lessonTypeRouter);
@@ -28,7 +31,6 @@ router.use('/', subjectScheduleRouter);
 router.use('/', userRouter);
 router.use('/', userFileRouter);
 router.use('/', userRoleRouter);
-router.use('/', authRouter);
 
 
 router.get('/', function(req, res, next) {

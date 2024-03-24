@@ -251,8 +251,8 @@ const insertRandomData = async () => {
     const exampleSubject = await models.Subject.create({
       subject_name: subjectNames[i],
       subject_code: subjectCodes[i],
-      main_teacher_id: exampleUser.id,
       user_id: i % 2 == 0 ? 1 : 3,
+      isStarted: true,
     });
 
     // Additional teachers as assistant teachers
@@ -263,6 +263,8 @@ const insertRandomData = async () => {
     await models.SubjectLessonType.create({
       subject_id: exampleSubject.id,
       lesson_type_id: randomLessonTypeId1, // Random lesson type
+      lesson_count: 16,
+      max_score: 3,
     });
 
     var randomLessonTypeId2 =
@@ -272,6 +274,8 @@ const insertRandomData = async () => {
       await models.SubjectLessonType.create({
         subject_id: exampleSubject.id,
         lesson_type_id: randomLessonTypeId2, // Random lesson type
+        lesson_count: 16,
+        max_score: 3,
       });
     }
 
@@ -521,7 +525,11 @@ const insertRandomData = async () => {
   const attendanceObject = await models.Attendance.create({
     lesson_id: 1,
     subject_schedule_id: 1,
-    qr: "asdqw",
+    qr_code: "asdqw",
+    url_path: "asdqw",
+    is_active: true,
+    expired_at: new Date(),
+    usage_count: 12,
   });
   await models.AttendanceResponse.create({
     user_id: attendanceObject.id,
