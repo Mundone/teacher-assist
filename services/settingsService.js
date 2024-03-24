@@ -93,6 +93,42 @@ const deleteSemesterService = async (id) => {
   });
 };
 
+const getCurrentWeekFunction = async () => {
+  const exist = await allModels.Semester.findOne();
+
+  if (!exist) {
+    throw new Error("Семистер үүсгээгүй байна.", { statusCode: 404 });
+  }
+
+  var weekCount = 0;
+
+  const activeSemester = await allModels.Semester.findOne({
+    where: {
+      is_active: true,
+    },
+  });
+
+  if (!activeSemester) {
+    throw new Error("Семистер эхлээгүй байна.", { statusCode: 400 });
+  } else {
+    const obj = await allModels.Semester.findOne({
+      where: {
+        is_active: true,
+      },
+    });
+
+    const dateString = obj.start_date.toString();
+    const targetDate = new Date(dateString);
+    const currentDate = new Date();
+    const diffInMilliseconds = targetDate - currentDate;
+    const diffInWeeks = diffInMilliseconds / (1000 * 60 * 60 * 24 * 7);
+    weekCount = Math.abs(Math.round(diffInWeeks));
+  }
+
+  return weekCount;
+};
+
+
 module.exports = {
   getCurrentWeekService,
   getAllSemestersService,
@@ -100,4 +136,5 @@ module.exports = {
   createSemesterService,
   updateSemesterService,
   deleteSemesterService,
+  getCurrentWeekFunction
 };
