@@ -10,7 +10,9 @@ const createAttendanceService = async (objectData, protocol, host) => {
   const randomPath = `/attendance/${Math.random()
     .toString(36)
     .substring(2, 15)}`;
-  const fullUrl = `${protocol}://${host}${randomPath}`;
+  // const fullUrl = `${protocol}://${host}${randomPath}`;
+  const fullUrl = `https://www.teachas.online/${randomPath}`;
+
   const qrCodeImage = await QRCode.toDataURL(fullUrl);
 
   const week = await settingsService.getCurrentWeekService();
