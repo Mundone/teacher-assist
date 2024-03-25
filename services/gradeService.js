@@ -176,7 +176,7 @@ const getAllStudentGrades = async ({
 //   distinct: true,
 // });
 
-const updateGrade = async (id, data, userId) => {
+const updateGrade = async (id, data, userId, isFromAttendance) => {
   const gradeObject = await allModels.Grade.findByPk(id, {
     include: [
       {
@@ -192,14 +192,16 @@ const updateGrade = async (id, data, userId) => {
   });
   const subjectId = gradeObject.lesson.subject.id;
 
-  const isUserIncludeGrade = await allModels.Subject.findOne({
-    where: { id: subjectId, user_id: userId },
-  });
+  if (!isFromAttendance) {
+    const isUserIncludeGrade = await allModels.Subject.findOne({
+      where: { id: subjectId, user_id: userId },
+    });
 
-  if (!isUserIncludeGrade) {
-    const error = new Error("Зөвшөөрөлгүй хандалт.");
-    error.statusCode = 403;
-    throw error;
+    if (!isUserIncludeGrade) {
+      const error = new Error("Зөвшөөрөлгүй хандалт.");
+      error.statusCode = 403;
+      throw error;
+    }
   }
 
   const currentModel = await allModels.Grade.findByPk(id);

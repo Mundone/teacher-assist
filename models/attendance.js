@@ -55,6 +55,12 @@ class Attendance extends Model {
     this.hasMany(models.AttendanceResponse, {
       foreignKey: "attendance_id",
     });
+    this.belongsTo(models.SubjectSchedule, {
+      foreignKey: "subject_schedule_id",
+    });
+    this.belongsTo(models.Lesson, {
+      foreignKey: "lesson_id",
+    });
   }
 }
 

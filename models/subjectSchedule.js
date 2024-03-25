@@ -40,7 +40,7 @@ class SubjectSchedule extends Model {
     this.belongsTo(models.Subject, { foreignKey: 'subject_id' });
     this.belongsTo(models.LessonType, { foreignKey: 'lesson_type_id' });
     // Make sure AttendanceResponse is a correct model and should be associated
-    this.hasMany(models.AttendanceResponse, { foreignKey: 'subject_schedule_id' });
+    this.hasMany(models.Attendance, { foreignKey: 'subject_schedule_id' });
     this.hasMany(models.StudentSubjectSchedule, { foreignKey: 'subject_schedule_id' }); // Added based on your diagram
   }
 }

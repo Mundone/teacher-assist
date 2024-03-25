@@ -21,9 +21,6 @@ class AttendanceResponse extends Model {
       submitted_code: {
         type: DataTypes.STRING(255),
       },
-      attendance_date: {
-        type: DataTypes.DATE,
-      },
     }, {
       sequelize,
       modelName: 'attendance_response',

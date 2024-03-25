@@ -1,13 +1,28 @@
 const allModels = require("../models");
 const QRCode = require("qrcode");
 const settingsService = require("../services/settingsService");
+const gradeService = require("../services/gradeService");
 const { Sequelize } = require("sequelize");
 
-const getAttendanceByIdService = async (id) => {
+const getAttendanceByIdService = async (id, userId) => {
+  const subjectSchedule = await allModels.SubjectSchedule.findOne({
+    include: [
+      {
+        model: allModels.Attendance,
+        attributes: ["id", "user_id"],
+        where: { id },
+      },
+    ],
+  });
+
+  await checkIfUserCorrect(subjectSchedule.id, userId);
+
   return await allModels.Attendance.findByPk(id);
 };
 
-const createAttendanceService = async (objectData, protocol, host) => {
+const createAttendanceService = async (objectData, protocol, host, userId) => {
+  await checkIfUserCorrect(objectData.subject_schedule_id, userId);
+
   const attendanceRandomPath = `/attendance/${Math.random()
     .toString(36)
     .substring(2, 15)}`;
@@ -68,7 +83,23 @@ const createAttendanceService = async (objectData, protocol, host) => {
   });
 };
 
-const deleteAttendanceService = async (id) => {
+const deleteAttendanceService = async (id, userId) => {
+  const attendance = await allModels.Attendance.findOne({
+    include: [
+      {
+        model: allModels.SubjectSchedule,
+      },
+    ],
+    where: { id },
+  });
+
+  if (!attendance) {
+    const error = new Error("Олдсонгүй.");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  await checkIfUserCorrect(attendance.subject_schedule_id, userId);
   return await allModels.Attendance.update(
     { is_active: false, expired_at: new Date() },
     {
@@ -78,48 +109,184 @@ const deleteAttendanceService = async (id) => {
 };
 
 const registerAttendanceService = async (objectData) => {
-  console.log("%" + objectData.attendance_url_tail);
   const attendanceObject = await allModels.Attendance.findOne({
     where: {
       response_url_path: {
         [Sequelize.Op.like]: "%" + objectData.attendance_url_tail,
       },
     },
+    include: [
+      {
+        model: allModels.SubjectSchedule,
+      },
+      {
+        model: allModels.Lesson,
+      },
+    ],
   });
-  console.log(attendanceObject);
-
   if (!attendanceObject) {
-    const error = new Error("EEEROOR.");
+    const error = new Error("Олдсонгүй.");
     error.statusCode = 404;
     throw error;
-  } else {
-    const isRegistered = await allModels.AttendanceResponse.findOne({
-      where: {
-        submitted_code: objectData.student_code,
-        attendance_id: attendanceObject.id,
-      },
-    });
-
-    console.log(isRegistered);
-
-    if (isRegistered) {
-      const error = new Error("Энэ оюутан бүртгэгдсэн байна.");
-      error.statusCode = 400;
-      throw error;
-    } else {
-      return await allModels.AttendanceResponse.create({
-        attendance_id: attendanceObject.id,
-        submitted_code: objectData.student_code,
-        submitted_name: objectData.student_name,
-        attendance_date: new Date(),
-      });
-    }
   }
+
+  const isStudentCorrect = await allModels.StudentSubjectSchedule.findOne({
+    include: [
+      {
+        model: allModels.Student,
+        where: {
+          student_code: objectData.student_code,
+        },
+      },
+      {
+        model: allModels.SubjectSchedule,
+        where: {
+          id: attendanceObject.subject_schedule_id,
+        },
+      },
+    ],
+  });
+  if (!isStudentCorrect) {
+    const error = new Error("Энэ оюутан энэ хичээлийнх биш байна.");
+    error.statusCode = 403;
+    throw error;
+  }
+
+  const isRegistered = await allModels.AttendanceResponse.findOne({
+    where: {
+      submitted_code: objectData.student_code,
+      attendance_id: attendanceObject.id,
+    },
+  });
+
+  if (isRegistered) {
+    const error = new Error("Энэ оюутан бүртгэгдсэн байна.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const returnData = await allModels.AttendanceResponse.create({
+    attendance_id: attendanceObject.id,
+    submitted_code: objectData.student_code,
+    submitted_name: objectData.student_name,
+    attendance_date: new Date(),
+  });
+
+  const studentObjects = await allModels.Student.findAll({
+    where: {
+      student_code: objectData.student_code,
+    },
+  });
+
+  const studentCodes = studentObjects.map(
+    (student) => student.dataValues.student_code
+  );
+
+  console.log(studentCodes);
+  const gradeObject = await allModels.Grade.findOne({
+    include: [
+      {
+        model: allModels.Lesson,
+        where: {
+          id: attendanceObject.lesson_id,
+        },
+      },
+      {
+        model: allModels.Student,
+        where: {
+          student_code: {
+            [Sequelize.Op.in]: studentCodes, // Using the IN operator to check the existence
+          },
+        },
+      },
+    ],
+  });
+
+  if (!gradeObject) {
+    const error = new Error("Дүн олдсонгүй.");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  await gradeService.updateGrade(gradeObject.id, { grade: 1 }, 1, true);
+
+  return returnData;
 };
+
+const getAllAttendanceResponsesService = async ({
+  where,
+  limit,
+  offset,
+  order,
+  subjectScheduleId,
+  userId,
+}) => {
+  await checkIfUserCorrect(subjectScheduleId, userId);
+
+  const { count: totalAttendanceResponses, rows: attendanceResponses } =
+    await allModels.AttendanceResponse.findAndCountAll({
+      attributes: [
+        "id",
+        // "attendance_id",
+        "submitted_name",
+        "submitted_code",
+        "createdAt",
+      ],
+      include: [
+        {
+          model: allModels.Attendance,
+          where: {
+            subject_schedule_id: subjectScheduleId,
+          },
+          attributes: [
+            // "id",
+            // "lesson_id",
+            // "subject_schedule_id",
+            // "qr_code",
+            // "response_url_path",
+            // "is_active",
+            // "expired_at",
+            // "usage_count",
+          ],
+        },
+      ],
+      where: where,
+      limit: limit,
+      offset: offset,
+      order: order,
+      distinct: true,
+    });
+  return {
+    totalAttendanceResponses,
+    attendanceResponses,
+  };
+};
+
+async function checkIfUserCorrect(subjectScheduleId, userId) {
+  const isUserCorrect = await allModels.SubjectSchedule.findByPk(
+    subjectScheduleId,
+    {
+      include: [
+        {
+          model: allModels.Subject,
+          attributes: ["id", "user_id"],
+          where: { user_id: userId },
+        },
+      ],
+    }
+  );
+
+  if (!isUserCorrect) {
+    const error = new Error("Зөвшөөрөлгүй хандалт.");
+    error.statusCode = 403;
+    throw error;
+  }
+}
 
 module.exports = {
   getAttendanceByIdService,
   createAttendanceService,
   deleteAttendanceService,
   registerAttendanceService,
+  getAllAttendanceResponsesService,
 };
