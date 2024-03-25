@@ -7,13 +7,17 @@ const getAttendanceByIdService = async (id) => {
 };
 
 const createAttendanceService = async (objectData, protocol, host) => {
-  const randomPath = `/attendance/${Math.random()
+  const attendanceRandomPath = `/attendance/${Math.random()
     .toString(36)
     .substring(2, 15)}`;
-  // const fullUrl = `${protocol}://${host}${randomPath}`;
-  const fullUrl = `https://www.teachas.online/${randomPath}`;
+  const responseRandomPath = `/attendance/response/${Math.random()
+    .toString(36)
+    .substring(2, 15)}`;
+  // const fullUrl = `${protocol}://${host}${attendancePath}`;
+  const attendanceFullUrl = `https://www.teachas.online/${attendanceRandomPath}`;
+  const responseFullUrl = `https://www.teachas.online/${responseRandomPath}`;
 
-  const qrCodeImage = await QRCode.toDataURL(fullUrl);
+  const qrCodeImage = await QRCode.toDataURL(responseFullUrl);
 
   const week = await settingsService.getCurrentWeekService();
   console.log(week.semester.weekNumber);
@@ -54,7 +58,8 @@ const createAttendanceService = async (objectData, protocol, host) => {
     subject_schedule_id: objectData.subject_schedule_id,
     lesson_id: thatLesson.id,
     qr_code: qrCodeImage,
-    url_path: fullUrl,
+    attendance_url_path: attendanceFullUrl,
+    response_url_path: responseFullUrl,
     is_active: true,
     usage_count: 0,
   });

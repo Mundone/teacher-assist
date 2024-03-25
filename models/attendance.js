@@ -26,7 +26,10 @@ class Attendance extends Model {
         qr_code: {
           type: DataTypes.TEXT,
         },
-        url_path: {
+        attendance_url_path: {
+          type: DataTypes.STRING(255),
+        },
+        response_url_path: {
           type: DataTypes.STRING(255),
         },
         is_active: {
