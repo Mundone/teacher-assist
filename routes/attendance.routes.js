@@ -22,4 +22,10 @@ router.delete(
   attendanceController.deleteAttendanceController
 );
 
+router.post(
+  "/register_attendance",
+  attendanceController.registerAttendanceController
+);
+
+
 module.exports = router;

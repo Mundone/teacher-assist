@@ -76,8 +76,18 @@ const deleteAttendanceService = async (id) => {
   );
 };
 
+const registerAttendanceService = async (objectData) => {
+  return await allModels.AttendanceResponse.create({
+    attendance_id: objectData.attendance_id,
+    submitted_code: objectData.student_code,
+    submitted_name: objectData.student_name,
+    attendance_date: new Date(),
+  });
+};
+
 module.exports = {
   getAttendanceByIdService,
   createAttendanceService,
   deleteAttendanceService,
+  registerAttendanceService,
 };

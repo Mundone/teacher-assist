@@ -48,8 +48,23 @@ const deleteAttendanceController = async (req, res, next) => {
   }
 };
 
+const registerAttendanceController = async (req, res, next) => {
+  try {
+    const newObject = await attendanceService.registerAttendanceService(req.body);
+    responses.created(res, newObject);
+  } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res);
+    }
+    else{
+      responses.internalServerError(res, error);
+    }
+  }
+};
+
 module.exports = {
   getAttendanceController,
   createAttendanceController,
   deleteAttendanceController,
+  registerAttendanceController
 };
