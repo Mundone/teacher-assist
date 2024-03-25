@@ -29,6 +29,7 @@ const methodCheckMiddleware = (req, res, next) => {
     { method: "POST", path: "/register" },
     // { method: "GET", path: "/get_auth_info" },
     { method: "GET", path: "/get_current_week" },
+    { method: "POST", path: "/register_attendance" },
   ];
 
   // Define the GET routes that require authentication

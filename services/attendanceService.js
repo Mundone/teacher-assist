@@ -77,6 +77,23 @@ const deleteAttendanceService = async (id) => {
 };
 
 const registerAttendanceService = async (objectData) => {
+
+  // const isRegistered = await allModels.AttendanceResponse.findOne({
+  //   where: { submitted_code: objectData.student_code },
+  //   include: [
+  //     {
+  //       model: allModels.Attendance,
+  //       where: { submitted_code: objectData.student_code },
+
+  //     },
+  //   ],
+  // });
+
+  // if(!isRegistered){
+  //   error.statusCode = 400;
+  //   throw new Error("Энэ оюутан бүртгэгдсэн байна.");
+  // }
+
   return await allModels.AttendanceResponse.create({
     attendance_id: objectData.attendance_id,
     submitted_code: objectData.student_code,
