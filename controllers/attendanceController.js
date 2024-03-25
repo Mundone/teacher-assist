@@ -54,8 +54,8 @@ const registerAttendanceController = async (req, res, next) => {
     const newObject = await attendanceService.registerAttendanceService(req.body);
     responses.created(res, newObject);
   } catch (error) {
-    if (error.statusCode == 403) {
-      responses.forbidden(res);
+    if (error.statusCode == 400) {
+      responses.badRequest(res);
     }
     else{
       responses.internalServerError(res, error);
