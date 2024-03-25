@@ -5,16 +5,22 @@ const gradeService = require("../services/gradeService");
 const { Sequelize } = require("sequelize");
 
 const getAttendanceByIdService = async (id, userId) => {
-  const subjectSchedule = await allModels.SubjectSchedule.findOne({
+  const attendance = await allModels.Attendance.findOne({
     include: [
       {
-        model: allModels.Attendance,
-        where: { id },
+        model: allModels.SubjectSchedule,
       },
     ],
+    where: { id },
   });
 
-  await checkIfUserCorrect(subjectSchedule.id, userId);
+  if (!attendance) {
+    const error = new Error("Олдсонгүй.");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  await checkIfUserCorrect(attendance.subject_schedule_id, userId);
 
   return await allModels.Attendance.findByPk(id);
 };
@@ -37,7 +43,6 @@ const createAttendanceService = async (objectData, protocol, host, userId) => {
   const qrCodeImage = await QRCode.toDataURL(responseFullUrl);
 
   const week = await settingsService.getCurrentWeekService();
-  console.log(week.semester.weekNumber);
 
   let thatLesson = await allModels.Lesson.findOne({
     where: { week_number: week.semester.weekNumber },
