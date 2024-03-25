@@ -86,6 +86,7 @@ const registerAttendanceService = async (objectData) => {
       },
     },
   });
+  console.log(attendanceObject);
 
   if (!attendanceObject) {
     const error = new Error("EEEROOR.");
