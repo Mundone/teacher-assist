@@ -14,8 +14,8 @@ const createAttendanceService = async (objectData, protocol, host) => {
     .toString(36)
     .substring(2, 15)}`;
   // const fullUrl = `${protocol}://${host}${attendancePath}`;
-  const attendanceFullUrl = `https://www.teachas.online/${attendanceRandomPath}`;
-  const responseFullUrl = `https://www.teachas.online/${responseRandomPath}`;
+  const attendanceFullUrl = `https://www.teachas.online${attendanceRandomPath}`;
+  const responseFullUrl = `https://www.teachas.online${responseRandomPath}`;
 
   const qrCodeImage = await QRCode.toDataURL(responseFullUrl);
 
