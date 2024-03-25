@@ -1,6 +1,7 @@
 const allModels = require("../models");
 const QRCode = require("qrcode");
 const settingsService = require("../services/settingsService");
+const { Sequelize } = require("sequelize");
 
 const getAttendanceByIdService = async (id) => {
   return await allModels.Attendance.findByPk(id);
@@ -77,26 +78,41 @@ const deleteAttendanceService = async (id) => {
 };
 
 const registerAttendanceService = async (objectData) => {
-  const isRegistered = await allModels.AttendanceResponse.findOne({
+  console.log("%" + objectData.attendance_url_tail);
+  const attendanceObject = await allModels.Attendance.findOne({
     where: {
-      submitted_code: objectData.student_code,
-      attendance_id: objectData.attendance_id,
+      response_url_path: {
+        [Sequelize.Op.like]: "%" + objectData.attendance_url_tail,
+      },
     },
   });
 
-  console.log(isRegistered);
-
-  if (isRegistered) {
-    const error = new Error("Энэ оюутан бүртгэгдсэн байна.");
-    error.statusCode = 400;
+  if (!attendanceObject) {
+    const error = new Error("EEEROOR.");
+    error.statusCode = 404;
     throw error;
   } else {
-    return await allModels.AttendanceResponse.create({
-      attendance_id: objectData.attendance_id,
-      submitted_code: objectData.student_code,
-      submitted_name: objectData.student_name,
-      attendance_date: new Date(),
+    const isRegistered = await allModels.AttendanceResponse.findOne({
+      where: {
+        submitted_code: objectData.student_code,
+        attendance_id: attendanceObject.id,
+      },
     });
+
+    console.log(isRegistered);
+
+    if (isRegistered) {
+      const error = new Error("Энэ оюутан бүртгэгдсэн байна.");
+      error.statusCode = 400;
+      throw error;
+    } else {
+      return await allModels.AttendanceResponse.create({
+        attendance_id: attendanceObject.id,
+        submitted_code: objectData.student_code,
+        submitted_name: objectData.student_name,
+        attendance_date: new Date(),
+      });
+    }
   }
 };
 
