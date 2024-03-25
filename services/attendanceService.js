@@ -9,7 +9,6 @@ const getAttendanceByIdService = async (id, userId) => {
     include: [
       {
         model: allModels.Attendance,
-        attributes: ["id", "user_id"],
         where: { id },
       },
     ],
