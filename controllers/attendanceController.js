@@ -7,8 +7,9 @@ const getAttendanceController = async (req, res, next) => {
     const semester = await attendanceService.getAttendanceByIdService(id);
     if (!semester) {
       responses.notFound(res);
+    } else {
+      res.json(semester);
     }
-    res.json(semester);
   } catch (error) {
     if (error.statusCode == 403) {
       responses.forbidden(res);
