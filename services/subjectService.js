@@ -44,6 +44,9 @@ const getAllSubjects = async ({
               model: allModels.LessonType,
               attributes: ["id", "lesson_type_name"],
             },
+            {
+              model: allModels.Schedule,
+            },
           ],
           attributes: [
             "id",
@@ -202,7 +205,7 @@ const createSubject = async (data, user_id) => {
             week_number: i + 1,
             lesson_number: i + 1,
           });
-          
+
         }
       }
     }
