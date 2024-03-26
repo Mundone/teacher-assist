@@ -170,6 +170,92 @@ lessonAssessmentDescriptions = [
   "Шийдвэрлэх асуудлын хүрээнд тодорхой шийдэл дэвшүүлэх, дүн шинжилгээ хийх",
 ];
 
+const scheduleNames = [
+  "Даваа: 1-р паар",
+  "Даваа: 2-р паар",
+  "Даваа: 3-р паар",
+  "Даваа: 4-р паар",
+  "Даваа: 5-р паар",
+  "Даваа: 6-р паар",
+  "Даваа: 7-р паар",
+  "Даваа: 8-р паар",
+  "Даваа: 9-р паар",
+  "Даваа: 10-р паар",
+  "Даваа: 11-р паар",
+
+  "Мягмар: 1-р паар",
+  "Мягмар: 2-р паар",
+  "Мягмар: 3-р паар",
+  "Мягмар: 4-р паар",
+  "Мягмар: 5-р паар",
+  "Мягмар: 6-р паар",
+  "Мягмар: 7-р паар",
+  "Мягмар: 8-р паар",
+  "Мягмар: 9-р паар",
+  "Мягмар: 10-р паар",
+  "Мягмар: 11-р паар",
+
+  "Лхагва: 1-р паар",
+  "Лхагва: 2-р паар",
+  "Лхагва: 3-р паар",
+  "Лхагва: 4-р паар",
+  "Лхагва: 5-р паар",
+  "Лхагва: 6-р паар",
+  "Лхагва: 7-р паар",
+  "Лхагва: 8-р паар",
+  "Лхагва: 9-р паар",
+  "Лхагва: 10-р паар",
+  "Лхагва: 11-р паар",
+
+  "Пүрэв: 1-р паар",
+  "Пүрэв: 2-р паар",
+  "Пүрэв: 3-р паар",
+  "Пүрэв: 4-р паар",
+  "Пүрэв: 5-р паар",
+  "Пүрэв: 6-р паар",
+  "Пүрэв: 7-р паар",
+  "Пүрэв: 8-р паар",
+  "Пүрэв: 9-р паар",
+  "Пүрэв: 10-р паар",
+  "Пүрэв: 11-р паар",
+
+  "Баасан: 1-р паар",
+  "Баасан: 2-р паар",
+  "Баасан: 3-р паар",
+  "Баасан: 4-р паар",
+  "Баасан: 5-р паар",
+  "Баасан: 6-р паар",
+  "Баасан: 7-р паар",
+  "Баасан: 8-р паар",
+  "Баасан: 9-р паар",
+  "Баасан: 10-р паар",
+  "Баасан: 11-р паар",
+
+  "Бямба: 1-р паар",
+  "Бямба: 2-р паар",
+  "Бямба: 3-р паар",
+  "Бямба: 4-р паар",
+  "Бямба: 5-р паар",
+  "Бямба: 6-р паар",
+  "Бямба: 7-р паар",
+  "Бямба: 8-р паар",
+  "Бямба: 9-р паар",
+  "Бямба: 10-р паар",
+  "Бямба: 11-р паар",
+
+  "Ням: 1-р паар",
+  "Ням: 2-р паар",
+  "Ням: 3-р паар",
+  "Ням: 4-р паар",
+  "Ням: 5-р паар",
+  "Ням: 6-р паар",
+  "Ням: 7-р паар",
+  "Ням: 8-р паар",
+  "Ням: 9-р паар",
+  "Ням: 10-р паар",
+  "Ням: 11-р паар",
+];
+
 const MAX_GRADE = 10;
 
 const generateRandomData = () => {
@@ -186,6 +272,12 @@ const insertRandomData = async () => {
   await models.UserRole.create({ role_name: "Админ" });
   const exampleRole = await models.UserRole.create({ role_name: "Багш" });
   await models.UserRole.create({ role_name: "Салбарын эрхлэгч" });
+
+  for (const scheduleName of scheduleNames) {
+    await models.Schedule.create({
+      schedule_name: scheduleName,
+    });
+  }
 
   for (let i = 0; i < lessonTypeNames.length; i++) {
     const exampleLessonType = await models.LessonType.create({
@@ -307,19 +399,20 @@ const insertRandomData = async () => {
     // });
 
     // Create a exampleSubject schedule
-    const exampleSubjectSchedule = await models.SubjectSchedule.create({
-      subject_id: exampleSubject.id,
-      lesson_type_id: exampleLessonType.id,
-      lecture_day: randomDataContainer.randomDay,
-      lecture_time: randomDataContainer.randomTime,
-    });
+    const validScheduleId1 = 1; // Example ID, replace with a valid ID from your schedule table
+  const validScheduleId2 = 2; // Example ID, replace with a valid ID from your schedule table
 
-    const exampleSubjectSchedule2 = await models.SubjectSchedule.create({
-      subject_id: exampleSubject.id,
-      lesson_type_id: exampleLessonType2.id,
-      lecture_day: (randomDataContainer.randomDay * 5) % 7,
-      lecture_time: (randomDataContainer.randomTime * 6) % 7,
-    });
+  const exampleSubjectSchedule = await models.SubjectSchedule.create({
+    subject_id: exampleSubject.id,
+    lesson_type_id: exampleLessonType.id,
+    schedule_id: validScheduleId1,
+  });
+
+  const exampleSubjectSchedule2 = await models.SubjectSchedule.create({
+    subject_id: exampleSubject.id,
+    lesson_type_id: exampleLessonType2.id,
+    schedule_id: validScheduleId2,
+  });
 
     // Create lessons
     for (let week = 1; week <= 4; week++) {

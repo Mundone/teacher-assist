@@ -1,0 +1,14 @@
+{
+  "subject_name": "Програмчлалын үндэс",
+
+  "subject_schedules": [
+    {
+      "lesson_type_id": 1234,
+      "schedule_ids": [23, 55]
+    },
+    {
+      "lesson_type_id": 5125,
+      "schedule_ids": [13, 5426, 41]
+    }
+  ]
+}

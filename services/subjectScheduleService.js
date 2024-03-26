@@ -17,8 +17,8 @@ const getAllSubjectSchedules = async ({
         "id",
         "subject_id",
         "lesson_type_id",
-        "lecture_day",
-        "lecture_time",
+        // "lecture_day",
+        // "lecture_time",
         "createdAt",
       ],
       include: [
@@ -62,8 +62,8 @@ const getAllSubjectSchedules = async ({
         "id",
         "subject_id",
         "lesson_type_id",
-        "lecture_day",
-        "lecture_time",
+        // "lecture_day",
+        // "lecture_time",
         "createdAt",
       ],
 

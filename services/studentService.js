@@ -52,6 +52,8 @@ const getAllStudents = async ({
               model: allModels.SubjectSchedule,
               attributes: [
                 "id",
+                // "lecture_day",
+                // "lecture_time"
                 // "subject_id"
               ],
               where: { id: subjectScheduleId },

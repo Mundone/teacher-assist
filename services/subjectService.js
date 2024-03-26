@@ -49,8 +49,8 @@ const getAllSubjects = async ({
             "id",
             "subject_id",
             "lesson_type_id",
-            "lecture_day",
-            "lecture_time",
+            // "lecture_day",
+            // "lecture_time",
             "createdAt",
           ],
         },
@@ -118,8 +118,8 @@ const getAllSubjects = async ({
 //   if (isWithoutBody) {
 //     return await allModels.Subject.findAll({
 //       attributes: [
-//         "id", 
-//         "subject_name", 
+//         "id",
+//         "subject_name",
 //         "createdAt",
 //         [Sequelize.fn("COUNT", Sequelize.col("subject_schedules.student_subject_schedules.student_id")), "studentCount"]
 //       ],
@@ -134,14 +134,14 @@ const getAllSubjects = async ({
 //       group: ["subject.id", "subject_schedules.id"],
 //       raw: true,
 //     });
-    
+
 //   }
 
 //   let { count: totalSubjects, rows: subjects } =
 //     await allModels.Subject.findAndCountAll({
 //       attributes: [
-//         "id", 
-//         "subject_name", 
+//         "id",
+//         "subject_name",
 //         "createdAt",
 //         [Sequelize.fn("COUNT", Sequelize.col("subject_schedules.student_subject_schedules.student_id")), "studentCount"]
 //       ],
@@ -177,7 +177,38 @@ const getSubjectById = async (id, userId) => {
 };
 
 const createSubject = async (data, user_id) => {
-  return await allModels.Subject.create({ ...data, user_id });
+  const subjectObject = await allModels.Subject.create({
+    subject_name: data.subject_name,
+    user_id,
+  });
+
+  for (const subject_schedule of data.subject_schedules) {
+    for (const schedule_id of subject_schedule.schedule_ids) {
+      const subjectScheduleObject = await allModels.SubjectSchedule.create({
+        subject_id: subjectObject.id,
+        lesson_type_id: subject_schedule.lesson_type_id,
+        schedule_id: schedule_id,
+      });
+
+      const lessonAssessmentObjects = await allModels.LessonAssessment.findAll({
+        where: { lesson_type_id: subject_schedule.lesson_type_id },
+      });
+
+      for (const lessonAssessmentObject of lessonAssessmentObjects) {
+        for (let i = 0; i < 16; i++) {
+          await allModels.Lesson.create({
+            subject_id: subjectObject.id,
+            lesson_assessment_id: lessonAssessmentObject.id,
+            week_number: i + 1,
+            lesson_number: i + 1,
+          });
+          
+        }
+      }
+    }
+  }
+
+  return subjectObject;
 };
 
 const updateSubject = async (id, data, userId) => {
@@ -203,7 +234,6 @@ async function checkIfUserCorrect(id, userId) {
     const error = new Error("Зөвшөөрөлгүй хандалт.");
     error.statusCode = 403;
     throw error;
-    
   }
 }
 

@@ -9,6 +9,7 @@ const Lesson = require("./lesson");
 const LessonAssessment = require("./lessonAssessment");
 const LessonType = require("./lessonType");
 const Menu = require("./menu");
+const Schedule = require("./schedule");
 const Semester = require("./semester");
 const Student = require("./student");
 const StudentSubjectSchedule = require("./studentSubjectSchedule");
@@ -28,6 +29,7 @@ Lesson.init(sequelize, Sequelize.DataTypes);
 LessonType.init(sequelize, Sequelize.DataTypes);
 Menu.init(sequelize, Sequelize.DataTypes);
 LessonAssessment.init(sequelize, Sequelize.DataTypes);
+Schedule.init(sequelize, Sequelize.DataTypes);
 Semester.init(sequelize, Sequelize.DataTypes);
 Student.init(sequelize, Sequelize.DataTypes);
 StudentSubjectSchedule.init(sequelize, Sequelize.DataTypes);
@@ -48,6 +50,7 @@ const models = {
   LessonAssessment,
   LessonType,
   Menu,
+  Schedule,
   Semester,
   Student,
   StudentSubjectSchedule,

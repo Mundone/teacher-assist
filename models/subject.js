@@ -40,12 +40,20 @@ class Subject extends Model {
 
     this.hasMany(models.Lesson, {
       foreignKey: "subject_id",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
     });
     this.hasMany(models.SubjectSchedule, {
       foreignKey: "subject_id",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
     });
 
-    this.hasMany(models.SubjectLessonType, { foreignKey: "subject_id" });
+    this.hasMany(models.SubjectLessonType, {
+      foreignKey: "subject_id",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
+    });
   }
 }
 
