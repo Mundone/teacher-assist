@@ -140,7 +140,7 @@ const getAllLessons = async ({
   subjectId,
   isWithoutBody,
 }) => {
-  await checkIfUserCorrect(subjectId, userId);
+  // await checkIfUserCorrect(subjectId, userId);
 
   if (isWithoutBody) {
     return await allModels.SubjectLessonType.findAll({

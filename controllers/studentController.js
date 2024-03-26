@@ -55,6 +55,8 @@ const getStudents = async (req, res, next) => {
         student_code: student.student_code,
         createdAt: student.createdAt,
         subject_schedule_id: subjectSchedule?.id,
+        schedule_id: subjectSchedule?.schedule.id,
+        schedule_name: subjectSchedule?.schedule.schedule_name,
         // Assuming you want to combine lecture_day and lecture_time for the name
         // Ensure that both properties exist in your data structure
         // subject_schedule_name:

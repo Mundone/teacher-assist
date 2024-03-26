@@ -16,7 +16,14 @@ class LessonAssessment extends Model {
       },
       score: {
         type: DataTypes.FLOAT,
-      }
+      },
+      lesson_type_id: {
+        type: DataTypes.INTEGER,
+        references: {
+          model: "lesson_type",
+          key: "id",
+        },
+      },
     }, {
       sequelize,
       modelName: 'lesson_assessment',

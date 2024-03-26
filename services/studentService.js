@@ -17,25 +17,16 @@ const getAllStudents = async ({
       include: [
         {
           model: allModels.StudentSubjectSchedule,
-          attributes: [
-            "id",
-            // "subject_schedule_id"
-          ],
+          attributes: ["id"],
           include: [
             {
               model: allModels.SubjectSchedule,
-              attributes: [
-                "id",
-                // "lecture_day",
-                // "lecture_time"
-                // "subject_id"
-              ],
-              where: { id: subjectScheduleId },
+              attributes: ["id"],
               include: [
                 {
                   model: allModels.Subject,
                   attributes: ["id", "user_id"],
-                  // where: { user_id: userId }
+                  where: { id: subjectId },
                 },
                 {
                   model: allModels.Schedule,
@@ -80,14 +71,37 @@ const createStudent = async (data, subjectScheduleId) => {
     throw error;
   }
 
-  const newObject = await allModels.Student.create(data);
+  const createdStudentObject = await allModels.Student.create(data);
 
   await allModels.StudentSubjectSchedule.create({
-    student_id: newObject.id,
+    student_id: createdStudentObject.id,
     subject_schedule_id: subjectScheduleId,
   });
 
-  return newObject;
+  const subjectScheduleObject = await allModels.SubjectSchedule.findByPk(
+    subjectScheduleId
+  );
+
+  const lessonAssessmentObjects = await allModels.LessonAssessment.findAll({
+    where: { lesson_type_id: subjectScheduleObject.lesson_type_id },
+  });
+
+  const lessonObjects = await allModels.Lesson.findAll({
+    where: {
+      subject_id: subjectScheduleObject.subject_id,
+      lesson_assessment_id: lessonAssessmentObjects.id,
+    },
+  });
+
+  for (const lessonObject of lessonObjects) {
+    await allModels.Grade.create({
+      student_id: createdStudentObject.id,
+      lesson_id: lessonObject.id,
+      grade: 0,
+    });
+  }
+
+  return createdStudentObject;
 };
 
 const createStudentBulkService = async (data, subjectScheduleId) => {
