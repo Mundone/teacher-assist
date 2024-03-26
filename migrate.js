@@ -6,7 +6,7 @@ const { Sequelize } = require("sequelize");
 
 const main = async () => {
   try {
-    await sequelize.sync();
+    await sequelize.sync({ force: true });
     console.log("Database sync complete.");
     await insertRandomData();
     console.log("Random data inserted successfully.");
@@ -283,35 +283,38 @@ const insertRandomData = async () => {
     const exampleLessonType = await models.LessonType.create({
       lesson_type_name: lessonTypeNames[i],
     });
-    await models.LessonAssessment.create({
-      lesson_assessment_code: lessonAssessmentCodes[i * 2],
-      lesson_assessment_description: lessonAssessmentDescriptions[i * 2],
-      lesson_type_id: exampleLessonType.id,
-    });
-    await models.LessonAssessment.create({
-      lesson_assessment_code: lessonAssessmentCodes[i * 2 + 1],
-      lesson_assessment_description: lessonAssessmentDescriptions[i * 2 + 1],
-      lesson_type_id: exampleLessonType.id,
-    });
+    await models.LessonAssessment.bulkCreate([
+      {
+        lesson_assessment_code: lessonAssessmentCodes[i * 2],
+        lesson_assessment_description: lessonAssessmentDescriptions[i * 2],
+        lesson_type_id: exampleLessonType.id,
+      },
+      {
+        lesson_assessment_code: lessonAssessmentCodes[i * 2 + 1],
+        lesson_assessment_description: lessonAssessmentDescriptions[i * 2 + 1],
+        lesson_type_id: exampleLessonType.id,
+      },
+    ]);
   }
 
-  await models.User.create({
-    name: "Ulziimaa",
-    email: "zma@gmail.com",
-    code: "zma",
-    // Assume role_id is set correctly
-    role_id: 2,
-    password: await bcrypt.hash("Pass@123", 10),
-  });
-
-  await models.User.create({
-    name: "adminName",
-    email: "admin@gmail.com",
-    code: "admin",
-    // Assume role_id is set correctly
-    role_id: 1,
-    password: await bcrypt.hash("Pass@123", 10),
-  });
+  await models.User.bulkCreate([
+    {
+      name: "Ulziimaa",
+      email: "zma@gmail.com",
+      code: "zma",
+      // Assume role_id is set correctly
+      role_id: 2,
+      password: await bcrypt.hash("Pass@123", 10),
+    },
+    {
+      name: "adminName",
+      email: "admin@gmail.com",
+      code: "admin",
+      // Assume role_id is set correctly
+      role_id: 1,
+      password: await bcrypt.hash("Pass@123", 10),
+    },
+  ]);
 
   await models.Semester.create({
     semester_code: "2024B - Хаврын улирал",
@@ -320,110 +323,112 @@ const insertRandomData = async () => {
     user_id: 2,
   });
 
-  await models.Menu.create({
-    menu_code: "00",
-    parent_id: 0,
-    menu_name: "ХЯНАЛТ",
-    router_link: "",
-    sorted_order: 0,
-    icon_name: "",
-  });
-  await models.Menu.create({
-    menu_code: "01",
-    parent_id: 0,
-    menu_name: "ҮНДСЭН ХЭСЭГ",
-    router_link: "",
-    sorted_order: 1,
-    icon_name: "",
-  });
-  await models.Menu.create({
-    menu_code: "02",
-    parent_id: 0,
-    menu_name: "БҮРТГЭЛ",
-    router_link: "",
-    sorted_order: 2,
-    icon_name: "",
-  });
-
-  await models.Menu.create({
-    menu_code: "0001",
-    parent_id: 1,
-    menu_name: "Дашбоард",
-    router_link: "/dashboard",
-    sorted_order: 1,
-    icon_name: "material-symbols:dashboard-outline",
-  });
-  await models.Menu.create({
-    menu_code: "0101",
-    parent_id: 2,
-    menu_name: "Хичээл",
-    router_link: "/dashboard/subject",
-    sorted_order: 1,
-    icon_name: "material-symbols-light:subject",
-  });
-  await models.Menu.create({
-    menu_code: "0102",
-    parent_id: 2,
-    menu_name: "Хичээлийн задаргаа",
-    router_link: "/dashboard/lessons",
-    sorted_order: 2,
-    icon_name: "material-symbols-light:subject",
-  });
-  await models.Menu.create({
-    menu_code: "0103",
-    parent_id: 2,
-    menu_name: "Хичээл орох хэлбэр",
-    router_link: "/dashboard/lessonTypes",
-    sorted_order: 3,
-    icon_name: "material-symbols-light:subject",
-  });
-  await models.Menu.create({
-    menu_code: "0104",
-    parent_id: 2,
-    menu_name: "Дүнгийн задаргаа",
-    router_link: "/dashboard/lessonAsses",
-    sorted_order: 4,
-    icon_name: "material-symbols-light:subject",
-  });
-  await models.Menu.create({
-    menu_code: "0105",
-    parent_id: 2,
-    menu_name: "Оюутнууд",
-    router_link: "/dashboard/students",
-    sorted_order: 4,
-    icon_name: "material-symbols-light:subject",
-  });
-
-  await models.Menu.create({
-    menu_code: "0201",
-    parent_id: 3,
-    menu_name: "Хэрэглэгч",
-    router_link: "/dashboard/users",
-    sorted_order: 1,
-    icon_name: "material-symbols-light:subject",
-  });
-  await models.Menu.create({
-    menu_code: "0202",
-    parent_id: 3,
-    menu_name: "Хэрэглэгчийн бүлэг",
-    router_link: "/dashboard/userRole",
-    sorted_order: 2,
-    icon_name: "material-symbols-light:subject",
-  });
-  await models.Menu.create({
-    menu_code: "0203",
-    parent_id: 3,
-    menu_name: "Багшийн портфолио",
-    router_link: "/dashboard/userFile",
-    sorted_order: 3,
-    icon_name: "material-symbols-light:subject",
-  });
+  await models.Menu.bulkCreate([
+    {
+      menu_code: "00",
+      parent_id: 0,
+      menu_name: "ХЯНАЛТ",
+      router_link: "",
+      sorted_order: 0,
+      icon_name: "",
+    },
+    {
+      menu_code: "01",
+      parent_id: 0,
+      menu_name: "ҮНДСЭН ХЭСЭГ",
+      router_link: "",
+      sorted_order: 1,
+      icon_name: "",
+    },
+    {
+      menu_code: "02",
+      parent_id: 0,
+      menu_name: "БҮРТГЭЛ",
+      router_link: "",
+      sorted_order: 2,
+      icon_name: "",
+    },
+    {
+      menu_code: "0001",
+      parent_id: 1,
+      menu_name: "Дашбоард",
+      router_link: "/dashboard",
+      sorted_order: 1,
+      icon_name: "material-symbols:dashboard-outline",
+    },
+    {
+      menu_code: "0101",
+      parent_id: 2,
+      menu_name: "Хичээл",
+      router_link: "/dashboard/subject",
+      sorted_order: 1,
+      icon_name: "material-symbols-light:subject",
+    },
+    {
+      menu_code: "0102",
+      parent_id: 2,
+      menu_name: "Хичээлийн задаргаа",
+      router_link: "/dashboard/lessons",
+      sorted_order: 2,
+      icon_name: "material-symbols-light:subject",
+    },
+    {
+      menu_code: "0103",
+      parent_id: 2,
+      menu_name: "Хичээл орох хэлбэр",
+      router_link: "/dashboard/lessonTypes",
+      sorted_order: 3,
+      icon_name: "material-symbols-light:subject",
+    },
+    {
+      menu_code: "0104",
+      parent_id: 2,
+      menu_name: "Дүнгийн задаргаа",
+      router_link: "/dashboard/lessonAsses",
+      sorted_order: 4,
+      icon_name: "material-symbols-light:subject",
+    },
+    {
+      menu_code: "0105",
+      parent_id: 2,
+      menu_name: "Оюутнууд",
+      router_link: "/dashboard/students",
+      sorted_order: 4,
+      icon_name: "material-symbols-light:subject",
+    },
+    {
+      menu_code: "0201",
+      parent_id: 3,
+      menu_name: "Хэрэглэгч",
+      router_link: "/dashboard/users",
+      sorted_order: 1,
+      icon_name: "material-symbols-light:subject",
+    },
+    {
+      menu_code: "0202",
+      parent_id: 3,
+      menu_name: "Хэрэглэгчийн бүлэг",
+      router_link: "/dashboard/userRole",
+      sorted_order: 2,
+      icon_name: "material-symbols-light:subject",
+    },
+    {
+      menu_code: "0203",
+      parent_id: 3,
+      menu_name: "Багшийн портфолио",
+      router_link: "/dashboard/userFile",
+      sorted_order: 3,
+      icon_name: "material-symbols-light:subject",
+    },
+  ]);
 
   const adminMenus = await models.Menu.findAll({
     where: {
       [Sequelize.Op.or]: [
         { menu_code: { [Sequelize.Op.like]: "00%" } },
-        { menu_code: { [Sequelize.Op.like]: "01%" } },
+        { menu_code: { [Sequelize.Op.like]: "01" } },
+        { menu_code: { [Sequelize.Op.like]: "0103%" } },
+        { menu_code: { [Sequelize.Op.like]: "0104%" } },
         { menu_code: { [Sequelize.Op.like]: "02%" } },
       ],
     },
@@ -440,7 +445,8 @@ const insertRandomData = async () => {
     where: {
       [Sequelize.Op.or]: [
         { menu_code: { [Sequelize.Op.like]: "00%" } },
-        { menu_code: { [Sequelize.Op.like]: "01%" } },
+        { menu_code: { [Sequelize.Op.like]: "01" } },
+        { menu_code: { [Sequelize.Op.like]: "0101%" } },
       ],
     },
   });
@@ -451,19 +457,21 @@ const insertRandomData = async () => {
       menu_id: teacherMenu.id,
     });
   }
-  
-  await models.UserFile.create({
-    user_id: 1,
-    file_name: "1-р файл",
-    file_path: Math.floor(Math.random()),
-    file_type: "1-р гэрчилгээ",
-  });
-  await models.UserFile.create({
-    user_id: 1,
-    file_name: "2-р файл",
-    file_path: Math.floor(Math.random()),
-    file_type: "1-р гэрчилгээ",
-  });
+
+  await models.UserFile.bulkCreate([
+    {
+      user_id: 1,
+      file_name: "1-р файл",
+      file_path: Math.floor(Math.random()),
+      file_type: "1-р гэрчилгээ",
+    },
+    {
+      user_id: 1,
+      file_name: "2-р файл",
+      file_path: Math.floor(Math.random()),
+      file_type: "1-р гэрчилгээ",
+    },
+  ]);
 
   // for (let i = 0; i < 10; i++) {
   //   const randomDataContainer = generateRandomData();
@@ -608,7 +616,6 @@ const insertRandomData = async () => {
   //     });
   //   }
   // }
-
 
   // const attendanceObject = await models.Attendance.create({
   //   lesson_id: 1,

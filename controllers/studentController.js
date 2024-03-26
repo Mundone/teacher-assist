@@ -7,13 +7,7 @@ const getStudents = async (req, res, next) => {
   try {
     const userId = req.user && req.user.id;
 
-    const subjectScheduleId = req.body.subject_schedule_id ?? null;
-
-    if (subjectScheduleId == null) {
-      return res
-        .status(400)
-        .json({ error: "subject_schedule_id -аа явуулаарай body-оороо." });
-    }
+    const { subject_id } = req.params;
 
     const { pageNo, pageSize, sortBy, sortOrder, filters } = req.pagination;
 
@@ -24,7 +18,7 @@ const getStudents = async (req, res, next) => {
       offset: pageNo * pageSize,
       order: [[sortBy, sortOrder]],
       userId: userId,
-      subjectScheduleId: subjectScheduleId,
+      subjectId: subject_id,
     };
 
     // console.log(req);

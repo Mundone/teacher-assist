@@ -1,4 +1,5 @@
 const allModels = require("../models");
+const { Sequelize } = require("sequelize");
 
 const getAllSubjects = async ({
   where,
@@ -9,7 +10,22 @@ const getAllSubjects = async ({
 }) => {
   if (isWithoutBody) {
     return await allModels.Subject.findAll({
-      attributes: ["id", "subject_name", "createdAt"],
+      attributes: [
+        "id",
+        "subject_name",
+        "subject_code",
+        "createdAt",
+        [
+          Sequelize.literal(`(
+          SELECT COUNT(DISTINCT student.id)
+          FROM student_subject_schedule
+          JOIN student ON student.id = student_subject_schedule.student_id
+          JOIN subject_schedule ON subject_schedule.id = student_subject_schedule.subject_schedule_id
+          WHERE subject_schedule.subject_id = subject.id
+        )`),
+          "student_count",
+        ],
+      ],
       where: where,
       include: [
         {
@@ -63,6 +79,22 @@ const getAllSubjects = async ({
 
   let { count: totalSubjects, rows: subjects } =
     await allModels.Subject.findAndCountAll({
+      attributes: [
+        "id",
+        "subject_name",
+        "subject_code",
+        "createdAt",
+        [
+          Sequelize.literal(`(
+        SELECT COUNT(DISTINCT student.id)
+        FROM student_subject_schedule
+        JOIN student ON student.id = student_subject_schedule.student_id
+        JOIN subject_schedule ON subject_schedule.id = student_subject_schedule.subject_schedule_id
+        WHERE subject_schedule.subject_id = subject.id
+      )`),
+          "student_count",
+        ],
+      ],
       include: [
         {
           model: allModels.SubjectLessonType,
@@ -91,13 +123,12 @@ const getAllSubjects = async ({
             "id",
             "subject_id",
             "lesson_type_id",
-            "lecture_day",
-            "lecture_time",
+            // "lecture_day",
+            // "lecture_time",
             "createdAt",
           ],
         },
       ],
-      attributes: ["id", "subject_name", "createdAt"],
       where: where,
       limit: limit,
       offset: offset,
@@ -175,7 +206,7 @@ const getAllSubjects = async ({
 const getSubjectById = async (id, userId) => {
   await checkIfUserCorrect(id, userId);
   return await allModels.Subject.findByPk(id, {
-    attributes: ["id", "subject_name", "createdAt"],
+    attributes: ["id", "subject_name", "subject_code", "createdAt"],
   });
 };
 
@@ -186,34 +217,43 @@ const createSubject = async (data, user_id) => {
     user_id,
   });
 
+  let subjectSchedulesToCreate = [];
+  let lessonsToCreate = [];
+
   for (const subject_schedule of data.subject_schedules) {
     for (const schedule_id of subject_schedule.schedule_ids) {
-      const subjectScheduleObject = await allModels.SubjectSchedule.create({
+      subjectSchedulesToCreate.push({
         subject_id: subjectObject.id,
         lesson_type_id: subject_schedule.lesson_type_id,
-        schedule_id: schedule_id,
+        schedule_id,
       });
+    }
 
-      const lessonAssessmentObjects = await allModels.LessonAssessment.findAll({
-        where: { lesson_type_id: subject_schedule.lesson_type_id },
-      });
+    const lessonAssessmentObjects = await allModels.LessonAssessment.findAll({
+      where: { lesson_type_id: subject_schedule.lesson_type_id },
+    });
 
-      for (const lessonAssessmentObject of lessonAssessmentObjects) {
-        for (let i = 0; i < 16; i++) {
-          await allModels.Lesson.create({
-            subject_id: subjectObject.id,
-            lesson_assessment_id: lessonAssessmentObject.id,
-            week_number: i + 1,
-            lesson_number: i + 1,
-          });
-
-        }
+    for (const lessonAssessmentObject of lessonAssessmentObjects) {
+      for (let i = 0; i < 16; i++) {
+        lessonsToCreate.push({
+          subject_id: subjectObject.id,
+          lesson_assessment_id: lessonAssessmentObject.id,
+          week_number: i + 1,
+          lesson_number: i + 1,
+        });
       }
     }
   }
 
+  await allModels.SubjectSchedule.bulkCreate(subjectSchedulesToCreate);
+
+  if (lessonsToCreate.length > 0) {
+    await allModels.Lesson.bulkCreate(lessonsToCreate);
+  }
+
   return subjectObject;
 };
+
 
 const updateSubject = async (id, data, userId) => {
   await checkIfUserCorrect(id, userId);

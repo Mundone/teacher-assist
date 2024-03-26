@@ -15,7 +15,7 @@ class Subject extends Model {
         subject_code: {
           type: DataTypes.STRING(255),
         },
-        isStarted: {
+        is_started: {
           type: DataTypes.BOOLEAN,
         },
         updated_by: {

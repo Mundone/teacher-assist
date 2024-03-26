@@ -6,37 +6,11 @@ const getAllStudents = async ({
   limit,
   offset,
   order,
-  // userId,
-  subjectScheduleId,
+  userId,
+  subjectId,
   // isWithoutBody,
 }) => {
-  const isUserIncludeSchedule = await allModels.SubjectSchedule.findOne({
-    where: { id: subjectScheduleId },
-  }).then((ss) => {
-    if (ss != null) {
-      return true;
-    }
-    return false;
-  });
-
-  if (!isUserIncludeSchedule) {
-    const error = new Error("Зөвшөөрөлгүй хандалт");
-    error.statusCode = 403;
-    throw error;
-  }
-
-  // if (isWithoutBody) {
-  //   return await allModels.Student.findAll({
-  //     attributes: ["id", "name", "student_code", "createdAt"],
-  //     include: [
-  //       {
-  //         model: allModels.StudentSubjectSchedule,
-  //         attributes: ["id", "subject_schedule_id"],
-  //         where: { id: subjectScheduleId },
-  //       },
-  //     ],
-  //   });
-  // }
+  await checkIfUserCorrect(subjectId, userId);
 
   let { count: totalStudents, rows: students } =
     await allModels.Student.findAndCountAll({
@@ -62,6 +36,9 @@ const getAllStudents = async ({
                   model: allModels.Subject,
                   attributes: ["id", "user_id"],
                   // where: { user_id: userId }
+                },
+                {
+                  model: allModels.Schedule,
                 },
               ],
             },
@@ -159,6 +136,18 @@ const deleteStudent = async (id) => {
   }
   return false;
 };
+
+async function checkIfUserCorrect(id, userId) {
+  const isUserCorrect = await allModels.Subject.findOne({
+    where: { id: id, user_id: userId },
+  });
+
+  if (!isUserCorrect) {
+    const error = new Error("Зөвшөөрөлгүй хандалт.");
+    error.statusCode = 403;
+    throw error;
+  }
+}
 
 module.exports = {
   getAllStudents,

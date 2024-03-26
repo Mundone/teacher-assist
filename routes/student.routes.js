@@ -31,7 +31,7 @@ const router = express.Router();
  */
 
 router.post(
-  "/get_students",
+  "/get_students/:subject_id",
   accessControl([1, 2, 3]),
   paginationMiddleware,
   studentController.getStudents
