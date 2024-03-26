@@ -1,5 +1,6 @@
 // services/studentService.js
 const allModels = require("../models");
+const { Sequelize } = require("sequelize");
 
 const getAllStudents = async ({
   where,
@@ -86,10 +87,16 @@ const createStudent = async (data, subjectScheduleId) => {
     where: { lesson_type_id: subjectScheduleObject.lesson_type_id },
   });
 
+  const lessonAssessmentIds = lessonAssessmentObjects.map(
+    (lessonAssessment) => lessonAssessment.dataValues.id
+  );
+
   const lessonObjects = await allModels.Lesson.findAll({
     where: {
       subject_id: subjectScheduleObject.subject_id,
-      lesson_assessment_id: lessonAssessmentObjects.id,
+      lesson_assessment_id: {
+        [Sequelize.Op.in]: lessonAssessmentIds, // Using the IN operator to check the existence
+      },
     },
   });
 
