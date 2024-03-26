@@ -7,7 +7,7 @@ const responses = require("../utils/responseUtil");
 //     const userId = req.user && req.user.id;
 //     if (userId != 1 && userId != 2 && userId != 3) {
 //       // return res.status(403).json({ message: "Authentication is required." });
-//       responses.forbidden(res);
+//       responses.forbidden(res, error);
 //     }
 
 //     // const subjectId = req.body.subject_id ?? null;
@@ -48,7 +48,7 @@ const responses = require("../utils/responseUtil");
 //     });
 //   } catch (error) {
 //     if (error.statusCode == 403) {
-//       responses.forbidden(res);
+//       responses.forbidden(res, error);
 //     }
 //     responses.internalServerError(res, error);
 //   }
@@ -66,7 +66,7 @@ const responses = require("../utils/responseUtil");
 //     res.json(lessons);
 //   } catch (error) {
 //     if (error.statusCode == 403) {
-//       responses.forbidden(res);
+//       responses.forbidden(res, error);
 //     }
 //     responses.internalServerError(res, error);
 //   }
@@ -90,7 +90,7 @@ const responses = require("../utils/responseUtil");
 //     responses.created(res, newObject);
 //   } catch (error) {
 //     if (error.statusCode == 403) {
-//       responses.forbidden(res);
+//       responses.forbidden(res, error);
 //     }
 //     responses.internalServerError(res, error);
 //   }
@@ -104,7 +104,7 @@ const responses = require("../utils/responseUtil");
 //     responses.updated(res, req.body);
 //   } catch (error) {
 //     if (error.statusCode == 403) {
-//       responses.forbidden(res);
+//       responses.forbidden(res, error);
 //     }
 //     responses.internalServerError(res, error);
 //   }
@@ -118,7 +118,7 @@ const responses = require("../utils/responseUtil");
 //     responses.deleted(res, { id: id });
 //   } catch (error) {
 //     if (error.statusCode == 403) {
-//       responses.forbidden(res);
+//       responses.forbidden(res, error);
 //     }
 //     responses.internalServerError(res, error);
 //   }
@@ -129,7 +129,7 @@ const getLessons = async (req, res, next) => {
     const userId = req.user && req.user.id;
     if (userId != 1 && userId != 2 && userId != 3) {
       // return res.status(403).json({ message: "Authentication is required." });
-      responses.forbidden(res);
+      responses.forbidden(res, error);
     }
 
     // const subjectId = req.body.subject_id ?? null;
@@ -170,7 +170,7 @@ const getLessons = async (req, res, next) => {
     });
   } catch (error) {
     if (error.statusCode == 403) {
-      responses.forbidden(res);
+      responses.forbidden(res, error);
     }
     else{
       responses.internalServerError(res, error);
@@ -190,7 +190,7 @@ const getLessonsWithoutBody = async (req, res, next) => {
     res.json(lessons);
   } catch (error) {
     if (error.statusCode == 403) {
-      responses.forbidden(res);
+      responses.forbidden(res, error);
     }
     else{
       responses.internalServerError(res, error);
@@ -216,7 +216,7 @@ const createLesson = async (req, res, next) => {
     responses.created(res, newObject);
   } catch (error) {
     if (error.statusCode == 403) {
-      responses.forbidden(res);
+      responses.forbidden(res, error);
     }
     else{
       responses.internalServerError(res, error);
@@ -232,7 +232,7 @@ const updateLesson = async (req, res, next) => {
     responses.updated(res, req.body);
   } catch (error) {
     if (error.statusCode == 403) {
-      responses.forbidden(res);
+      responses.forbidden(res, error);
     }
     else{
       responses.internalServerError(res, error);
@@ -248,7 +248,7 @@ const deleteLesson = async (req, res, next) => {
     responses.deleted(res, { id: id });
   } catch (error) {
     if (error.statusCode == 403) {
-      responses.forbidden(res);
+      responses.forbidden(res, error);
     }
     else{
       responses.internalServerError(res, error);

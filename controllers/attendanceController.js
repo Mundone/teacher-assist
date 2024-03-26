@@ -17,7 +17,7 @@ const getAttendanceController = async (req, res, next) => {
     }
   } catch (error) {
     if (error.statusCode == 403) {
-      responses.forbidden(res);
+      responses.forbidden(res, error);
     } else {
       responses.internalServerError(res, error);
     }
@@ -40,9 +40,9 @@ const createAttendanceController = async (req, res, next) => {
     responses.created(res, filteredObject);
   } catch (error) {
     if (error.statusCode == 403) {
-      responses.forbidden(res);
+      responses.forbidden(res, error);
     } else if (error.statusCode == 400) {
-      responses.badRequest(res);
+      responses.badRequest(res, error);
     } else {
       responses.internalServerError(res, error);
     }
@@ -57,7 +57,7 @@ const deleteAttendanceController = async (req, res, next) => {
     responses.deleted(res, { id: id });
   } catch (error) {
     if (error.statusCode == 403) {
-      responses.forbidden(res);
+      responses.forbidden(res, error);
     } else {
       responses.internalServerError(res, error);
     }
@@ -72,7 +72,7 @@ const registerAttendanceController = async (req, res, next) => {
     responses.created(res, newObject);
   } catch (error) {
     if (error.statusCode == 400) {
-      responses.badRequest(res);
+      responses.badRequest(res, error);
     } else {
       responses.internalServerError(res, error);
     }
@@ -107,7 +107,7 @@ const getAllAttendanceResponsesController = async (req, res, next) => {
     });
   } catch (error) {
     if (error.statusCode == 403) {
-      responses.forbidden(res);
+      responses.forbidden(res, error);
     } else {
       responses.internalServerError(res, error);
     }

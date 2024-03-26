@@ -7,7 +7,7 @@ const getScheduleController = async (req, res, next) => {
     res.json(objects);
   } catch (error) {
     if (error.statusCode == 403) {
-      responses.forbidden(res);
+      responses.forbidden(res, error);
     } else {
       responses.internalServerError(res, error);
     }

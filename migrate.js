@@ -295,12 +295,6 @@ const insertRandomData = async () => {
     });
   }
 
-  await models.LessonAssessment.create({
-    lesson_assessment_code: "Test code",
-    lesson_assessment_description: "Test desc",
-    lesson_type_id: lessonTypeNames.length,
-  });
-
   await models.User.create({
     name: "Ulziimaa",
     email: "zma@gmail.com",
@@ -318,150 +312,6 @@ const insertRandomData = async () => {
     role_id: 1,
     password: await bcrypt.hash("Pass@123", 10),
   });
-
-  for (let i = 0; i < 10; i++) {
-    const randomDataContainer = generateRandomData();
-
-    // Create a exampleUser
-    const exampleUser = await models.User.create({
-      name: peopleNames[i],
-      email: peopleNamesEn[i] + "@must.com",
-      code: teacherCodes[i],
-      // Assume role_id is set correctly
-      role_id: exampleRole.id,
-    });
-
-    // Create a exampleUser
-    await models.UserFile.create({
-      user_id: exampleUser.id,
-      file_name: i + "-р файл",
-      file_path: Math.floor(i * Math.random()),
-      file_type: (i % 4) + "-р гэрчилгээ",
-    });
-
-    // Create a exampleSubject
-    const exampleSubject = await models.Subject.create({
-      subject_name: subjectNames[i],
-      subject_code: subjectCodes[i],
-      user_id: i % 2 == 0 ? 1 : 3,
-      isStarted: true,
-    });
-
-    // Additional teachers as assistant teachers
-
-    var randomLessonTypeId1 =
-      Math.floor(Math.random() * lessonTypeNames.length) + 1;
-
-    await models.SubjectLessonType.create({
-      subject_id: exampleSubject.id,
-      lesson_type_id: randomLessonTypeId1, // Random lesson type
-      lesson_count: 16,
-      max_score: 3,
-    });
-
-    var randomLessonTypeId2 =
-      Math.floor(Math.random() * lessonTypeNames.length) + 1;
-
-    if (randomLessonTypeId1 != randomLessonTypeId2) {
-      await models.SubjectLessonType.create({
-        subject_id: exampleSubject.id,
-        lesson_type_id: randomLessonTypeId2, // Random lesson type
-        lesson_count: 16,
-        max_score: 3,
-      });
-    }
-
-    // Create a lesson type (assuming lesson types are predefined and have specific IDs)
-    const exampleLessonType = await models.LessonType.findOne({
-      where: { id: Math.floor(Math.random() * lessonTypeNames.length) + 1 },
-      include: [
-        {
-          model: models.LessonAssessment,
-        },
-      ],
-    });
-
-    const exampleLessonType2 = await models.LessonType.findOne({
-      where: { id: Math.floor(Math.random() * lessonTypeNames.length) + 1 },
-      include: [
-        {
-          model: models.LessonAssessment,
-        },
-      ],
-    });
-
-    // await exampleUser.addSubject(exampleSubject);
-
-    // await models.TeacherSubject.create({
-    //   user_id: exampleUser.id,
-    //   subject_id: exampleSubject.id,
-    //   lesson_type_id: exampleLessonType.id,
-    // });
-
-    // Create a exampleSubject schedule
-    const validScheduleId1 = 1; // Example ID, replace with a valid ID from your schedule table
-  const validScheduleId2 = 2; // Example ID, replace with a valid ID from your schedule table
-
-  const exampleSubjectSchedule = await models.SubjectSchedule.create({
-    subject_id: exampleSubject.id,
-    lesson_type_id: exampleLessonType.id,
-    schedule_id: validScheduleId1,
-  });
-
-  const exampleSubjectSchedule2 = await models.SubjectSchedule.create({
-    subject_id: exampleSubject.id,
-    lesson_type_id: exampleLessonType2.id,
-    schedule_id: validScheduleId2,
-  });
-
-    // Create lessons
-    for (let week = 1; week <= 4; week++) {
-      if (exampleLessonType && exampleLessonType.lesson_assessments) {
-        for (const assessment of exampleLessonType.lesson_assessments) {
-          await models.Lesson.create({
-            subject_id: exampleSubject.id,
-            lesson_assessment_id: assessment.id,
-            week_number: week,
-            lesson_number: week,
-          });
-        }
-        for (const assessment of exampleLessonType2.lesson_assessments) {
-          await models.Lesson.create({
-            subject_id: exampleSubject.id,
-            lesson_assessment_id: assessment.id,
-            week_number: week,
-            lesson_number: week,
-          });
-        }
-      }
-    }
-
-    // Create a student
-    const student = await models.Student.create({
-      name: peopleNames[Math.floor(Math.random() * peopleNames.length)],
-      student_code: studentCodes[i],
-    });
-
-    // Enroll student in the exampleSubject schedule (assuming this represents the student being allocated to a specific schedule)
-    await models.StudentSubjectSchedule.create({
-      student_id: student.id,
-      subject_schedule_id: exampleSubjectSchedule.id,
-    });
-    await models.StudentSubjectSchedule.create({
-      student_id: student.id,
-      subject_schedule_id: exampleSubjectSchedule2.id,
-    });
-
-    const allLessons = await models.Lesson.findAll();
-
-    for (const lesson of allLessons) {
-      await models.Grade.create({
-        student_id: student.id,
-        lesson_id: lesson.id,
-        grade: generateRandomGrade(MAX_GRADE),
-      });
-    }
-  }
 
   await models.Semester.create({
     semester_code: "2024B - Хаврын улирал",
@@ -601,7 +451,7 @@ const insertRandomData = async () => {
       menu_id: teacherMenu.id,
     });
   }
-
+  
   await models.UserFile.create({
     user_id: 1,
     file_name: "1-р файл",
@@ -614,6 +464,151 @@ const insertRandomData = async () => {
     file_path: Math.floor(Math.random()),
     file_type: "1-р гэрчилгээ",
   });
+
+  // for (let i = 0; i < 10; i++) {
+  //   const randomDataContainer = generateRandomData();
+
+  //   //Create a exampleUser
+  //   const exampleUser = await models.User.create({
+  //     name: peopleNames[i],
+  //     email: peopleNamesEn[i] + "@must.com",
+  //     code: teacherCodes[i],
+  //     // Assume role_id is set correctly
+  //     role_id: exampleRole.id,
+  //   });
+
+  //   // Create a exampleUser
+  //   await models.UserFile.create({
+  //     user_id: exampleUser.id,
+  //     file_name: i + "-р файл",
+  //     file_path: Math.floor(i * Math.random()),
+  //     file_type: (i % 4) + "-р гэрчилгээ",
+  //   });
+
+  //   // Create a exampleSubject
+  //   const exampleSubject = await models.Subject.create({
+  //     subject_name: subjectNames[i],
+  //     subject_code: subjectCodes[i],
+  //     user_id: i % 2 == 0 ? 1 : 3,
+  //     isStarted: true,
+  //   });
+
+  //   // Additional teachers as assistant teachers
+
+  //   var randomLessonTypeId1 =
+  //     Math.floor(Math.random() * lessonTypeNames.length) + 1;
+
+  //   await models.SubjectLessonType.create({
+  //     subject_id: exampleSubject.id,
+  //     lesson_type_id: randomLessonTypeId1, // Random lesson type
+  //     lesson_count: 16,
+  //     max_score: 3,
+  //   });
+
+  //   var randomLessonTypeId2 =
+  //     Math.floor(Math.random() * lessonTypeNames.length) + 1;
+
+  //   if (randomLessonTypeId1 != randomLessonTypeId2) {
+  //     await models.SubjectLessonType.create({
+  //       subject_id: exampleSubject.id,
+  //       lesson_type_id: randomLessonTypeId2, // Random lesson type
+  //       lesson_count: 16,
+  //       max_score: 3,
+  //     });
+  //   }
+
+  //   // Create a lesson type (assuming lesson types are predefined and have specific IDs)
+  //   const exampleLessonType = await models.LessonType.findOne({
+  //     where: { id: Math.floor(Math.random() * lessonTypeNames.length) + 1 },
+  //     include: [
+  //       {
+  //         model: models.LessonAssessment,
+  //       },
+  //     ],
+  //   });
+
+  //   const exampleLessonType2 = await models.LessonType.findOne({
+  //     where: { id: Math.floor(Math.random() * lessonTypeNames.length) + 1 },
+  //     include: [
+  //       {
+  //         model: models.LessonAssessment,
+  //       },
+  //     ],
+  //   });
+
+  //   // await exampleUser.addSubject(exampleSubject);
+
+  //   // await models.TeacherSubject.create({
+  //   //   user_id: exampleUser.id,
+  //   //   subject_id: exampleSubject.id,
+  //   //   lesson_type_id: exampleLessonType.id,
+  //   // });
+
+  //   // Create a exampleSubject schedule
+  //   const validScheduleId1 = 1; // Example ID, replace with a valid ID from your schedule table
+  //   const validScheduleId2 = 2; // Example ID, replace with a valid ID from your schedule table
+
+  //   const exampleSubjectSchedule = await models.SubjectSchedule.create({
+  //     subject_id: exampleSubject.id,
+  //     lesson_type_id: exampleLessonType.id,
+  //     schedule_id: validScheduleId1,
+  //   });
+
+  //   const exampleSubjectSchedule2 = await models.SubjectSchedule.create({
+  //     subject_id: exampleSubject.id,
+  //     lesson_type_id: exampleLessonType2.id,
+  //     schedule_id: validScheduleId2,
+  //   });
+
+  //   // Create lessons
+  //   for (let week = 1; week <= 4; week++) {
+  //     if (exampleLessonType && exampleLessonType.lesson_assessments) {
+  //       for (const assessment of exampleLessonType.lesson_assessments) {
+  //         await models.Lesson.create({
+  //           subject_id: exampleSubject.id,
+  //           lesson_assessment_id: assessment.id,
+  //           week_number: week,
+  //           lesson_number: week,
+  //         });
+  //       }
+  //       for (const assessment of exampleLessonType2.lesson_assessments) {
+  //         await models.Lesson.create({
+  //           subject_id: exampleSubject.id,
+  //           lesson_assessment_id: assessment.id,
+  //           week_number: week,
+  //           lesson_number: week,
+  //         });
+  //       }
+  //     }
+  //   }
+
+  //   // Create a student
+  //   const student = await models.Student.create({
+  //     name: peopleNames[Math.floor(Math.random() * peopleNames.length)],
+  //     student_code: studentCodes[i],
+  //   });
+
+  //   // Enroll student in the exampleSubject schedule (assuming this represents the student being allocated to a specific schedule)
+  //   await models.StudentSubjectSchedule.create({
+  //     student_id: student.id,
+  //     subject_schedule_id: exampleSubjectSchedule.id,
+  //   });
+  //   await models.StudentSubjectSchedule.create({
+  //     student_id: student.id,
+  //     subject_schedule_id: exampleSubjectSchedule2.id,
+  //   });
+
+  //   const allLessons = await models.Lesson.findAll();
+
+  //   for (const lesson of allLessons) {
+  //     await models.Grade.create({
+  //       student_id: student.id,
+  //       lesson_id: lesson.id,
+  //       grade: generateRandomGrade(MAX_GRADE),
+  //     });
+  //   }
+  // }
+
 
   // const attendanceObject = await models.Attendance.create({
   //   lesson_id: 1,

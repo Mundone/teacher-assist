@@ -6,7 +6,7 @@ const getLessonTypes = async (req, res, next) => {
   try {
     const userId = req.user && req.user.role_id;
     if (userId != 1 && userId != 2 && userId != 3) {
-      responses.forbidden(res);
+      responses.forbidden(res, error);
     }
 
     const { pageNo, pageSize, sortBy, sortOrder, filters } = req.pagination;
@@ -33,7 +33,7 @@ const getLessonTypes = async (req, res, next) => {
     });
   } catch (error) {
     if (error.statusCode == 403) {
-      responses.forbidden(res);
+      responses.forbidden(res, error);
     }
     else{
       responses.internalServerError(res, error);
@@ -50,7 +50,7 @@ const getLessonTypesWithoutBody = async (req, res, next) => {
     res.json(lessonTypes);
   } catch (error) {
     if (error.statusCode == 403) {
-      responses.forbidden(res);
+      responses.forbidden(res, error);
     }
     else{
       responses.internalServerError(res, error);
@@ -69,7 +69,7 @@ const getLessonTypeById = async (req, res, next) => {
     res.json(lessonType);
   } catch (error) {
     if (error.statusCode == 403) {
-      responses.forbidden(res);
+      responses.forbidden(res, error);
     }
     else{
       responses.internalServerError(res, error);
@@ -83,7 +83,7 @@ const createLessonType = async (req, res, next) => {
     responses.created(res, newObject);
   } catch (error) {
     if (error.statusCode == 403) {
-      responses.forbidden(res);
+      responses.forbidden(res, error);
     }
     else{
       responses.internalServerError(res, error);
@@ -101,7 +101,7 @@ const updateLessonType = async (req, res, next) => {
     responses.updated(res, req.body);
   } catch (error) {
     if (error.statusCode == 403) {
-      responses.forbidden(res);
+      responses.forbidden(res, error);
     }
     else{
       responses.internalServerError(res, error);
@@ -116,7 +116,7 @@ const deleteLessonType = async (req, res, next) => {
     responses.deleted(res, {id: id});
   } catch (error) {
     if (error.statusCode == 403) {
-      responses.forbidden(res);
+      responses.forbidden(res, error);
     }
     else{
       responses.internalServerError(res, error);

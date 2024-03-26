@@ -24,17 +24,18 @@ const productionConfig = {
     host: process.env.DB_HOST,
     dialect: "mysql",
     logging: false,
-    dialectOptions: {
-      ssl: {
-        require: true,
-        rejectUnauthorized: false,
-      },
-    },
+    // dialectOptions: {
+    //   ssl: {
+    //     require: true,
+    //     rejectUnauthorized: false,
+    //   },
+    // },
     timezone: "+08:00", // for writing to database
   },
   jwtSecret: process.env.JWT_SECRET,
 };
 
 const config = isLocal ? localConfig : productionConfig;
+console.log(isLocal ? "local" : "production")
 
 module.exports = config;

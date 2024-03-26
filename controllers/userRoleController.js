@@ -39,7 +39,7 @@ const getUserRolesWithoutBody = async (req, res, next) => {
     res.json(userRoles);
   } catch (error) {
     if (error.statusCode == 403) {
-      responses.forbidden(res);
+      responses.forbidden(res, error);
     }
     else{
       responses.internalServerError(res, error);
@@ -57,7 +57,7 @@ const getUserRoleById = async (req, res, next) => {
     res.json(userRole);
   } catch (error) {
     if (error.statusCode == 403) {
-      responses.forbidden(res);
+      responses.forbidden(res, error);
     }
     else{
       responses.internalServerError(res, error);
@@ -73,7 +73,7 @@ const createUserRole = async (req, res, next) => {
     responses.created(res, newObject);
   } catch (error) {
     if (error.statusCode == 403) {
-      responses.forbidden(res);
+      responses.forbidden(res, error);
     }
     else{
       responses.internalServerError(res, error);
@@ -88,7 +88,7 @@ const updateUserRole = async (req, res, next) => {
     responses.updated(res, req.body);
   } catch (error) {
     if (error.statusCode == 403) {
-      responses.forbidden(res);
+      responses.forbidden(res, error);
     }
     else{
       responses.internalServerError(res, error);
@@ -103,7 +103,7 @@ const deleteUserRole = async (req, res, next) => {
     responses.deleted(res, {id: id});
   } catch (error) {
     if (error.statusCode == 403) {
-      responses.forbidden(res);
+      responses.forbidden(res, error);
     }
     else{
       responses.internalServerError(res, error);

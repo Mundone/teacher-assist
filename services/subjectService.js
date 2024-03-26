@@ -182,6 +182,7 @@ const getSubjectById = async (id, userId) => {
 const createSubject = async (data, user_id) => {
   const subjectObject = await allModels.Subject.create({
     subject_name: data.subject_name,
+    subject_code: data.subject_code,
     user_id,
   });
 

@@ -100,12 +100,12 @@ const getGradesController = async (req, res, next) => {
         total_elements: totalGrades,
       },
       // data: students,
-      table_header: headerData[0].grades,
+      table_header: headerData[0]?.grades,
       table_data: tableData,
     });
   } catch (error) {
     if (error.statusCode == 403) {
-      responses.forbidden(res);
+      responses.forbidden(res, error);
     }
     else{
       responses.internalServerError(res, error);
@@ -122,7 +122,7 @@ const updateGradeController = async (req, res) => {
     responses.updated(res, req.body);
   } catch (error) {
     if (error.statusCode == 403) {
-      responses.forbidden(res);
+      responses.forbidden(res, error);
     }
     else{
       responses.internalServerError(res, error);

@@ -47,7 +47,7 @@ const getSubjectSchedules = async (req, res, next) => {
     });
   } catch (error) {
     if (error.statusCode == 403) {
-      responses.forbidden(res);
+      responses.forbidden(res, error);
     }
     else{
       responses.internalServerError(res, error);
@@ -68,7 +68,7 @@ const getSubjectSchedulesWithoutBody = async (req, res, next) => {
     res.json({ data: subjectSchedules });
   } catch (error) {
     if (error.statusCode == 403) {
-      responses.forbidden(res);
+      responses.forbidden(res, error);
     }
     else{
       responses.internalServerError(res, error);
@@ -87,7 +87,7 @@ const getSubjectSchedule = async (req, res, next) => {
     res.json(subjectSchedule);
   } catch (error) {
     if (error.statusCode == 403) {
-      responses.forbidden(res);
+      responses.forbidden(res, error);
     }
     else{
       responses.internalServerError(res, error);
@@ -111,7 +111,7 @@ const createSubjectSchedule = async (req, res, next) => {
     responses.created(res, newObject);
   } catch (error) {
     if (error.statusCode == 403) {
-      responses.forbidden(res);
+      responses.forbidden(res, error);
     }
     else{
       responses.internalServerError(res, error);
@@ -127,7 +127,7 @@ const updateSubjectSchedule = async (req, res, next) => {
     responses.updated(res, req.body);
   } catch (error) {
     if (error.statusCode == 403) {
-      responses.forbidden(res);
+      responses.forbidden(res, error);
     }
     else{
       responses.internalServerError(res, error);
@@ -143,7 +143,7 @@ const deleteSubjectSchedule = async (req, res, next) => {
     responses.deleted(res, { id: id });
   } catch (error) {
     if (error.statusCode == 403) {
-      responses.forbidden(res);
+      responses.forbidden(res, error);
     }
     else{
       responses.internalServerError(res, error);

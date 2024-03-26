@@ -14,16 +14,22 @@ const deleted = (res, data, message = "Амжилттай устгалаа") => 
   return res.status(200).json({ message, data });
 };
 
-const badRequest = (res, message = "Bad Request") => {
-  return res.status(400).json({ message });
+const badRequest = (res, error, message = "Bad Request") => {
+  return res.status(400).json({
+    error: message,
+    message: error.message
+  });
 };
 
 const unauthorized = (res, message = "Токен ирүүлээгүй байна.") => {
   return res.status(401).json({ message });
 };
 
-const forbidden = (res, message = "Зөвшөөрөлгүй хандалт") => {
-  return res.status(403).json({ message });
+const forbidden = (res, error, message = "Зөвшөөрөлгүй хандалт") => {
+  return res.status(403).json({
+    error: message,
+    message: error.message
+  });
 };
 
 const notFound = (res, message = "Олдсонгүй") => {

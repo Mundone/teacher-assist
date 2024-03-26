@@ -21,7 +21,7 @@ const register = async (req, res) => {
     const passwordError = validatePassword(password);
     if (passwordError) {
       // return res.status(400).send({ message: passwordError });
-      responses.badRequest(res);
+      responses.badRequest(res, error);
     }
 
     const newUser = await authService.registerUser({
@@ -34,7 +34,7 @@ const register = async (req, res) => {
     res.status(201).send(userInfo);
   } catch (error) {
     if (error.statusCode == 403) {
-      responses.forbidden(res);
+      responses.forbidden(res, error);
     }
     else{
       responses.internalServerError(res, error);
@@ -57,7 +57,7 @@ const login = async (req, res) => {
     });
   } catch (error) {
     if (error.statusCode == 403) {
-      responses.forbidden(res);
+      responses.forbidden(res, error);
     }
     else{
       responses.internalServerError(res, error);
@@ -76,7 +76,7 @@ const getAuthInfo = async (req, res) => {
   jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
     if (err) {
       // return res.status(403).json({ message: "Токений хугацаа дууссан байна." });
-      responses.forbidden(res);
+      responses.forbidden(res, error);
     }
     try {
       // Use the decoded ID to fetch the user and refresh the token
