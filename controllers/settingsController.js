@@ -116,6 +116,21 @@ const deleteSemesterController = async (req, res, next) => {
   }
 };
 
+
+const changeQRUrlController = async (req, res, next) => {
+  try {
+    await settingsService.changeQRUrlService(req.body.host);
+    responses.updated(res, req.body);
+  } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res, error);
+    }
+    else{
+      responses.internalServerError(res, error);
+    }
+  }
+};
+
 module.exports = {
   getCurrentWeekController,
   getSemestersController,
@@ -123,4 +138,5 @@ module.exports = {
   createSemesterController,
   updateSemesterController,
   deleteSemesterController,
+  changeQRUrlController
 };

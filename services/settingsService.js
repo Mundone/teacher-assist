@@ -1,4 +1,5 @@
 const allModels = require("../models");
+const { Sequelize } = require("sequelize");
 
 const getCurrentWeekService = async () => {
   const exist = await allModels.Semester.findOne();
@@ -128,6 +129,27 @@ const getCurrentWeekFunction = async () => {
   return weekCount;
 };
 
+const changeQRUrlService = async (newBaseUrl) => {
+  try {
+    const result = await allModels.Attendance.update(
+      {
+        response_url_path: Sequelize.literal(
+          `CONCAT('${newBaseUrl}', SUBSTRING(response_url_path, INSTR(response_url_path, '/attendance/response/')))`
+        ),
+      },
+      {
+        where: {
+          response_url_path: { [Sequelize.Op.not]: null },
+        },
+      }
+    );
+
+    return result; // The result contains the number of rows updated
+  } catch (error) {
+    console.error("Error updating QR URLs:", error);
+    return null;
+  }
+};
 
 module.exports = {
   getCurrentWeekService,
@@ -136,5 +158,6 @@ module.exports = {
   createSemesterService,
   updateSemesterService,
   deleteSemesterService,
-  getCurrentWeekFunction
+  getCurrentWeekFunction,
+  changeQRUrlService,
 };

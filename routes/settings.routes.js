@@ -41,4 +41,11 @@ router.delete(
   settingsController.deleteSemesterController
 );
 
+
+router.put(
+  "/change_qr_url",
+  accessControl([1, 2, 3]),
+  settingsController.changeQRUrlController
+);
+
 module.exports = router;
