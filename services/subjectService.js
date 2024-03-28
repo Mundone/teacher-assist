@@ -221,6 +221,10 @@ const createSubject = async (data, user_id) => {
   let lessonsToCreate = [];
 
   for (const subject_schedule of data.subject_schedules) {
+    await allModels.SubjectLessonType.create({
+      subject_id: subjectObject.id,
+      lesson_type_id: subject_schedule.lesson_type_id,
+    });
     for (const schedule_id of subject_schedule.schedule_ids) {
       subjectSchedulesToCreate.push({
         subject_id: subjectObject.id,
@@ -253,7 +257,6 @@ const createSubject = async (data, user_id) => {
 
   return subjectObject;
 };
-
 
 const updateSubject = async (id, data, userId) => {
   await checkIfUserCorrect(id, userId);

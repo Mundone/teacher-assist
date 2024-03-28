@@ -23,11 +23,11 @@ const getAllStudents = async ({
             {
               model: allModels.SubjectSchedule,
               attributes: ["id"],
+              where: { subject_id: subjectId }, 
               include: [
                 {
                   model: allModels.Subject,
                   attributes: ["id", "user_id"],
-                  where: { id: subjectId },
                 },
                 {
                   model: allModels.Schedule,
@@ -83,20 +83,17 @@ const createStudent = async (data, subjectScheduleId) => {
     subjectScheduleId
   );
 
-  const lessonAssessmentObjects = await allModels.LessonAssessment.findAll({
-    where: { lesson_type_id: subjectScheduleObject.lesson_type_id },
-  });
+  // const lessonAssessmentObjects = await allModels.LessonAssessment.findAll({
+  //   where: { lesson_type_id: subjectScheduleObject.lesson_type_id },
+  // });
 
-  const lessonAssessmentIds = lessonAssessmentObjects.map(
-    (lessonAssessment) => lessonAssessment.dataValues.id
-  );
+  // const lessonAssessmentIds = lessonAssessmentObjects.map(
+  //   (lessonAssessment) => lessonAssessment.dataValues.id
+  // );
 
   const lessonObjects = await allModels.Lesson.findAll({
     where: {
-      subject_id: subjectScheduleObject.subject_id,
-      lesson_assessment_id: {
-        [Sequelize.Op.in]: lessonAssessmentIds, // Using the IN operator to check the existence
-      },
+      subject_id: subjectScheduleObject.subject_id
     },
   });
 
