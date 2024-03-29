@@ -86,77 +86,108 @@ const getStudentById = async (id) => {
 
 //subjectScheduleId ni unendee subject shuu
 const createStudent = async (data, subjectScheduleId) => {
-  const subjectObject = await allModels.Subject.findOne({
-    where: { id: subjectScheduleId },
-  });
+  // Start a transaction
+  const transaction = await allModels.sequelize.transaction();
 
-  if (!subjectObject) {
-    const error = new Error("Зөвшөөрөлгүй хандалт");
-    error.statusCode = 403;
-    throw error;
-  }
+  try {
+    const subjectObject = await allModels.Subject.findOne({
+      where: { id: subjectScheduleId },
+    }, { transaction });
 
-  const lessonScheduleObjects = await allModels.SubjectSchedule.findAll(
-    {
-      where: { subject_id: subjectObject.id },
+    if (!subjectObject) {
+      const error = new Error("Зөвшөөрөлгүй хандалт");
+      error.statusCode = 403;
+      throw error;
     }
-  );
 
-  const createdStudentObject = await allModels.Student.create(data);
+    const createdStudentObject = await allModels.Student.create(data, { transaction });
 
-  for (const lessonScheduleObject of lessonScheduleObjects) {
-    await allModels.StudentSubjectSchedule.create({
+    const subjectScheduleObjects = await allModels.SubjectSchedule.findAll({
+      where: { subject_id: subjectObject.id },
+    }, { transaction });
+
+    const studentSubjectScheduleData = subjectScheduleObjects.map(subjectScheduleObject => ({
       student_id: createdStudentObject.id,
-      subject_schedule_id: lessonScheduleObject.id,
-    });
-  }
+      subject_schedule_id: subjectScheduleObject.id,
+    }));
 
-  const lessonObjects = await allModels.Lesson.findAll({
-    where: {
-      subject_id: subjectObject.id
-    },
-  });
+    await allModels.StudentSubjectSchedule.bulkCreate(studentSubjectScheduleData, { transaction });
 
-  for (const lessonObject of lessonObjects) {
-    await allModels.Grade.create({
+    const lessonObjects = await allModels.Lesson.findAll({
+      where: {
+        subject_id: subjectObject.id
+      },
+    }, { transaction });
+
+    const gradeData = lessonObjects.map(lessonObject => ({
       student_id: createdStudentObject.id,
       lesson_id: lessonObject.id,
       grade: 0,
-    });
-  }
+    }));
 
-  return createdStudentObject;
-};
+    await allModels.Grade.bulkCreate(gradeData, { transaction });
 
-const createStudentBulkService = async (data, subjectScheduleId) => {
-  console.log(subjectScheduleId);
+    // Commit the transaction
+    await transaction.commit();
 
-  const isUserIncludeSchedule = await allModels.SubjectSchedule.findOne({
-    where: { id: subjectScheduleId },
-  }).then((ss) => {
-    if (ss != null) {
-      return true;
-    }
-    return false;
-  });
-
-  if (!isUserIncludeSchedule) {
-    const error = new Error("Зөвшөөрөлгүй хандалт");
-    error.statusCode = 403;
+    return createdStudentObject;
+  } catch (error) {
+    // Rollback the transaction in case of an error
+    await transaction.rollback();
     throw error;
   }
-
-  const newObjects = await allModels.Student.bulkCreate(data);
-
-  for (const newObject of newObjects) {
-    await allModels.StudentSubjectSchedule.create({
-      student_id: newObject.id,
-      subject_schedule_id: subjectScheduleId,
-    });
-  }
-
-  return newObjects;
 };
+
+
+const createStudentBulkService = async (studentData, subjectScheduleId) => {
+  console.log(subjectScheduleId);
+
+  const transaction = await allModels.sequelize.transaction();
+
+  try {
+    const subjectSchedule = await allModels.SubjectSchedule.findOne({
+      where: { id: subjectScheduleId },
+    }, { transaction });
+
+    if (!subjectSchedule) {
+      const error = new Error("Зөвшөөрөлгүй хандалт");
+      error.statusCode = 403;
+      throw error;
+    }
+
+    const students = await allModels.Student.bulkCreate(studentData, { transaction });
+    const studentIds = students.map(student => student.id);
+
+    const studentSubjectSchedules = studentIds.map(studentId => ({
+      student_id: studentId,
+      subject_schedule_id: subjectScheduleId,
+    }));
+
+    await allModels.StudentSubjectSchedule.bulkCreate(studentSubjectSchedules, { transaction });
+
+    const lessonObjects = await allModels.Lesson.findAll({
+      where: { subject_id: subjectSchedule.subject_id },
+    }, { transaction });
+
+    const grades = lessonObjects.reduce((acc, lesson) => {
+      const lessonGrades = studentIds.map(studentId => ({
+        student_id: studentId,
+        lesson_id: lesson.id,
+        grade: 0,
+      }));
+      return acc.concat(lessonGrades);
+    }, []);
+
+    await allModels.Grade.bulkCreate(grades, { transaction });
+
+    await transaction.commit();
+    return students;
+  } catch (error) {
+    await transaction.rollback();
+    throw error;
+  }
+};
+
 
 const updateStudent = async (id, data) => {
   const student = await allModels.Student.findByPk(id);
