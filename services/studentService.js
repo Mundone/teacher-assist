@@ -56,33 +56,22 @@ const getStudentById = async (id) => {
   return await allModels.Student.findByPk(id);
 };
 
-const createStudent = async (data, subjectScheduleId) => {
-  const isUserIncludeSchedule = await allModels.SubjectSchedule.findOne({
-    where: { id: subjectScheduleId },
-  }).then((ss) => {
-    if (ss != null) {
-      return true;
-    }
-    return false;
-  });
 
-  if (!isUserIncludeSchedule) {
-    const error = new Error("Зөвшөөрөлгүй хандалт");
-    error.statusCode = 403;
-    throw error;
-  }
+  // const isUserIncludeSchedule = await allModels.SubjectSchedule.findOne({
+  //   where: { id: subjectScheduleId },
+  // }).then((ss) => {
+  //   if (ss != null) {
+  //     return true;
+  //   }
+  //   return false;
+  // });
 
-  const createdStudentObject = await allModels.Student.create(data);
-
-  await allModels.StudentSubjectSchedule.create({
-    student_id: createdStudentObject.id,
-    subject_schedule_id: subjectScheduleId,
-  });
-
-  const subjectScheduleObject = await allModels.SubjectSchedule.findByPk(
-    subjectScheduleId
-  );
-
+  // if (!isUserIncludeSchedule) {
+  //   const error = new Error("Зөвшөөрөлгүй хандалт");
+  //   error.statusCode = 403;
+  //   throw error;
+  // }
+  
   // const lessonAssessmentObjects = await allModels.LessonAssessment.findAll({
   //   where: { lesson_type_id: subjectScheduleObject.lesson_type_id },
   // });
@@ -91,9 +80,40 @@ const createStudent = async (data, subjectScheduleId) => {
   //   (lessonAssessment) => lessonAssessment.dataValues.id
   // );
 
+  // const subjectScheduleObject = await allModels.SubjectSchedule.findByPk(
+  //   subjectScheduleId
+  // );
+
+//subjectScheduleId ni unendee subject shuu
+const createStudent = async (data, subjectScheduleId) => {
+  const subjectObject = await allModels.Subject.findOne({
+    where: { id: subjectScheduleId },
+  });
+
+  if (!subjectObject) {
+    const error = new Error("Зөвшөөрөлгүй хандалт");
+    error.statusCode = 403;
+    throw error;
+  }
+
+  const lessonScheduleObjects = await allModels.SubjectSchedule.findAll(
+    {
+      where: { subject_id: subjectObject.id },
+    }
+  );
+
+  const createdStudentObject = await allModels.Student.create(data);
+
+  for (const lessonScheduleObject of lessonScheduleObjects) {
+    await allModels.StudentSubjectSchedule.create({
+      student_id: createdStudentObject.id,
+      subject_schedule_id: lessonScheduleObject.id,
+    });
+  }
+
   const lessonObjects = await allModels.Lesson.findAll({
     where: {
-      subject_id: subjectScheduleObject.subject_id
+      subject_id: subjectObject.id
     },
   });
 
