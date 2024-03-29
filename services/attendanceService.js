@@ -113,62 +113,49 @@ const deleteAttendanceService = async (id, userId) => {
 };
 
 const registerAttendanceService = async (objectData) => {
+  // Fetch the necessary attendance object along with the related subject schedule and lesson in one go
   const attendanceObject = await allModels.Attendance.findOne({
     where: {
       response_url_path: {
         [Sequelize.Op.like]: "%" + objectData.attendance_url_tail,
       },
     },
-    include: [
-      {
-        model: allModels.SubjectSchedule,
-      },
-      {
-        model: allModels.Lesson,
-      },
-    ],
+    include: [allModels.SubjectSchedule, allModels.Lesson],
   });
+
   if (!attendanceObject) {
-    const error = new Error("Олдсонгүй.");
-    error.statusCode = 404;
-    throw error;
+    throw new Error("Олдсонгүй.", 404);
   }
 
-  const isStudentCorrect = await allModels.StudentSubjectSchedule.findOne({
-    include: [
-      {
-        model: allModels.Student,
-        where: {
-          student_code: objectData.student_code,
-        },
-      },
-      {
-        model: allModels.SubjectSchedule,
-        where: {
-          id: attendanceObject.subject_schedule_id,
-        },
-      },
-    ],
+  // Check if the student is related to the subject schedule in one query
+  const studentCount = await allModels.StudentSubjectSchedule.count({
+    where: {
+      '$Student.student_code$': objectData.student_code,
+      subject_schedule_id: attendanceObject.subject_schedule_id,
+    },
+    include: [{
+      model: allModels.Student,
+      attributes: [],
+    }],
   });
-  if (!isStudentCorrect) {
-    const error = new Error("Энэ оюутан энэ хичээлийнх биш байна.");
-    error.statusCode = 403;
-    throw error;
+
+  if (studentCount === 0) {
+    throw new Error("Энэ оюутан энэ хичээлийнх биш байна.", 403);
   }
 
-  const isRegistered = await allModels.AttendanceResponse.findOne({
+  // Check if the student has already registered
+  const isRegistered = await allModels.AttendanceResponse.count({
     where: {
       submitted_code: objectData.student_code,
       attendance_id: attendanceObject.id,
     },
   });
 
-  if (isRegistered) {
-    const error = new Error("Энэ оюутан бүртгэгдсэн байна.");
-    error.statusCode = 400;
-    throw error;
+  if (isRegistered > 0) {
+    throw new Error("Энэ оюутан бүртгэгдсэн байна.", 400);
   }
 
+  // Create the attendance response
   const returnData = await allModels.AttendanceResponse.create({
     attendance_id: attendanceObject.id,
     submitted_code: objectData.student_code,
@@ -176,46 +163,12 @@ const registerAttendanceService = async (objectData) => {
     attendance_date: new Date(),
   });
 
-  const studentObjects = await allModels.Student.findAll({
-    where: {
-      student_code: objectData.student_code,
-    },
-  });
-
-  const studentCodes = studentObjects.map(
-    (student) => student.dataValues.student_code
-  );
-
-  console.log(studentCodes);
-  const gradeObject = await allModels.Grade.findOne({
-    include: [
-      {
-        model: allModels.Lesson,
-        where: {
-          id: attendanceObject.lesson_id,
-        },
-      },
-      {
-        model: allModels.Student,
-        where: {
-          student_code: {
-            [Sequelize.Op.in]: studentCodes, // Using the IN operator to check the existence
-          },
-        },
-      },
-    ],
-  });
-
-  if (!gradeObject) {
-    const error = new Error("Дүн олдсонгүй.");
-    error.statusCode = 404;
-    throw error;
-  }
-
-  await gradeService.updateGrade(gradeObject.id, { grade: 1 }, 1, true);
+  // Since the student is already verified above, directly update the grade without re-fetching the student
+  await gradeService.updateGrade(attendanceObject.lesson_id, { grade: 1 }, objectData.student_code, true);
 
   return returnData;
 };
+
 
 const getAllAttendanceResponsesService = async ({
   where,
