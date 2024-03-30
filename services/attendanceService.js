@@ -35,10 +35,10 @@ const createAttendanceService = async (objectData, protocol, host, userId) => {
     .toString(36)
     .substring(2, 15)}`;
   // const fullUrl = `${protocol}://${host}${attendancePath}`;
-  const attendanceFullUrl = `https://www.teachas.online${attendanceRandomPath}`;
-  const responseFullUrl = `https://www.teachas.online${responseRandomPath}`;
-  // const attendanceFullUrl = `192.168.65.4:3032${attendanceRandomPath}`;
-  // const responseFullUrl = `192.168.65.4:3032${responseRandomPath}`;
+  // const attendanceFullUrl = `https://www.teachas.online${attendanceRandomPath}`;
+  // const responseFullUrl = `https://www.teachas.online${responseRandomPath}`;
+  const attendanceFullUrl = `192.168.165.4:3032${attendanceRandomPath}`;
+  const responseFullUrl = `192.168.165.4:3032${responseRandomPath}`;
 
   const qrCodeImage = await QRCode.toDataURL(responseFullUrl);
 

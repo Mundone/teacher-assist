@@ -42,6 +42,9 @@ const getStudents = async (req, res, next) => {
     //       student?.student_subject_schedules?.subject_schedule?.lecture_time,
     //   };
     // });
+    
+    
+    // const student = await subjectService.get(subject_id);
 
     var newStudents = students.map((student) => {
       // Assuming there's only one student_subject_schedule per student,
@@ -70,6 +73,8 @@ const getStudents = async (req, res, next) => {
         total_pages: Math.ceil(totalStudents / pageSize),
         per_page: pageSize,
         total_elements: totalStudents,
+        subject_name: totalStudents,
+        subject_code: totalStudents,
       },
       data: newStudents,
     });
