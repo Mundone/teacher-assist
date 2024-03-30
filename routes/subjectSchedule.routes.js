@@ -76,6 +76,13 @@ router.get(
   subjectScheduleController.getSubjectSchedule
 );
 
+
+router.get(
+  "/get_subject_schedules_for_dropdown/:subjectId",
+  subjectScheduleController.getSubjectSchedulesForDropdown
+);
+
+
 /**
  * @swagger
  * /create_subject_schedule:

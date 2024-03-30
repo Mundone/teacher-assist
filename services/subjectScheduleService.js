@@ -31,6 +31,11 @@ const getAllSubjectSchedules = async ({
           model: allModels.LessonType,
           attributes: ["id", "lesson_type_name"],
         },
+        
+        {
+          model: allModels.Schedule,
+          attributes: ["id", "schedule_name"],
+        }
       ],
     });
   }

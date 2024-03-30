@@ -48,8 +48,58 @@ const getSubjectSchedules = async (req, res, next) => {
   } catch (error) {
     if (error.statusCode == 403) {
       responses.forbidden(res, error);
+    } else {
+      responses.internalServerError(res, error);
     }
-    else{
+  }
+};
+
+const getSubjectSchedulesForDropdown = async (req, res, next) => {
+  try {
+    const userId = req.user && req.user.id;
+    const { subjectId } = req.params;
+
+    const subjectSchedules =
+      await subjectScheduleService.getAllSubjectSchedules({
+        subjectId,
+        isWithoutBody: true,
+        userId,
+      });
+
+    const groupedByLessonType = subjectSchedules.reduce(
+      (accumulator, current) => {
+        const {
+          lesson_type_id,
+          id,
+          schedule,
+          lesson_type,
+        } = current;
+        const lessonTypeKey = `lesson_type_${lesson_type_id}`;
+
+        if (!accumulator[lessonTypeKey]) {
+          accumulator[lessonTypeKey] = {
+            lesson_type: current.lesson_type,
+            subject_schudule: [],
+          };
+        }
+
+        accumulator[lessonTypeKey].subject_schudule.push({
+          id,
+          schedule_name: lesson_type.lesson_type_name + " - " + schedule.schedule_name,
+        });
+
+        return accumulator;
+      },
+      {}
+    );
+
+    const newSubjectSchedules = Object.values(groupedByLessonType);
+
+    res.json({ data: newSubjectSchedules });
+  } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res, error);
+    } else {
       responses.internalServerError(res, error);
     }
   }
@@ -69,8 +119,7 @@ const getSubjectSchedulesWithoutBody = async (req, res, next) => {
   } catch (error) {
     if (error.statusCode == 403) {
       responses.forbidden(res, error);
-    }
-    else{
+    } else {
       responses.internalServerError(res, error);
     }
   }
@@ -88,8 +137,7 @@ const getSubjectSchedule = async (req, res, next) => {
   } catch (error) {
     if (error.statusCode == 403) {
       responses.forbidden(res, error);
-    }
-    else{
+    } else {
       responses.internalServerError(res, error);
     }
   }
@@ -112,8 +160,7 @@ const createSubjectSchedule = async (req, res, next) => {
   } catch (error) {
     if (error.statusCode == 403) {
       responses.forbidden(res, error);
-    }
-    else{
+    } else {
       responses.internalServerError(res, error);
     }
   }
@@ -128,8 +175,7 @@ const updateSubjectSchedule = async (req, res, next) => {
   } catch (error) {
     if (error.statusCode == 403) {
       responses.forbidden(res, error);
-    }
-    else{
+    } else {
       responses.internalServerError(res, error);
     }
   }
@@ -144,8 +190,7 @@ const deleteSubjectSchedule = async (req, res, next) => {
   } catch (error) {
     if (error.statusCode == 403) {
       responses.forbidden(res, error);
-    }
-    else{
+    } else {
       responses.internalServerError(res, error);
     }
   }
@@ -158,4 +203,5 @@ module.exports = {
   createSubjectSchedule,
   updateSubjectSchedule,
   deleteSubjectSchedule,
+  getSubjectSchedulesForDropdown,
 };
