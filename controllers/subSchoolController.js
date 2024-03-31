@@ -55,7 +55,7 @@ const getSubSchoolsWithoutBodyController = async (req, res, next) => {
     // ];
 
     const objects = await subSchoolService.getAllSubSchoolsService({
-      where: buildWhereOptions(filters),
+      // where: buildWhereOptions(filters),
       isWithoutBody: true,
     });
     res.json(objects);

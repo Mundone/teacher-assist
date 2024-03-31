@@ -321,7 +321,7 @@ const insertRandomData = async () => {
   });
 
   await models.SubSchool.create({
-    sub_school_name: "2024B - Хаврын улирал",
+    sub_school_name: "ШУТИС - МХТС",
     sub_school_latitude1: "47.918194",
     sub_school_longitude1: "106.929824",
     sub_school_latitude2: "47.918280",
@@ -329,9 +329,10 @@ const insertRandomData = async () => {
     sub_school_latitude3: "47.916190",
     sub_school_longitude3: "106.933957",
     sub_school_latitude4: "47.916256",
-    sub_school_longitude5: "106.930050",
+    sub_school_longitude4: "106.930050",
     is_active: true,
     user_id: 1,
+    school_id: 1,
   });
 
   await models.User.create({
