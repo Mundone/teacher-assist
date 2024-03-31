@@ -269,9 +269,11 @@ const generateRandomGrade = (maxGrade) =>
 
 const insertRandomData = async () => {
   //teacherRole
-  await models.UserRole.create({ role_name: "Админ" });
-  const exampleRole = await models.UserRole.create({ role_name: "Багш" });
-  await models.UserRole.create({ role_name: "Салбарын эрхлэгч" });
+  await models.UserRole.bulkCreate([
+    { role_name: "Админ" },
+    { role_name: "Багш" },
+    { role_name: "Салбарын эрхлэгч" },
+  ]);
 
   for (const scheduleName of scheduleNames) {
     await models.Schedule.create({
@@ -297,30 +299,48 @@ const insertRandomData = async () => {
     ]);
   }
 
-  await models.User.bulkCreate([
-    {
-      name: "Ulziimaa",
-      email: "zma@gmail.com",
-      code: "zma",
-      // Assume role_id is set correctly
-      role_id: 2,
-      password: await bcrypt.hash("Pass@123", 10),
-    },
-    {
-      name: "adminName",
-      email: "admin@gmail.com",
-      code: "admin",
-      // Assume role_id is set correctly
-      role_id: 1,
-      password: await bcrypt.hash("Pass@123", 10),
-    },
-  ]);
+  await models.School.create({
+    school_name: "ШУТИС",
+    is_active: true,
+  });
+
+  await models.User.create({
+    name: "ШУТИС админ",
+    email: "admin@gmail.com",
+    code: "admin",
+    role_id: 1,
+    password: await bcrypt.hash("Pass@123", 10),
+    school_id: 1,
+  });
 
   await models.Semester.create({
     semester_code: "2024B - Хаврын улирал",
     start_date: new Date("2024-01-24"),
     is_active: true,
-    user_id: 2,
+    user_id: 1,
+  });
+
+  await models.SubSchool.create({
+    sub_school_name: "2024B - Хаврын улирал",
+    sub_school_latitude1: "47.918194",
+    sub_school_longitude1: "106.929824",
+    sub_school_latitude2: "47.918280",
+    sub_school_longitude2: "106.933118",
+    sub_school_latitude3: "47.916190",
+    sub_school_longitude3: "106.933957",
+    sub_school_latitude4: "47.916256",
+    sub_school_longitude5: "106.930050",
+    is_active: true,
+    user_id: 1,
+  });
+
+  await models.User.create({
+    name: "Өлзиймаа",
+    email: "zma@gmail.com",
+    code: "zma",
+    role_id: 2,
+    password: await bcrypt.hash("Pass@123", 10),
+    sub_school_id: 1,
   });
 
   await models.Menu.bulkCreate([
@@ -354,6 +374,14 @@ const insertRandomData = async () => {
       menu_name: "Дашбоард",
       router_link: "/dashboard",
       sorted_order: 1,
+      icon_name: "material-symbols:dashboard-outline",
+    },
+    {
+      menu_code: "0002",
+      parent_id: 1,
+      menu_name: "Салбар сургууль",
+      router_link: "/dashboard/subSchools",
+      sorted_order: 2,
       icon_name: "material-symbols:dashboard-outline",
     },
     {
@@ -444,7 +472,8 @@ const insertRandomData = async () => {
   const teacherMenus = await models.Menu.findAll({
     where: {
       [Sequelize.Op.or]: [
-        { menu_code: { [Sequelize.Op.like]: "00%" } },
+        { menu_code: { [Sequelize.Op.like]: "00" } },
+        { menu_code: { [Sequelize.Op.like]: "0001%" } },
         { menu_code: { [Sequelize.Op.like]: "01" } },
         { menu_code: { [Sequelize.Op.like]: "0101%" } },
       ],
@@ -460,13 +489,13 @@ const insertRandomData = async () => {
 
   await models.UserFile.bulkCreate([
     {
-      user_id: 1,
+      user_id: 2,
       file_name: "1-р файл",
       file_path: Math.floor(Math.random()),
       file_type: "1-р гэрчилгээ",
     },
     {
-      user_id: 1,
+      user_id: 2,
       file_name: "2-р файл",
       file_path: Math.floor(Math.random()),
       file_type: "1-р гэрчилгээ",

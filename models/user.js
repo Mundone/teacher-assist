@@ -44,6 +44,9 @@ class User extends Model {
     this.hasMany(models.Subject, {
       foreignKey: "user_id",
     });
+    
+    this.belongsTo(models.SubSchool, { foreignKey: "sub_school_id" });
+    this.belongsTo(models.School, { foreignKey: "school_id" });
     this.hasMany(models.Semester, {
       foreignKey: "user_id",
     });
