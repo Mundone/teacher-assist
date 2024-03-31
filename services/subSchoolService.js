@@ -10,7 +10,7 @@ const getAllSubSchoolsService = async ({
 }) => {
   if (isWithoutBody) {
     return await allModels.SubSchool.findAll({
-      where: where,
+      // where: where,
     });
   }
 
@@ -35,7 +35,7 @@ const getSubjectById = async (
 ) => {
   // await checkIfUserCorrect(id, userId);
   return await allModels.SubSchool.findByPk(id, {
-    attributes: ["id", "subject_name", "subject_code", "createdAt"],
+    // attributes: ["id", "subject_name", "subject_code", "createdAt"],
   });
 };
 
