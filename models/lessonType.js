@@ -11,6 +11,9 @@ class LessonType extends Model {
       lesson_type_name: {
         type: DataTypes.STRING(255),
       },
+      lesson_type_code_for_excel: {
+        type: DataTypes.STRING(255),
+      },
     }, {
       sequelize,
       modelName: 'lesson_type',

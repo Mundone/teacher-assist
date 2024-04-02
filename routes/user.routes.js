@@ -4,6 +4,8 @@ const userController = require("../controllers/userController");
 const paginationMiddleware = require("../middlewares/paginationMiddleware");
 const { accessControl } = require("../middlewares/authMiddleware");
 const router = express.Router();
+const multer = require("multer");
+const upload = multer({ dest: "uploads/" });
 
 /**
  * @swagger
@@ -154,6 +156,13 @@ router.delete(
   "/delete_user/:id",
   accessControl([1]),
   userController.deleteUser
+);
+
+router.post(
+  "/create_users_bulk",
+  upload.single("file"),
+  accessControl([1]),
+  userController.createUsersBulkController
 );
 
 module.exports = router;

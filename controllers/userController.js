@@ -30,26 +30,22 @@ const getUsers = async (req, res, next) => {
   } catch (error) {
     if (error.statusCode == 403) {
       responses.forbidden(res, error);
-    }
-    else{
+    } else {
       responses.internalServerError(res, error);
     }
   }
 };
 
-
 const getUsersWithoutBody = async (req, res, next) => {
   try {
-    const users =
-      await userService.getAllUsers({
-        isWithoutBody: true,
-      });
+    const users = await userService.getAllUsers({
+      isWithoutBody: true,
+    });
     res.json(users);
   } catch (error) {
     if (error.statusCode == 403) {
       responses.forbidden(res, error);
-    }
-    else{
+    } else {
       responses.internalServerError(res, error);
     }
   }
@@ -75,8 +71,7 @@ const createUser = async (req, res, next) => {
   } catch (error) {
     if (error.statusCode == 403) {
       responses.forbidden(res, error);
-    }
-    else{
+    } else {
       responses.internalServerError(res, error);
     }
   }
@@ -90,8 +85,7 @@ const updateUser = async (req, res, next) => {
   } catch (error) {
     if (error.statusCode == 403) {
       responses.forbidden(res, error);
-    }
-    else{
+    } else {
       responses.internalServerError(res, error);
     }
   }
@@ -101,17 +95,32 @@ const deleteUser = async (req, res, next) => {
   try {
     const { id } = req.params;
     await userService.deleteUser(id);
-    responses.deleted(res, {id: id});
+    responses.deleted(res, { id: id });
   } catch (error) {
     if (error.statusCode == 403) {
       responses.forbidden(res, error);
-    }
-    else{
+    } else {
       responses.internalServerError(res, error);
     }
   }
 };
 
+const createUsersBulkController = async (req, res, next) => {
+  try {
+    if (!req.file) {
+      throw new Error("No file uploaded");
+    }
+    const filePath = req.file.path;
+    const newObjects = await userService.processUsersFromExcelService(filePath);
+    responses.created(res, newObjects);
+  } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res, error);
+    } else {
+      responses.internalServerError(res, error);
+    }
+  }
+};
 
 module.exports = {
   getUsers,
@@ -120,4 +129,5 @@ module.exports = {
   createUser,
   updateUser,
   deleteUser,
+  createUsersBulkController,
 };

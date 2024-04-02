@@ -9,7 +9,12 @@ const getAllLessonTypes = async ({
 }) => {
   if (isWithoutBody) {
     return await allModels.LessonType.findAll({
-      attributes: ["id", "lesson_type_name", "createdAt"],
+      attributes: [
+        "id",
+        "lesson_type_name",
+        "lesson_type_code_for_excel",
+        "createdAt",
+      ],
     });
   }
 
@@ -17,7 +22,12 @@ const getAllLessonTypes = async ({
 
   let { count: totalLessonTypes, rows: lessonTypes } =
     await allModels.LessonType.findAndCountAll({
-      attributes: ["id", "lesson_type_name", "createdAt"],
+      attributes: [
+        "id",
+        "lesson_type_name",
+        "lesson_type_code_for_excel",
+        "createdAt",
+      ],
 
       where: where, // Use the where options built from filters
       limit: limit,
@@ -34,6 +44,12 @@ const getAllLessonTypes = async ({
 
 const getLessonTypeById = async (id) => {
   return await allModels.LessonType.findByPk(id);
+};
+
+const getLessonTypeByCode = async (lessonTypeCode) => {
+  return await allModels.LessonType.findOne({
+    where: { lesson_type_code_for_excel: lessonTypeCode },
+  });
 };
 
 const createLessonType = async (lessonTypeData) => {
@@ -58,4 +74,5 @@ module.exports = {
   createLessonType,
   updateLessonType,
   deleteLessonType,
+  getLessonTypeByCode,
 };
