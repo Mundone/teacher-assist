@@ -29,15 +29,11 @@ const authenticateUser = async (code, password) => {
       },
     ],
   });
-  if (!inputUser) {
-    error.statusCode = 404;
-    throw new Error("Хэрэглэгч олдсонгүй.");
-  }
-
   const isMatch = await bcrypt.compare(password, inputUser.password);
-  if (!isMatch) {
-    error.statusCode = 404;
-    throw new Error("Нууц үг буруу байна.");
+  if (!inputUser || !isMatch) {
+    const error = new Error("Нууц үг буруу байна.");
+    error.statusCode = 403;
+    throw error;
   }
 
   const token = jwt.sign(

@@ -323,14 +323,14 @@ const insertRandomData = async () => {
     school_id: 1,
   });
 
-  await models.User.create({
-    name: "Өлзиймаа",
-    email: "zma@gmail.com",
-    code: "zma",
-    role_id: 2,
-    password: await bcrypt.hash("Pass@123", 10),
-    sub_school_id: 1,
-  });
+  // await models.User.create({
+  //   name: "Өлзиймаа",
+  //   email: "zma@gmail.com",
+  //   code: "zma",
+  //   role_id: 2,
+  //   password: await bcrypt.hash("Pass@123", 10),
+  //   sub_school_id: 1,
+  // });
 
   await models.Menu.bulkCreate([
     {
@@ -476,20 +476,20 @@ const insertRandomData = async () => {
     });
   }
 
-  await models.UserFile.bulkCreate([
-    {
-      user_id: 2,
-      file_name: "1-р файл",
-      file_path: Math.floor(Math.random()),
-      file_type: "1-р гэрчилгээ",
-    },
-    {
-      user_id: 2,
-      file_name: "2-р файл",
-      file_path: Math.floor(Math.random()),
-      file_type: "1-р гэрчилгээ",
-    },
-  ]);
+  // await models.UserFile.bulkCreate([
+  //   {
+  //     user_id: 2,
+  //     file_name: "1-р файл",
+  //     file_path: Math.floor(Math.random()),
+  //     file_type: "1-р гэрчилгээ",
+  //   },
+  //   {
+  //     user_id: 2,
+  //     file_name: "2-р файл",
+  //     file_path: Math.floor(Math.random()),
+  //     file_type: "1-р гэрчилгээ",
+  //   },
+  // ]);
 
   // for (let i = 0; i < 10; i++) {
   //   const randomDataContainer = generateRandomData();

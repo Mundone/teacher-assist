@@ -3,6 +3,9 @@ const bcrypt = require("bcryptjs");
 const XLSX = require("xlsx");
 const lessonTypeService = require("./lessonTypeService");
 const scheduleService = require("./scheduleService");
+const transporter = require("../config/email.config");
+const fs = require("fs");
+const path = require("path");
 
 const getAllUsers = async ({ where, limit, offset, order, isWithoutBody }) => {
   if (isWithoutBody) {
@@ -82,76 +85,138 @@ const deleteUser = async (id) => {
   return false;
 };
 
-async function createUsersBulk(data) {
-  for (const userData of data) {
-    // Find or create the user
-    let user = await allModels.User.findOne({
-      where: { code: userData.userCode },
-    });
+// Function to read the HTML file and replace placeholders with actual data
+const getHtmlContent = (fileName, replacements = {}) => {
+  const filePath = path.join(__dirname, "../public", fileName);
+  let htmlContent = fs.readFileSync(filePath, "utf8");
 
-    if (!user) {
-      user = await allModels.User.create({
-        name: userData.userName,
-        email: userData.userEmail,
-        code: userData.userCode,
-        password: await bcrypt.hash("Pass@123", 10),
-        role_id: 2,
-        sub_school_id: 1,
-        // Include other necessary user fields
+  Object.keys(replacements).forEach((key) => {
+    htmlContent = htmlContent.replace(
+      new RegExp(`{{${key}}}`, "g"),
+      replacements[key]
+    );
+  });
+
+  return htmlContent;
+};
+
+const mailOptions = (to, userName, userCode, password, loginUrl) => {
+  const htmlContent = getHtmlContent("content.html", {
+    name: userName,
+    userCode,
+    password,
+    action_url: loginUrl,
+  });
+
+  return {
+    from: {
+      name: "Teacher Assistant Bot",
+      address: process.env.EMAIL_USER,
+    },
+    to: [to],
+    subject: "Registration",
+    html: htmlContent,
+  };
+};
+
+async function createUsersBulk(transporter, data) {
+  const ACTION_URL = "https://teachas.online"
+  const transaction = await allModels.sequelize.transaction();
+
+  try {
+    for (const userData of data) {
+      let user = await allModels.User.findOne({
+        where: { code: userData.userCode },
+        transaction,
       });
-    }
 
-    // Iterate over each subject in the user's schedule array
-    for (const scheduleInfo of userData.schedules) {
-      // Find or create the subject associated with the user
-
-      if (!scheduleInfo.subjectCode) {
-        console.error(
-          "subjectCode is undefined for scheduleInfo:",
-          scheduleInfo
+      if (!user) {
+        const thatUserPassword = await bcrypt.hash("Pass@123", 10);
+        user = await allModels.User.create(
+          {
+            name: userData.userName,
+            email: userData.userEmail,
+            code: userData.userCode,
+            password: thatUserPassword,
+            role_id: 2,
+            sub_school_id: 1,
+          },
+          { transaction }
         );
-        continue; // Skip this iteration if subjectCode is not defined
+
+        // Send email here, so only new users receive it
+        const options = mailOptions(
+          userData.userEmail,
+          userData.userName,
+          userData.userCode,
+          "Pass@123",
+          ACTION_URL
+        );
+        await transporter.sendMail(options);
+      }
+
+      if (!userData.subjectCode) {
+        console.error("subjectCode is undefined for userData:", userData);
+        continue;
       }
 
       let subject = await allModels.Subject.findOne({
         where: {
-          subject_code: scheduleInfo.subjectCode, // Assuming subjectCode is part of each scheduleInfo
+          subject_code: userData.subjectCode,
           user_id: user.id,
         },
+        transaction,
       });
       if (!subject) {
-        subject = await allModels.Subject.create({
-          subject_name: scheduleInfo.subjectName, // Assuming subjectName is part of each scheduleInfo
-          subject_code: scheduleInfo.subjectCode, // Assuming subjectCode is part of each scheduleInfo
-          user_id: user.id,
-          // Include other necessary subject fields
-        });
+        subject = await allModels.Subject.create(
+          {
+            subject_name: userData.subjectName,
+            subject_code: userData.subjectCode,
+            user_id: user.id,
+          },
+          { transaction }
+        );
       }
 
-      // Assuming scheduleInfo includes a nested 'schedules' array for each subject's schedules
-      // for (const individualSchedule of scheduleInfo.schedules) {
-      const schedule = await allModels.Schedule.findOne({
-        where: {
-          schedule_day: scheduleInfo.day,
-          schedule_time: scheduleInfo.time,
-        },
-      });
-      if (schedule) {
-        await allModels.SubjectSchedule.create({
-          subject_id: subject.id,
-          schedule_id: schedule.id,
-          // Include additional fields as necessary
+      const subjectSchedules = [];
+
+      for (const scheduleInfo of userData.schedules) {
+        const schedule = await allModels.Schedule.findOne({
+          where: {
+            schedule_day: scheduleInfo.day,
+            schedule_time: scheduleInfo.time,
+          },
+          transaction,
+        });
+
+        if (schedule) {
+          subjectSchedules.push({
+            subject_id: subject.id,
+            schedule_id: schedule.id,
+          });
+        }
+      }
+
+      if (subjectSchedules.length > 0) {
+        await allModels.SubjectSchedule.bulkCreate(subjectSchedules, {
+          transaction,
         });
       }
-      // }
     }
+
+    // Commit the transaction after all operations are successful
+    await transaction.commit();
+  } catch (error) {
+    // Roll back the transaction in case of an error
+    await transaction.rollback();
+    throw error;
   }
 }
 
 async function processUsersFromExcelService(filepath) {
   const extractedData = await readExcelAndExtractData(filepath);
 
-  const createdUsers = await createUsersBulk(extractedData);
+  const createdUsers = await createUsersBulk(transporter, extractedData);
   return createdUsers;
 
   return extractedData;
@@ -247,16 +312,12 @@ async function readExcelAndExtractData(filepath) {
       // Extract subject from the current row
       const subjectMatch = subjectCell.v.match(SUBJECT_CELL_REGEX);
       if (subjectMatch) {
-        lastValidSubject = {
-          subjectCode: subjectMatch[1],
-          subjectName: subjectMatch[2].trim(),
-        };
+        lastValidSubject = subjectMatch;
       }
     } else if (!lastValidSubject) {
       // Skip rows until a new valid subject is found if there is no lastValidSubject set
       continue;
     }
-
     if (userNameCell && userNameCell.v) {
       const userMatch = userNameCell.v.match(USER_NAME_CELL_REGEX);
       let subjectMatch = subjectCell && subjectCell.v.match(SUBJECT_CELL_REGEX);
@@ -264,6 +325,12 @@ async function readExcelAndExtractData(filepath) {
       if (!subjectMatch && lastValidSubject) {
         subjectMatch = lastValidSubject;
       }
+
+      // if (subjectMatch) {
+      //   console.log(subjectMatch);
+      // } else {
+      //   console.log(not);
+      // }
 
       if (userMatch) {
         const schedules = [];
@@ -325,9 +392,9 @@ async function readExcelAndExtractData(filepath) {
                     scheduleName: schedule?.schedule_name,
                     lessonType: weekTypeLessonType?.lesson_type_name,
                     classNumber: classNumber,
-                    weekType: weekTypeIndicator,
-                    subjectCode: subjectMatch[1],
-                    subjectName: subjectMatch[2],
+                    // weekType: weekTypeIndicator,
+                    // subjectCode: subjectMatch[1],
+                    // subjectName: subjectMatch[2],
                   });
                 });
               } else {
@@ -337,7 +404,9 @@ async function readExcelAndExtractData(filepath) {
                   scheduleName: schedule?.schedule_name,
                   lessonType: baseLessonType?.lesson_type_name,
                   classNumber: classNumber,
-                  weekType: weekTypeIndicator,
+                  // weekType: weekTypeIndicator,
+                  // subjectCode: subjectMatch[1],
+                  // subjectName: subjectMatch[2],
                 });
               }
             } else if (scheduleText) {
@@ -353,8 +422,8 @@ async function readExcelAndExtractData(filepath) {
             userCode: userMatch[1],
             userName: userMatch[2].trim(),
             userEmail: userEmailCell?.v,
-            // subjectCode: subjectMatch[1],
-            // subjectName: subjectMatch[2],
+            subjectCode: subjectMatch[1],
+            subjectName: subjectMatch[2],
             schedules: schedules,
           });
         }
