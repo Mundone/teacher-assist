@@ -1,10 +1,12 @@
+#!/usr/bin/env node
+
 const models = require("./models/index");
 const moment = require("moment-timezone");
 const sequelize = require("./config/sequelizeConfig");
 const bcrypt = require("bcryptjs");
 const { Sequelize } = require("sequelize");
 
-const main = async () => {
+const resetDBFunction = async () => {
   try {
     await sequelize.sync({ force: true });
     console.log("Database sync complete.");
@@ -13,8 +15,8 @@ const main = async () => {
   } catch (err) {
     console.error("Error during database operation:", err);
   } finally {
-    await sequelize.close();
-    console.log("Database connection closed.");
+    // await sequelize.close();
+    // console.log("Database connection closed.");
   }
 };
 
@@ -425,7 +427,7 @@ const insertRandomData = async () => {
       });
     }
   }
-  
+
   const assignmentLessonType = await models.LessonType.create({
     lesson_type_name: lessonTypes[9].name,
     lesson_type_code_for_excel: lessonTypes[9].code,
@@ -440,7 +442,6 @@ const insertRandomData = async () => {
     });
   }
 
-  
   const practicLessonType = await models.LessonType.create({
     lesson_type_name: lessonTypes[10].name,
     lesson_type_code_for_excel: lessonTypes[10].code,
@@ -821,4 +822,8 @@ const insertRandomData = async () => {
   // });
 };
 
-main();
+// resetDBFunction();
+
+module.exports = {
+  resetDBFunction,
+};

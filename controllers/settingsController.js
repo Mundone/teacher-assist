@@ -9,8 +9,7 @@ const getCurrentWeekController = async (req, res, next) => {
   } catch (error) {
     if (error.statusCode == 403) {
       responses.forbidden(res, error);
-    }
-    else{
+    } else {
       responses.internalServerError(res, error);
     }
   }
@@ -18,7 +17,6 @@ const getCurrentWeekController = async (req, res, next) => {
 
 const getSemestersController = async (req, res, next) => {
   try {
-
     const { pageNo, pageSize, sortBy, sortOrder, filters } = req.pagination;
 
     const queryOptions = {
@@ -43,8 +41,7 @@ const getSemestersController = async (req, res, next) => {
   } catch (error) {
     if (error.statusCode == 403) {
       responses.forbidden(res, error);
-    }
-    else{
+    } else {
       responses.internalServerError(res, error);
     }
   }
@@ -61,8 +58,7 @@ const getSemesterController = async (req, res, next) => {
   } catch (error) {
     if (error.statusCode == 403) {
       responses.forbidden(res, error);
-    }
-    else{
+    } else {
       responses.internalServerError(res, error);
     }
   }
@@ -79,8 +75,7 @@ const createSemesterController = async (req, res, next) => {
   } catch (error) {
     if (error.statusCode == 403) {
       responses.forbidden(res, error);
-    }
-    else{
+    } else {
       responses.internalServerError(res, error);
     }
   }
@@ -94,8 +89,7 @@ const updateSemesterController = async (req, res, next) => {
   } catch (error) {
     if (error.statusCode == 403) {
       responses.forbidden(res, error);
-    }
-    else{
+    } else {
       responses.internalServerError(res, error);
     }
   }
@@ -105,17 +99,15 @@ const deleteSemesterController = async (req, res, next) => {
   try {
     const { id } = req.params;
     await settingsService.deleteSemesterService(id);
-    responses.deleted(res, {id: id});
+    responses.deleted(res, { id: id });
   } catch (error) {
     if (error.statusCode == 403) {
       responses.forbidden(res, error);
-    }
-    else{
+    } else {
       responses.internalServerError(res, error);
     }
   }
 };
-
 
 const changeQRUrlController = async (req, res, next) => {
   try {
@@ -124,8 +116,20 @@ const changeQRUrlController = async (req, res, next) => {
   } catch (error) {
     if (error.statusCode == 403) {
       responses.forbidden(res, error);
+    } else {
+      responses.internalServerError(res, error);
     }
-    else{
+  }
+};
+
+const resetDatabaseController = async (req, res, next) => {
+  try {
+    await settingsService.resetDatabaseService();
+    responses.success(res);
+  } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res, error);
+    } else {
       responses.internalServerError(res, error);
     }
   }
@@ -138,5 +142,6 @@ module.exports = {
   createSemesterController,
   updateSemesterController,
   deleteSemesterController,
-  changeQRUrlController
+  changeQRUrlController,
+  resetDatabaseController,
 };

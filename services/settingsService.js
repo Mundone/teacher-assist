@@ -1,5 +1,7 @@
 const allModels = require("../models");
 const { Sequelize } = require("sequelize");
+const { execFile } = require("child_process");
+const { resetDBFunction } = require("../migrate");
 
 const getCurrentWeekService = async () => {
   const exist = await allModels.Semester.findOne();
@@ -151,6 +153,15 @@ const changeQRUrlService = async (newBaseUrl) => {
   }
 };
 
+const resetDatabaseService = async () => {
+  try {
+    return await resetDBFunction();
+  } catch (error) {
+    console.error("Error resetting DB:", error);
+    return null;
+  }
+};
+
 module.exports = {
   getCurrentWeekService,
   getAllSemestersService,
@@ -160,4 +171,5 @@ module.exports = {
   deleteSemesterService,
   getCurrentWeekFunction,
   changeQRUrlService,
+  resetDatabaseService,
 };
