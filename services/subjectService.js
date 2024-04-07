@@ -210,49 +210,88 @@ const getSubjectById = async (id, userId) => {
   });
 };
 
-const createSubject = async (data, user_id) => {
-  const subjectObject = await allModels.Subject.create({
-    subject_name: data.subject_name,
-    subject_code: data.subject_code,
-    user_id,
-  });
+const createSubject = async (data, user_id, transaction) => {
+  const options = {};
+  if (transaction) {
+    options.transaction = transaction;
+  }
+
+  const subjectObject = await allModels.Subject.create(
+    {
+      subject_name: data.subject_name,
+      subject_code: data.subject_code,
+      user_id,
+    },
+    options
+  );
 
   let subjectSchedulesToCreate = [];
   let lessonsToCreate = [];
 
+  console.log(data.subject_schedules);
+
   for (const subject_schedule of data.subject_schedules) {
-    await allModels.SubjectLessonType.create({
-      subject_id: subjectObject.id,
-      lesson_type_id: subject_schedule.lesson_type_id,
-    });
-    for (const schedule_id of subject_schedule.schedule_ids) {
-      subjectSchedulesToCreate.push({
-        subject_id: subjectObject.id,
-        lesson_type_id: subject_schedule.lesson_type_id,
-        schedule_id,
-      });
+    let lessonAssessmentObjects = null;
+    if (subject_schedule.lesson_type_id) {
+      await allModels.SubjectLessonType.create(
+        {
+          subject_id: subjectObject.id,
+          lesson_type_id: subject_schedule.lesson_type_id,
+        },
+        options
+      );
+      for (const schedule_id of subject_schedule.schedule_ids) {
+        subjectSchedulesToCreate.push({
+          subject_id: subjectObject.id,
+          lesson_type_id: subject_schedule.lesson_type_id,
+          schedule_id,
+        });
+      }
+      lessonAssessmentObjects = await allModels.LessonAssessment.findAll(
+        {
+          where: { lesson_type_id: subject_schedule.lesson_type_id },
+        },
+        options
+      );
+    } else {
+      lessonAssessmentObjects = await allModels.LessonAssessment.findAll(
+        {
+          where: { lesson_type_id: subject_schedule },
+        },
+        options
+      );
     }
 
-    const lessonAssessmentObjects = await allModels.LessonAssessment.findAll({
-      where: { lesson_type_id: subject_schedule.lesson_type_id },
-    });
-
     for (const lessonAssessmentObject of lessonAssessmentObjects) {
-      for (let i = 0; i < 16; i++) {
+      const thatLessonAssessment = await allModels.LessonAssessment.findByPk(
+        lessonAssessmentObject.id,
+        {
+          include: [
+            {
+              model: allModels.LessonType,
+            },
+          ],
+          ...options,
+        }
+      );
+
+      console.log(thatLessonAssessment?.lesson_type);
+      for (let i = 0; i < thatLessonAssessment?.lesson_type?.lesson_type_iterate_count; i++) {
         lessonsToCreate.push({
           subject_id: subjectObject.id,
           lesson_assessment_id: lessonAssessmentObject.id,
           week_number: i + 1,
           lesson_number: i + 1,
+          lesson_type_id: thatLessonAssessment?.lesson_type?.id
         });
       }
     }
   }
 
-  await allModels.SubjectSchedule.bulkCreate(subjectSchedulesToCreate);
+  await allModels.SubjectSchedule.bulkCreate(subjectSchedulesToCreate, options);
 
   if (lessonsToCreate.length > 0) {
-    await allModels.Lesson.bulkCreate(lessonsToCreate);
+    await allModels.Lesson.bulkCreate(lessonsToCreate, options);
   }
 
   return subjectObject;

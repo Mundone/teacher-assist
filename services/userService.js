@@ -3,6 +3,8 @@ const bcrypt = require("bcryptjs");
 const XLSX = require("xlsx");
 const lessonTypeService = require("./lessonTypeService");
 const scheduleService = require("./scheduleService");
+const subjectService = require("./subjectService");
+
 const transporter = require("../config/email.config");
 const fs = require("fs");
 const path = require("path");
@@ -16,7 +18,15 @@ const getAllUsers = async ({ where, limit, offset, order, isWithoutBody }) => {
           attributes: ["id", "role_name"],
         },
       ],
-      attributes: ["id", "name", "email", "code", "role_id", "sub_school_id", "createdAt"],
+      attributes: [
+        "id",
+        "name",
+        "email",
+        "code",
+        "role_id",
+        "sub_school_id",
+        "createdAt",
+      ],
     });
   }
   let { count: totalObjects, rows: objects } =
@@ -27,7 +37,15 @@ const getAllUsers = async ({ where, limit, offset, order, isWithoutBody }) => {
           attributes: ["id", "role_name"],
         },
       ],
-      attributes: ["id", "name", "email", "code", "role_id", "sub_school_id", "createdAt"],
+      attributes: [
+        "id",
+        "name",
+        "email",
+        "code",
+        "role_id",
+        "sub_school_id",
+        "createdAt",
+      ],
 
       where: where,
       limit: limit,
@@ -50,7 +68,15 @@ const getUserById = async (id) => {
         attributes: ["id", "role_name"],
       },
     ],
-    attributes: ["id", "name", "email", "code", "role_id", "sub_school_id", "createdAt"],
+    attributes: [
+      "id",
+      "name",
+      "email",
+      "code",
+      "role_id",
+      "sub_school_id",
+      "createdAt",
+    ],
   });
 };
 
@@ -120,7 +146,7 @@ const mailOptions = (to, userName, userCode, password, loginUrl) => {
 };
 
 async function createUsersBulk(transporter, data, subSchoolId) {
-  const ACTION_URL = "https://teachas.online"
+  const ACTION_URL = "https://teachas.online";
   const transaction = await allModels.sequelize.transaction();
 
   try {
@@ -160,6 +186,12 @@ async function createUsersBulk(transporter, data, subSchoolId) {
         continue;
       }
 
+      const uniqueLessonTypeIds = [
+        ...new Set(userData.schedules.map((schedule) => schedule.lessonTypeId)),
+      ];
+
+      // console.log(uniqueLessonTypeIds);
+
       let subject = await allModels.Subject.findOne({
         where: {
           subject_code: userData.subjectCode,
@@ -168,11 +200,31 @@ async function createUsersBulk(transporter, data, subSchoolId) {
         transaction,
       });
       if (!subject) {
-        subject = await allModels.Subject.create(
+        // subject = await allModels.Subject.create(
+        //   {
+        //     subject_name: userData.subjectName,
+        //     subject_code: userData.subjectCode,
+        //     user_id: user.id,
+        //   },
+        //   { transaction }
+        // );
+        subject = await subjectService.createSubject(
           {
             subject_name: userData.subjectName,
             subject_code: userData.subjectCode,
             user_id: user.id,
+            subject_schedules: uniqueLessonTypeIds,
+          },
+          user.id,
+          transaction,
+        );
+      }
+
+      for (const uniqueLessonTypeId of uniqueLessonTypeIds) {
+        await allModels.SubjectLessonType.create(
+          {
+            subject_id: subject.id,
+            lesson_type_id: uniqueLessonTypeId,
           },
           { transaction }
         );
@@ -192,6 +244,7 @@ async function createUsersBulk(transporter, data, subSchoolId) {
         if (schedule) {
           subjectSchedules.push({
             subject_id: subject.id,
+            lesson_type_id: scheduleInfo.lessonTypeId,
             schedule_id: schedule.id,
           });
         }
@@ -216,7 +269,11 @@ async function createUsersBulk(transporter, data, subSchoolId) {
 async function processUsersFromExcelService(filepath, bodyData) {
   const extractedData = await readExcelAndExtractData(filepath);
 
-  const createdUsers = await createUsersBulk(transporter, extractedData, bodyData?.sub_school_id);
+  const createdUsers = await createUsersBulk(
+    transporter,
+    extractedData,
+    bodyData?.sub_school_id
+  );
   return createdUsers;
 
   return extractedData;
@@ -391,6 +448,7 @@ async function readExcelAndExtractData(filepath) {
                     time: time.toString(),
                     scheduleName: schedule?.schedule_name,
                     lessonType: weekTypeLessonType?.lesson_type_name,
+                    lessonTypeId: weekTypeLessonType?.id,
                     classNumber: classNumber,
                     // weekType: weekTypeIndicator,
                     // subjectCode: subjectMatch[1],
@@ -403,6 +461,7 @@ async function readExcelAndExtractData(filepath) {
                   time: time.toString(),
                   scheduleName: schedule?.schedule_name,
                   lessonType: baseLessonType?.lesson_type_name,
+                  lessonTypeId: baseLessonType?.id,
                   classNumber: classNumber,
                   // weekType: weekTypeIndicator,
                   // subjectCode: subjectMatch[1],
