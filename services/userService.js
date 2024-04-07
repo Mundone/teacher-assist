@@ -16,7 +16,7 @@ const getAllUsers = async ({ where, limit, offset, order, isWithoutBody }) => {
           attributes: ["id", "role_name"],
         },
       ],
-      attributes: ["id", "name", "email", "code", "role_id", "createdAt"],
+      attributes: ["id", "name", "email", "code", "role_id", "sub_school_id", "createdAt"],
     });
   }
   let { count: totalObjects, rows: objects } =
@@ -27,7 +27,7 @@ const getAllUsers = async ({ where, limit, offset, order, isWithoutBody }) => {
           attributes: ["id", "role_name"],
         },
       ],
-      attributes: ["id", "name", "email", "code", "role_id", "createdAt"],
+      attributes: ["id", "name", "email", "code", "role_id", "sub_school_id", "createdAt"],
 
       where: where,
       limit: limit,
@@ -50,7 +50,7 @@ const getUserById = async (id) => {
         attributes: ["id", "role_name"],
       },
     ],
-    attributes: ["id", "name", "email", "code", "role_id", "createdAt"],
+    attributes: ["id", "name", "email", "code", "role_id", "sub_school_id", "createdAt"],
   });
 };
 
@@ -119,7 +119,7 @@ const mailOptions = (to, userName, userCode, password, loginUrl) => {
   };
 };
 
-async function createUsersBulk(transporter, data) {
+async function createUsersBulk(transporter, data, subSchoolId) {
   const ACTION_URL = "https://teachas.online"
   const transaction = await allModels.sequelize.transaction();
 
@@ -139,7 +139,7 @@ async function createUsersBulk(transporter, data) {
             code: userData.userCode,
             password: thatUserPassword,
             role_id: 2,
-            sub_school_id: 1,
+            sub_school_id: subSchoolId,
           },
           { transaction }
         );
@@ -213,10 +213,10 @@ async function createUsersBulk(transporter, data) {
   }
 }
 
-async function processUsersFromExcelService(filepath) {
+async function processUsersFromExcelService(filepath, bodyData) {
   const extractedData = await readExcelAndExtractData(filepath);
 
-  const createdUsers = await createUsersBulk(transporter, extractedData);
+  const createdUsers = await createUsersBulk(transporter, extractedData, bodyData?.sub_school_id);
   return createdUsers;
 
   return extractedData;

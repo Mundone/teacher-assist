@@ -12,30 +12,30 @@ class SubSchool extends Model {
         sub_school_name: {
           type: DataTypes.STRING(255),
         },
-        sub_school_latitude1: {
-          type: DataTypes.STRING(255),
-        },
-        sub_school_longitude1: {
-          type: DataTypes.STRING(255),
-        },
-        sub_school_latitude2: {
-          type: DataTypes.STRING(255),
-        },
-        sub_school_longitude2: {
-          type: DataTypes.STRING(255),
-        },
-        sub_school_latitude3: {
-          type: DataTypes.STRING(255),
-        },
-        sub_school_longitude3: {
-          type: DataTypes.STRING(255),
-        },
-        sub_school_latitude4: {
-          type: DataTypes.STRING(255),
-        },
-        sub_school_longitude4: {
-          type: DataTypes.STRING(255),
-        },
+        // sub_school_latitude1: {
+        //   type: DataTypes.STRING(255),
+        // },
+        // sub_school_longitude1: {
+        //   type: DataTypes.STRING(255),
+        // },
+        // sub_school_latitude2: {
+        //   type: DataTypes.STRING(255),
+        // },
+        // sub_school_longitude2: {
+        //   type: DataTypes.STRING(255),
+        // },
+        // sub_school_latitude3: {
+        //   type: DataTypes.STRING(255),
+        // },
+        // sub_school_longitude3: {
+        //   type: DataTypes.STRING(255),
+        // },
+        // sub_school_latitude4: {
+        //   type: DataTypes.STRING(255),
+        // },
+        // sub_school_longitude4: {
+        //   type: DataTypes.STRING(255),
+        // },
         is_active: {
           type: DataTypes.BOOLEAN,
         },

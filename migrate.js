@@ -123,45 +123,132 @@ const studentCodes = [
   "B231020117",
 ];
 
-const lessonTypeNames = [
-  "Лекц",
-  "Лаборатор",
-  "Семинар",
-  "Бие даалт",
-  "Практик",
-  "Лекц сондгой",
-  "Лекц тэгш",
-  "Лаборатор сондгой",
-  "Лаборатор тэгш",
-  "Семинар сондгой",
-  "Семинар тэгш",
+const lessonTypes = [
+  {
+    name: "Лекц",
+    code: "лк",
+    count: 16,
+  },
+  {
+    name: "Лекц тэгш",
+    code: "лктэгш",
+    count: 8,
+  },
+  {
+    name: "Лекц сондгой",
+    code: "лксонд",
+    count: 8,
+  },
+  {
+    name: "Лаборатор",
+    code: "лаб",
+    count: 16,
+  },
+  {
+    name: "Лаборатор тэгш",
+    code: "лабтэгш",
+    count: 8,
+  },
+  {
+    name: "Лаборатор сондгой",
+    code: "лабсонд",
+    count: 8,
+  },
+  {
+    name: "Семинар",
+    code: "сем",
+    count: 16,
+  },
+  {
+    name: "Семинар тэгш",
+    code: "семтэгш",
+    count: 8,
+  },
+  {
+    name: "Семинар сондгой",
+    code: "семсонд",
+    count: 8,
+  },
+  {
+    name: "Бие даалт",
+    code: "бд",
+    count: 3,
+  },
+  {
+    name: "Практик",
+    code: "пр",
+    count: 5,
+  },
+];
+const lectureLessonAssessments = [
+  {
+    code: "CF1",
+    desc: "Цаг төлөвлөлт, хариуцлага",
+  },
+  {
+    code: "CF2",
+    desc: "Сурах хүсэл эрмэлзлэл, өөрийгөө илэрхийлэх",
+  },
 ];
 
-const lessonTypeCodes = [
-  "лк",
-  "лаб",
-  "сем",
-  "бд",
-  "пр",
-  "лксонд",
-  "лктэгш",
-  "лабсонд",
-  "лабтэгш",
-  "семсонд",
-  "семтэгш",
+const sorilLessonAssessments = [
+  {
+    code: "CT3",
+    desc: "Мэдлэгээ сэргээн санах, тайлбарлах",
+  },
+  {
+    code: "CT4",
+    desc: "Асуудал шийдвэрлэхэд мэдлэгээ хэрэглэх, задлан шинжлэх",
+  },
+  {
+    code: "CT5",
+    desc: "Мэдлэгээ сэргээн санах, тайлбарлах",
+  },
+  {
+    code: "CT6",
+    desc: "Асуудал шийдвэрлэхэд мэдлэгээ хэрэглэх, задлан шинжлэх",
+  },
 ];
 
-lessonAssessmentCodes = [
-  "CF1",
-  "CF2",
-  "CT3",
-  "CT4",
-  "CT5",
-  "CT6",
-  "CT7",
-  "CT8",
-  "CT9",
-  "CT10",
+const laboratoryLessonAssessments = [
+  {
+    code: "CD7",
+    desc: "Лабаораторийн хэмжилт, туршилт, даалгавар гүйцэтгэх",
+  },
+  {
+    code: "CD8",
+    desc: "Үр дүнг тохирох аргаар, өгөгдсөн форматын дагуу боловсруулж тайлагнах",
+  },
+];
+
+const assignmentLessonAssessments = [
+  {
+    code: "CD9",
+    desc: "Өгөгдсөн даалгаврын хүрээнд шийдвэрлэх асуудлаа тодорхойлж, томёолох",
+  },
+  {
+    code: "CD10",
+    desc: "Шийдвэрлэх асуудлын хүрээнд тодорхой шийдэл дэвшүүлэх, дүн шинжилгээ хийх",
+  },
+  {
+    code: "CD11",
+    desc: "Мэдлэг ур чадвараа ашиглан сонгосон шийдлийн дагуу асуудлыг шийдвэрлэх",
+  },
+  {
+    code: "CD12",
+    desc: "Бичгийн болон харилцах ур чадвараа ашиглан үр дүнг өгөгдсөн форматын дагуу тайлагнах илтгэх",
+  },
+];
+
+const testLessonAssessments = [
+  {
+    code: "XX1",
+    desc: "Тест үнэлгээ 1...",
+  },
+  {
+    code: "XX2",
+    desc: "Тест үнэлгээ 2...",
+  },
 ];
 
 const subjectCodes = [
@@ -175,19 +262,6 @@ const subjectCodes = [
   "S.CE102",
   "F.EE101",
   "S.MT102",
-];
-
-lessonAssessmentDescriptions = [
-  "Цаг төлөвлөлт, хариуцлага",
-  "Сурах хүсэл эрмэлзлэл, өөрийгөө илэрхийлэх",
-  "Мэдлэгээ сэргээн санах, тайлбарлах",
-  "Асуудал шийдвэрлэхэд мэдлэгээ хэрэглэх, задлан шинжлэх",
-  "Мэдлэгээ сэргээн санах, тайлбарлах",
-  "Асуудал шийдвэрлэхэд мэдлэгээ хэрэглэх, задлан шинжлэх",
-  "Лабаораторийн хэмжилт, туршилт, даалгавар гүйцэтгэх",
-  "Үр дүнг тохирох аргаар, өгөгдсөн форматын дагуу боловсруулж тайлагнах",
-  "Өгөгдсөн даалгаврын хүрээнд шийдвэрлэх асуудлаа тодорхойлж, томёолох",
-  "Шийдвэрлэх асуудлын хүрээнд тодорхой шийдэл дэвшүүлэх, дүн шинжилгээ хийх",
 ];
 
 const scheduleNames = [
@@ -268,23 +342,117 @@ const insertRandomData = async () => {
     });
   }
 
-  for (let i = 0; i < lessonTypeNames.length; i++) {
-    const exampleLessonType = await models.LessonType.create({
-      lesson_type_name: lessonTypeNames[i],
-      lesson_type_code_for_excel: lessonTypeCodes[i],
+  const lectureLessonTypes = await models.LessonType.bulkCreate([
+    {
+      lesson_type_name: lessonTypes[0].name,
+      lesson_type_code_for_excel: lessonTypes[0].code,
+      lesson_type_iterate_count: lessonTypes[0].count,
+    },
+    {
+      lesson_type_name: lessonTypes[1].name,
+      lesson_type_code_for_excel: lessonTypes[1].code,
+      lesson_type_iterate_count: lessonTypes[1].count,
+    },
+    {
+      lesson_type_name: lessonTypes[2].name,
+      lesson_type_code_for_excel: lessonTypes[2].code,
+      lesson_type_iterate_count: lessonTypes[2].count,
+    },
+  ]);
+
+  for (let i = 0; i < lectureLessonTypes.length; i++) {
+    for (let j = 0; j < lectureLessonAssessments.length; j++) {
+      await models.LessonAssessment.create({
+        lesson_assessment_code: lectureLessonAssessments[j].code,
+        lesson_assessment_description: lectureLessonAssessments[j].desc,
+        lesson_type_id: lectureLessonTypes[i].id,
+      });
+    }
+  }
+
+  const laboratoryLessonTypes = await models.LessonType.bulkCreate([
+    {
+      lesson_type_name: lessonTypes[3].name,
+      lesson_type_code_for_excel: lessonTypes[3].code,
+      lesson_type_iterate_count: lessonTypes[3].count,
+    },
+    {
+      lesson_type_name: lessonTypes[4].name,
+      lesson_type_code_for_excel: lessonTypes[4].code,
+      lesson_type_iterate_count: lessonTypes[4].count,
+    },
+    {
+      lesson_type_name: lessonTypes[5].name,
+      lesson_type_code_for_excel: lessonTypes[5].code,
+      lesson_type_iterate_count: lessonTypes[5].count,
+    },
+  ]);
+
+  for (let i = 0; i < laboratoryLessonTypes.length; i++) {
+    for (let j = 0; j < laboratoryLessonAssessments.length; j++) {
+      await models.LessonAssessment.create({
+        lesson_assessment_code: laboratoryLessonAssessments[j].code,
+        lesson_assessment_description: laboratoryLessonAssessments[j].desc,
+        lesson_type_id: laboratoryLessonTypes[i].id,
+      });
+    }
+  }
+
+  const seminarLessonTypes = await models.LessonType.bulkCreate([
+    {
+      lesson_type_name: lessonTypes[6].name,
+      lesson_type_code_for_excel: lessonTypes[6].code,
+      lesson_type_iterate_count: lessonTypes[6].count,
+    },
+    {
+      lesson_type_name: lessonTypes[7].name,
+      lesson_type_code_for_excel: lessonTypes[7].code,
+      lesson_type_iterate_count: lessonTypes[7].count,
+    },
+    {
+      lesson_type_name: lessonTypes[8].name,
+      lesson_type_code_for_excel: lessonTypes[8].code,
+      lesson_type_iterate_count: lessonTypes[8].count,
+    },
+  ]);
+
+  for (let i = 0; i < seminarLessonTypes.length; i++) {
+    for (let j = 0; j < testLessonAssessments.length; j++) {
+      await models.LessonAssessment.create({
+        lesson_assessment_code: testLessonAssessments[j].code,
+        lesson_assessment_description: testLessonAssessments[j].desc,
+        lesson_type_id: seminarLessonTypes[i].id,
+      });
+    }
+  }
+  
+  const assignmentLessonType = await models.LessonType.create({
+    lesson_type_name: lessonTypes[9].name,
+    lesson_type_code_for_excel: lessonTypes[9].code,
+    lesson_type_iterate_count: lessonTypes[9].count,
+  });
+
+  for (let i = 0; i < assignmentLessonAssessments.length; i++) {
+    await models.LessonAssessment.create({
+      lesson_assessment_code: assignmentLessonAssessments[i].code,
+      lesson_assessment_description: assignmentLessonAssessments[i].desc,
+      lesson_type_id: assignmentLessonType.id,
     });
-    await models.LessonAssessment.bulkCreate([
-      {
-        lesson_assessment_code: lessonAssessmentCodes[i * 2],
-        lesson_assessment_description: lessonAssessmentDescriptions[i * 2],
-        lesson_type_id: exampleLessonType.id,
-      },
-      {
-        lesson_assessment_code: lessonAssessmentCodes[i * 2 + 1],
-        lesson_assessment_description: lessonAssessmentDescriptions[i * 2 + 1],
-        lesson_type_id: exampleLessonType.id,
-      },
-    ]);
+  }
+
+  
+  const practicLessonType = await models.LessonType.create({
+    lesson_type_name: lessonTypes[10].name,
+    lesson_type_code_for_excel: lessonTypes[10].code,
+    lesson_type_iterate_count: lessonTypes[10].count,
+  });
+
+  for (let i = 0; i < testLessonAssessments.length; i++) {
+    await models.LessonAssessment.create({
+      lesson_assessment_code: testLessonAssessments[i].code,
+      lesson_assessment_description: testLessonAssessments[i].desc,
+      lesson_type_id: practicLessonType.id,
+    });
   }
 
   await models.School.create({
@@ -310,14 +478,14 @@ const insertRandomData = async () => {
 
   await models.SubSchool.create({
     sub_school_name: "ШУТИС - МХТС",
-    sub_school_latitude1: "47.918194",
-    sub_school_longitude1: "106.929824",
-    sub_school_latitude2: "47.918280",
-    sub_school_longitude2: "106.933118",
-    sub_school_latitude3: "47.916190",
-    sub_school_longitude3: "106.933957",
-    sub_school_latitude4: "47.916256",
-    sub_school_longitude4: "106.930050",
+    // sub_school_latitude1: "47.918194",
+    // sub_school_longitude1: "106.929824",
+    // sub_school_latitude2: "47.918280",
+    // sub_school_longitude2: "106.933118",
+    // sub_school_latitude3: "47.916190",
+    // sub_school_longitude3: "106.933957",
+    // sub_school_latitude4: "47.916256",
+    // sub_school_longitude4: "106.930050",
     is_active: true,
     user_id: 1,
     school_id: 1,

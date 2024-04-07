@@ -29,7 +29,7 @@ const authenticateUser = async (code, password) => {
       },
     ],
   });
-  const isMatch = await bcrypt.compare(password, inputUser.password);
+  const isMatch = await bcrypt.compare(password, inputUser?.password);
   if (!inputUser || !isMatch) {
     const error = new Error("Нууц үг буруу байна.");
     error.statusCode = 403;
@@ -37,18 +37,18 @@ const authenticateUser = async (code, password) => {
   }
 
   const token = jwt.sign(
-    { id: inputUser.id, code: inputUser.code, role_id: inputUser.role_id },
+    { id: inputUser?.id, code: inputUser?.code, role_id: inputUser?.role_id },
     process.env.JWT_SECRET,
     { expiresIn: "72h" }
   );
 
   var user = {
-    id: inputUser.id,
-    name: inputUser.name,
-    email: inputUser.email,
-    code: inputUser.code,
-    role_id: inputUser.role_id,
-    user_role: inputUser.user_role,
+    id: inputUser?.id,
+    name: inputUser?.name,
+    email: inputUser?.email,
+    code: inputUser?.code,
+    role_id: inputUser?.role_id,
+    user_role: inputUser?.user_role,
   };
 
   const userMenus = await allModels.Menu.findAll({

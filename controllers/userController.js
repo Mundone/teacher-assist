@@ -111,7 +111,7 @@ const createUsersBulkController = async (req, res, next) => {
       throw new Error("No file uploaded");
     }
     const filePath = req.file.path;
-    const newObjects = await userService.processUsersFromExcelService(filePath);
+    const newObjects = await userService.processUsersFromExcelService(filePath, req.body);
     responses.created(res, newObjects);
   } catch (error) {
     if (error.statusCode == 403) {
