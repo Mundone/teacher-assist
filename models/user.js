@@ -18,6 +18,9 @@ class User extends Model {
         code: {
           type: DataTypes.STRING(255),
         },
+        isSecretary: {
+          type: DataTypes.BOOLEAN(),
+        },
         role_id: {
           type: DataTypes.INTEGER,
           references: {
@@ -44,7 +47,7 @@ class User extends Model {
     this.hasMany(models.Subject, {
       foreignKey: "user_id",
     });
-    
+
     this.belongsTo(models.SubSchool, { foreignKey: "sub_school_id" });
     this.belongsTo(models.School, { foreignKey: "school_id" });
     this.hasMany(models.Semester, {

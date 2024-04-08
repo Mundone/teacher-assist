@@ -169,16 +169,20 @@ async function createUsersBulk(transporter, data, subSchoolId) {
           },
           { transaction }
         );
-
+        
         // Send email here, so only new users receive it
-        const options = mailOptions(
-          userData.userEmail,
-          userData.userName,
-          userData.userCode,
-          "Pass@123",
-          ACTION_URL
-        );
-        await transporter.sendMail(options);
+        // console.log(userData.userEmail);
+        if(userData.userEmail){
+
+          const options = mailOptions(
+            userData.userEmail,
+            userData.userName,
+            userData.userCode,
+            "Pass@123",
+            ACTION_URL
+          );
+          await transporter.sendMail(options);
+        }
       }
 
       if (!userData.subjectCode) {

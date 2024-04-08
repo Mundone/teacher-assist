@@ -41,6 +41,12 @@ class Attendance extends Model {
         usage_count: {
           type: DataTypes.INTEGER,
         },
+        latitude: {
+          type: DataTypes.STRING(255),
+        },
+        longitude: {
+          type: DataTypes.STRING(255),
+        },
       },
       {
         sequelize,

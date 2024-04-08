@@ -157,8 +157,13 @@ const resetDatabaseService = async () => {
   try {
     return await resetDBFunction();
   } catch (error) {
-    console.error("Error resetting DB:", error);
-    return null;
+    // console.error("Error resetting DB:", error);
+    
+    const error1 = new Error(error);
+    error1.statusCode = 500;
+    throw error1;
+
+    // return null;
   }
 };
 
