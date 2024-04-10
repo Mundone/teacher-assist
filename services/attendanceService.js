@@ -84,9 +84,9 @@ const createAttendanceService = async (objectData, protocol, host, userId) => {
     response_url_path: responseFullUrl,
     is_active: true,
     usage_count: 0,
-    latitude,
-    longitude,
-    duration,
+    latitude: objectData.latitude,
+    longitude: objectData.longitude,
+    duration: objectData.duration,
   });
 };
 
