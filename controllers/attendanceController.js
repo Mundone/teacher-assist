@@ -34,8 +34,6 @@ const createAttendanceController = async (req, res, next) => {
       userId
     );
 
-    console.log(newObject);
-
     const { attendance_url_path, ...filteredObject } = newObject.dataValues;
     responses.created(res, filteredObject);
   } catch (error) {

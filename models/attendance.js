@@ -47,6 +47,9 @@ class Attendance extends Model {
         longitude: {
           type: DataTypes.STRING(255),
         },
+        duration: {
+          type: DataTypes.INTEGER,
+        },
       },
       {
         sequelize,
