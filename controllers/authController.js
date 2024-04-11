@@ -3,7 +3,7 @@ const { validatePassword } = require("../utils/validation"); // Import the valid
 const jwt = require("jsonwebtoken");
 const responses = require("../utils/responseUtil");
 
-const register = async (req, res) => {
+const registerController = async (req, res) => {
   try {
     if (!req.body) {
       return res.status(400).send({ message: "Body хэрэгтэй." });
@@ -24,7 +24,7 @@ const register = async (req, res) => {
       responses.badRequest(res, error);
     }
 
-    const newUser = await authService.registerUser({
+    const newUser = await authService.registerUserService({
       code,
       name,
       password,
@@ -35,38 +35,34 @@ const register = async (req, res) => {
   } catch (error) {
     if (error.statusCode == 403) {
       responses.forbidden(res, error);
-    }
-    else{
+    } else {
       responses.internalServerError(res, error);
     }
   }
 };
 
-const login = async (req, res) => {
+const loginController = async (req, res) => {
   try {
     const { code, password } = req.body;
-    const { user, token, UserMenus } = await authService.authenticateUser(
-      code,
-      password
-    );
+    const { user, token, UserMenus } =
+      await authService.authenticateUserService(code, password);
     res.status(200).json({
       message: "Амжилттай нэвтэрлээ.",
       accessToken: token,
       user,
-      UserMenus
+      UserMenus,
     });
   } catch (error) {
     if (error.statusCode == 403) {
       responses.forbidden(res, error);
-    }
-    else{
+    } else {
       responses.internalServerError(res, error);
     }
   }
 };
 
 // Controller
-const getAuthInfo = async (req, res) => {
+const getAuthInfoController = async (req, res) => {
   const token = req.headers.authorization?.split(" ")[1];
   if (!token) {
     // return res.status(401).json({ message: "Токен ирүүлээгүй байна." });
@@ -76,7 +72,7 @@ const getAuthInfo = async (req, res) => {
   jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
     if (err) {
       // return res.status(403).json({ message: "Токений хугацаа дууссан байна." });
-      responses.forbidden(res, error);
+      responses.forbidden(res, err);
     }
     try {
       // Use the decoded ID to fetch the user and refresh the token
@@ -88,8 +84,73 @@ const getAuthInfo = async (req, res) => {
   });
 };
 
+const loginStudentController = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const { user, token } =
+      await authService.authenticateStudentService(email, password);
+    res.status(200).json({
+      message: "Амжилттай нэвтэрлээ.",
+      accessToken: token,
+      user,
+      // UserMenus,
+    });
+  } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res, error);
+    } else {
+      responses.internalServerError(res, error);
+    }
+  }
+};
+
+// Controller
+const getAuthInfoStudentController = async (req, res) => {
+  const token = req.headers.authorization?.split(" ")[1];
+  if (!token) {
+    // return res.status(401).json({ message: "Токен ирүүлээгүй байна." });
+    responses.unauthorized(res);
+  }
+
+  jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
+    if (err) {
+      // return res.status(403).json({ message: "Токений хугацаа дууссан байна." });
+      responses.forbidden(res, err);
+    }
+    try {
+      // Use the decoded ID to fetch the user and refresh the token
+      const { user, UserMenus } = await authService.refreshTokenService(
+        decoded.id
+      );
+      res.json({ user, UserMenus });
+    } catch (error) {
+      responses.internalServerError(res, error);
+    }
+  });
+};
+
+const sendOTPStudentController = async (req, res) => {
+  try {
+    const { email } = req.body;
+    await authService.sendEmailStudentService(email);
+
+    res.status(200).json({
+      message: "Амжилттай код явууллаа.",
+    });
+  } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res, error);
+    } else {
+      responses.internalServerError(res, error);
+    }
+  }
+};
+
 module.exports = {
-  register,
-  login,
-  getAuthInfo,
+  registerController,
+  loginController,
+  getAuthInfoController,
+  sendOTPStudentController,
+  loginStudentController,
+  getAuthInfoStudentController,
 };

@@ -1,6 +1,5 @@
 const express = require('express');
 const authController = require('../controllers/authController');
-const passport = require('passport');
 require('../config/passport-setup'); // adjust the path as needed
 
 const router = express.Router();
@@ -27,8 +26,10 @@ const router = express.Router();
  */
 
 
-router.post('/register', authController.register);
+router.post('/register', authController.registerController);
 
+
+router.post('/send_otp_student', authController.sendOTPStudentController);
 
 /**
  * @swagger
@@ -51,7 +52,9 @@ router.post('/register', authController.register);
  *         description: Internal server error
  */
 
-router.post('/login', authController.login);
+router.post('/login', authController.loginController);
+
+router.post('/login_student', authController.loginStudentController);
 
 /**
  * @swagger
@@ -71,6 +74,7 @@ router.post('/login', authController.login);
  */
 
 // Route
-router.get('/get_auth_info', authController.getAuthInfo);
+router.get('/get_auth_info', authController.getAuthInfoController);
+router.get('/get_auth_info_student', authController.getAuthInfoStudentController);
 
 module.exports = router;

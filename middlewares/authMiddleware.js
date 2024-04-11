@@ -26,11 +26,13 @@ const methodCheckMiddleware = (req, res, next) => {
   // Define a list of routes that should bypass token authentication
   const bypassRoutes = [
     { method: "POST", path: "/login" },
+    { method: "POST", path: "/login_student" },
     { method: "POST", path: "/register" },
     // { method: "GET", path: "/get_auth_info" },
     { method: "GET", path: "/get_current_week" },
     { method: "POST", path: "/register_attendance" },
     { method: "GET", path: "/get_schedules" },
+    { method: "POST", path: "/send_otp_student" },
   ];
 
   // Define the GET routes that require authentication

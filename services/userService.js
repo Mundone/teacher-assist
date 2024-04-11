@@ -127,7 +127,7 @@ const getHtmlContent = (fileName, replacements = {}) => {
 };
 
 const mailOptions = (to, userName, userCode, password, loginUrl) => {
-  const htmlContent = getHtmlContent("content.html", {
+  const htmlContent = getHtmlContent("mailBody.html", {
     name: userName,
     userCode,
     password,
