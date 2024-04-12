@@ -151,9 +151,10 @@ const sendEmailStudentService = async (email) => {
   });
 
   if (!inputStudent) {
-    inputStudent = allModels.Student.create({ email });
+    inputStudent = await allModels.Student.create({ email });
   }
   password = generateCode(6);
+  console.log(inputStudent)
 
   const options = mailOptionsStudent(inputStudent.email, password, ACTION_URL);
 
@@ -266,16 +267,16 @@ const refreshTokenService = async (userId) => {
 
 // Service
 const refreshTokenStudentService = async (userId) => {
-  const student = await allModels.Student.findByPk(userId, {
+  const user = await allModels.Student.findByPk(userId, {
     // include: [
     //   {
     //     model: allModels.UserRole,
     //     attributes: ["id", "role_name"],
     //   },
     // ],
-    // attributes: ["id", "name", "email", ["code", "teacher_code"], "role_id"],
+    attributes: ["id", "name", "student_code", "email", "createdAt"],
   });
-  if (!student) {
+  if (!user) {
     const error = new Error("User not found.");
     error.statusCode = 404;
     throw error;

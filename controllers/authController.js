@@ -119,10 +119,10 @@ const getAuthInfoStudentController = async (req, res) => {
     }
     try {
       // Use the decoded ID to fetch the user and refresh the token
-      const { user, UserMenus } = await authService.refreshTokenService(
+      const { user } = await authService.refreshTokenStudentService(
         decoded.id
       );
-      res.json({ user, UserMenus });
+      res.json({ user });
     } catch (error) {
       responses.internalServerError(res, error);
     }
