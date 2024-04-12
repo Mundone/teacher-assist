@@ -9,10 +9,14 @@ const Lesson = require("./lesson");
 const LessonAssessment = require("./lessonAssessment");
 const LessonType = require("./lessonType");
 const Menu = require("./menu");
+const Project = require("./project");
+const ProjectGrade = require("./projectGrade");
+const ProjectInspection = require("./projectInspection");
 const Schedule = require("./schedule");
 const School = require("./school");
 const Semester = require("./semester");
 const Student = require("./student");
+const StudentProject = require("./studentProject");
 const StudentSubjectSchedule = require("./studentSubjectSchedule");
 const Subject = require("./subject");
 const SubjectSchedule = require("./subjectSchedule");
@@ -30,11 +34,15 @@ Grade.init(sequelize, Sequelize.DataTypes);
 Lesson.init(sequelize, Sequelize.DataTypes);
 LessonType.init(sequelize, Sequelize.DataTypes);
 Menu.init(sequelize, Sequelize.DataTypes);
+Project.init(sequelize, Sequelize.DataTypes);
+ProjectGrade.init(sequelize, Sequelize.DataTypes);
+ProjectInspection.init(sequelize, Sequelize.DataTypes);
 LessonAssessment.init(sequelize, Sequelize.DataTypes);
 Schedule.init(sequelize, Sequelize.DataTypes);
 School.init(sequelize, Sequelize.DataTypes);
 Semester.init(sequelize, Sequelize.DataTypes);
 Student.init(sequelize, Sequelize.DataTypes);
+StudentProject.init(sequelize, Sequelize.DataTypes);
 StudentSubjectSchedule.init(sequelize, Sequelize.DataTypes);
 Subject.init(sequelize, Sequelize.DataTypes);
 SubjectSchedule.init(sequelize, Sequelize.DataTypes);
@@ -54,10 +62,14 @@ const models = {
   LessonAssessment,
   LessonType,
   Menu,
+  Project,
+  ProjectGrade,
+  ProjectInspection,
   Schedule,
   School,
   Semester,
   Student,
+  StudentProject,
   StudentSubjectSchedule,
   Subject,
   SubjectSchedule,

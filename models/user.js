@@ -18,7 +18,10 @@ class User extends Model {
         code: {
           type: DataTypes.STRING(255),
         },
-        isSecretary: {
+        is_secretary: {
+          type: DataTypes.BOOLEAN(),
+        },
+        is_head_of_department: {
           type: DataTypes.BOOLEAN(),
         },
         role_id: {
@@ -48,10 +51,17 @@ class User extends Model {
       foreignKey: "user_id",
     });
 
-    this.belongsTo(models.SubSchool, { foreignKey: "sub_school_id" });
     this.belongsTo(models.School, { foreignKey: "school_id" });
     this.hasMany(models.Semester, {
       foreignKey: "user_id",
+    });
+
+    
+    this.hasMany(models.Subject, {
+      foreignKey: "head_of_department_user_id",
+    });
+    this.hasMany(models.Subject, {
+      foreignKey: "secretary_user_id",
     });
   }
 }

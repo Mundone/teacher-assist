@@ -43,7 +43,7 @@ const authenticateUserService = async (code, password) => {
   const token = jwt.sign(
     { id: inputUser?.id, code: inputUser?.code, role_id: inputUser?.role_id },
     process.env.JWT_SECRET,
-    // { expiresIn: "72h" }
+    { expiresIn: "365d" }
   );
 
   var user = {
@@ -155,11 +155,7 @@ const sendEmailStudentService = async (email) => {
   }
   password = generateCode(6);
 
-  const options = mailOptionsStudent(
-    inputStudent.email,
-    password,
-    ACTION_URL
-  );
+  const options = mailOptionsStudent(inputStudent.email, password, ACTION_URL);
 
   await transporter.sendMail(options);
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -190,7 +186,8 @@ const authenticateStudentService = async (email, password) => {
       code: inputStudent?.student_code,
       email: inputStudent?.email,
     },
-    process.env.JWT_SECRET
+    process.env.JWT_SECRET,
+    { expiresIn: "365d" }
   );
 
   var user = {

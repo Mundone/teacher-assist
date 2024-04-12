@@ -194,12 +194,22 @@ const insertRandomData = async () => {
       school_id: 1,
     },
     {
+      name: "Тэнхимийн эрхлэгч өвөө",
+      email: "headOfDepartment@gmail.com",
+      code: "dep",
+      role_id: 2,
+      password: await bcrypt.hash("Pass@123", 10),
+      school_id: 1,
+      is_head_of_department: true
+    },
+    {
       name: "Нарийн бичиг хатагтай",
       email: "secretary@gmail.com",
       code: "sec",
       role_id: 2,
       password: await bcrypt.hash("Pass@123", 10),
       school_id: 1,
+      is_secretary: true
     },
   ]);
 
@@ -210,26 +220,26 @@ const insertRandomData = async () => {
     user_id: 1,
   });
 
-  await models.SubSchool.bulkCreate([
-    {
-      sub_school_name: "ШУТИС - МХТС",
-      is_active: true,
-      user_id: 1,
-      school_id: 1,
-    },
-    {
-      sub_school_name: "ШУТИС - БУХС",
-      is_active: true,
-      user_id: 1,
-      school_id: 1,
-    },
-    {
-      sub_school_name: "ШУТИС - ЭХИС",
-      is_active: true,
-      user_id: 1,
-      school_id: 1,
-    },
-  ]);
+  // await models.SubSchool.bulkCreate([
+  //   {
+  //     sub_school_name: "ШУТИС - МХТС",
+  //     is_active: true,
+  //     user_id: 1,
+  //     school_id: 1,
+  //   },
+  //   {
+  //     sub_school_name: "ШУТИС - БУХС",
+  //     is_active: true,
+  //     user_id: 1,
+  //     school_id: 1,
+  //   },
+  //   {
+  //     sub_school_name: "ШУТИС - ЭХИС",
+  //     is_active: true,
+  //     user_id: 1,
+  //     school_id: 1,
+  //   },
+  // ]);
 
   await models.Menu.bulkCreate(menuDatas);
 

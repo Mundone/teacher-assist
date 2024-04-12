@@ -224,14 +224,14 @@ const menuDatas = [
     sorted_order: 1,
     icon_name: "material-symbols:dashboard-outline",
   },
-  {
-    menu_code: "0002",
-    parent_id: 1,
-    menu_name: "Салбар сургууль",
-    router_link: "/dashboard/subSchools",
-    sorted_order: 2,
-    icon_name: "material-symbols:dashboard-outline",
-  },
+  // {
+  //   menu_code: "0002",
+  //   parent_id: 1,
+  //   menu_name: "Салбар сургууль",
+  //   router_link: "/dashboard/subSchools",
+  //   sorted_order: 2,
+  //   icon_name: "material-symbols:dashboard-outline",
+  // },
   {
     menu_code: "0101",
     parent_id: 2,
@@ -309,7 +309,7 @@ const menuDatas = [
 const adminMenuCodes = [
   "00",
   "0001",
-  "0002",
+  // "0002",
   "01",
   "0103",
   "0104",

@@ -50,9 +50,9 @@ class SubSchool extends Model {
   }
 
   static associate(models) {
-    this.hasMany(models.User, {
-      foreignKey: "sub_school_id",
-    });
+    // this.hasMany(models.User, {
+    //   foreignKey: "sub_school_id",
+    // });
     this.belongsTo(models.School, { foreignKey: "school_id" });
   }
 }

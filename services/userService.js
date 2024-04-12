@@ -24,7 +24,7 @@ const getAllUsers = async ({ where, limit, offset, order, isWithoutBody }) => {
         "email",
         "code",
         "role_id",
-        "sub_school_id",
+        "school_id",
         "createdAt",
       ],
     });
@@ -43,7 +43,7 @@ const getAllUsers = async ({ where, limit, offset, order, isWithoutBody }) => {
         "email",
         "code",
         "role_id",
-        "sub_school_id",
+        "school_id",
         "createdAt",
       ],
 
@@ -74,7 +74,7 @@ const getUserById = async (id) => {
       "email",
       "code",
       "role_id",
-      "sub_school_id",
+      "school_id",
       "createdAt",
     ],
   });
@@ -145,7 +145,7 @@ const mailOptions = (to, userName, userCode, password, loginUrl) => {
   };
 };
 
-async function createUsersBulk(transporter, data, subSchoolId) {
+async function createUsersBulk(transporter, data, schoolId) {
   const ACTION_URL = "https://teachas.online";
   const transaction = await allModels.sequelize.transaction();
 
@@ -165,7 +165,7 @@ async function createUsersBulk(transporter, data, subSchoolId) {
             code: userData.userCode,
             password: thatUserPassword,
             role_id: 2,
-            sub_school_id: subSchoolId,
+            school_id: schoolId,
           },
           { transaction }
         );
@@ -276,7 +276,7 @@ async function processUsersFromExcelService(filepath, bodyData) {
   const createdUsers = await createUsersBulk(
     transporter,
     extractedData,
-    bodyData?.sub_school_id
+    bodyData?.school_id
   );
   return createdUsers;
 
