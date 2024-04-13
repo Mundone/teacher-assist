@@ -41,7 +41,7 @@ const authenticateUserService = async (code, password) => {
   }
 
   const token = jwt.sign(
-    { id: inputUser?.id, code: inputUser?.code, role_id: inputUser?.role_id },
+    { id: inputUser?.id, code: inputUser?.code, role_id: inputUser?.role_id, school_id: inputUser?.school_id },
     process.env.JWT_SECRET,
     { expiresIn: "365d" }
   );
@@ -154,7 +154,7 @@ const sendEmailStudentService = async (email) => {
     inputStudent = await allModels.Student.create({ email });
   }
   password = generateCode(6);
-  console.log(inputStudent)
+  // console.log(inputStudent)
 
   const options = mailOptionsStudent(inputStudent.email, password, ACTION_URL);
 

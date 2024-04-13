@@ -24,6 +24,9 @@ class LessonAssessment extends Model {
           key: "id",
         },
       },
+      lesson_assessment_sort: {
+        type: DataTypes.INTEGER,
+      },
     }, {
       sequelize,
       modelName: 'lesson_assessment',

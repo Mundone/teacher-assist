@@ -228,8 +228,9 @@ const createSubject = async (data, user_id, transaction) => {
   let subjectSchedulesToCreate = [];
   let lessonsToCreate = [];
 
-  console.log(data.subject_schedules);
+  // console.log(data.subject_schedules);
 
+  let excludeLessonTypeIds = [];
   for (const subject_schedule of data.subject_schedules) {
     let lessonAssessmentObjects = null;
     if (subject_schedule?.lesson_type_id) {
@@ -247,43 +248,118 @@ const createSubject = async (data, user_id, transaction) => {
           schedule_id,
         });
       }
-      lessonAssessmentObjects = await allModels.LessonAssessment.findAll(
-        {
-          where: { lesson_type_id: subject_schedule?.lesson_type_id },
-        },
-        options
+
+      const checkLessonTypeObject = await allModels.LessonType.findByPk(
+        subject_schedule?.lesson_type_id
       );
-    } else {
-      if (subject_schedule) {
+      if (
+        checkLessonTypeObject?.parent_lesson_type_id == null ||
+        checkLessonTypeObject?.parent_lesson_type_id == 0
+      ) {
         lessonAssessmentObjects = await allModels.LessonAssessment.findAll(
           {
-            where: { lesson_type_id: subject_schedule },
-            include: [
-              {
-                model: allModels.LessonType,
-              },
-            ],
+            where: { lesson_type_id: subject_schedule?.lesson_type_id },
+          },
+          options
+        );
+      } else {
+        lessonAssessmentObjects = await allModels.LessonAssessment.findAll(
+          {
+            where: {
+              lesson_type_id: checkLessonTypeObject?.parent_lesson_type_id,
+            },
           },
           options
         );
       }
+    } else {
+      if (subject_schedule) {
+        const checkLessonTypeObject = await allModels.LessonType.findByPk(
+          subject_schedule
+        );
+
+        if (
+          checkLessonTypeObject?.parent_lesson_type_id == null ||
+          checkLessonTypeObject?.parent_lesson_type_id == 0
+        ) {
+          lessonAssessmentObjects = await allModels.LessonAssessment.findAll(
+            {
+              where: { lesson_type_id: subject_schedule },
+              include: [
+                {
+                  model: allModels.LessonType,
+                },
+              ],
+            },
+            options
+          );
+        } else {
+          if (excludeLessonTypeIds.includes(checkLessonTypeObject?.parent_lesson_type_id)) {
+            lessonAssessmentObjects = null;
+          } else {
+            lessonAssessmentObjects = await allModels.LessonAssessment.findAll(
+              {
+                where: {
+                  lesson_type_id: checkLessonTypeObject?.parent_lesson_type_id,
+                },
+                include: [
+                  {
+                    model: allModels.LessonType,
+                  },
+                ],
+              },
+              options
+            );
+
+            if (excludeLessonTypeIds.includes(checkLessonTypeObject?.parent_lesson_type_id)) {
+            } else {
+              excludeLessonTypeIds.push(checkLessonTypeObject?.parent_lesson_type_id);
+            }
+          }
+        }
+      }
     }
     if (lessonAssessmentObjects) {
+      // let excludeLessonTypeIds = [];
       for (const lessonAssessmentObject of lessonAssessmentObjects) {
+        // const baseLessonTypeToCreate = await allModels.LessonType.findByPk(
+        //   lessonAssessmentObject?.lesson_type?.parent_lesson_type_id
+        // );
         for (
           let i = 0;
-          i < thatLessonAssessment?.lesson_type?.lesson_type_iterate_count;
+          i < lessonAssessmentObject?.lesson_type?.lesson_type_iterate_count;
           i++
         ) {
+          // if (lessonAssessmentObject?.lesson_type?.parent_lesson_type_id == 0) {
           lessonsToCreate.push({
             subject_id: subjectObject?.id,
             lesson_assessment_id: lessonAssessmentObject?.id,
             week_number: i + 1,
             lesson_number: i + 1,
             lesson_type_id: lessonAssessmentObject?.lesson_type?.id,
-            convert_grade: lessonAssessmentObject?.default_grade
+            convert_grade: lessonAssessmentObject?.default_grade,
           });
+          // } else {
+          //EVEN ODD
+          // console.log(baseLessonTypeToCreate?.id);
+          // if (excludeLessonTypeIds.includes(baseLessonTypeToCreate?.id)) {
+          // } else {
+          //   lessonsToCreate.push({
+          //     subject_id: subjectObject?.id,
+          //     lesson_assessment_id: lessonAssessmentObject?.id,
+          //     week_number: i + 1,
+          //     lesson_number: i + 1,
+          //     lesson_type_id: baseLessonTypeToCreate?.id,
+          //     convert_grade: lessonAssessmentObject?.default_grade,
+          //   });
+          // }
+          // }
         }
+
+        // if (excludeLessonTypeIds.includes(baseLessonTypeToCreate?.id)) {
+        // } else {
+        //   excludeLessonTypeIds.push(baseLessonTypeToCreate?.id);
+        // }
       }
     }
   }

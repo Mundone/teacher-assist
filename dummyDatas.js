@@ -3,68 +3,92 @@ const lessonTypes = [
     name: "Лекц",
     code: "лк",
     count: 16,
+    parent_lesson_type_id: 0,
+    sort: 1,
   },
   {
     name: "Лекц тэгш",
     code: "лктэгш",
     count: 8,
+    parent_lesson_type_id: 1,
+    sort: 2,
   },
   {
     name: "Лекц сондгой",
     code: "лксонд",
     count: 8,
+    parent_lesson_type_id: 1,
+    sort: 3,
   },
   {
     name: "Лаборатор",
     code: "лаб",
     count: 16,
+    parent_lesson_type_id: 0,
+    sort: 4,
   },
   {
     name: "Лаборатор тэгш",
     code: "лабтэгш",
     count: 8,
+    parent_lesson_type_id: 4,
+    sort: 5,
   },
   {
     name: "Лаборатор сондгой",
     code: "лабсонд",
     count: 8,
+    parent_lesson_type_id: 4,
+    sort: 6,
   },
   {
     name: "Семинар",
     code: "сем",
     count: 16,
+    parent_lesson_type_id: 0,
+    sort: 7,
   },
   {
     name: "Семинар тэгш",
     code: "семтэгш",
     count: 8,
+    parent_lesson_type_id: 7,
+    sort: 8,
   },
   {
     name: "Семинар сондгой",
     code: "семсонд",
     count: 8,
+    parent_lesson_type_id: 7,
+    sort: 9,
   },
   {
     name: "Бие даалт",
     code: "бд",
     count: 3,
+    parent_lesson_type_id: 0,
+    sort: 10,
   },
   {
     name: "Практик",
     code: "пр",
     count: 5,
+    parent_lesson_type_id: 0,
+    sort: 11,
   },
 ];
 const lectureLessonAssessments = [
   {
     code: "CF1",
     desc: "Цаг төлөвлөлт, хариуцлага",
-    def_grade: 5
+    def_grade: 5,
+    sort: 1,
   },
   {
     code: "CF2",
     desc: "Сурах хүсэл эрмэлзлэл, өөрийгөө илэрхийлэх",
-    def_grade: 5
+    def_grade: 5,
+    sort: 2,
   },
 ];
 
@@ -72,22 +96,26 @@ const sorilLessonAssessments = [
   {
     code: "CT3",
     desc: "Мэдлэгээ сэргээн санах, тайлбарлах",
-    def_grade: 5
+    def_grade: 5,
+    sort: 3,
   },
   {
     code: "CT4",
     desc: "Асуудал шийдвэрлэхэд мэдлэгээ хэрэглэх, задлан шинжлэх",
-    def_grade: 5
+    def_grade: 5,
+    sort: 4,
   },
   {
     code: "CT5",
     desc: "Мэдлэгээ сэргээн санах, тайлбарлах",
-    def_grade: 5
+    def_grade: 5,
+    sort: 5,
   },
   {
     code: "CT6",
     desc: "Асуудал шийдвэрлэхэд мэдлэгээ хэрэглэх, задлан шинжлэх",
-    def_grade: 5
+    def_grade: 5,
+    sort: 6,
   },
 ];
 
@@ -95,12 +123,14 @@ const laboratoryLessonAssessments = [
   {
     code: "CD7",
     desc: "Лабаораторийн хэмжилт, туршилт, даалгавар гүйцэтгэх",
-    def_grade: 15
+    def_grade: 15,
+    sort: 7,
   },
   {
     code: "CD8",
     desc: "Үр дүнг тохирох аргаар, өгөгдсөн форматын дагуу боловсруулж тайлагнах",
-    def_grade: 5
+    def_grade: 5,
+    sort: 8,
   },
 ];
 
@@ -108,22 +138,26 @@ const assignmentLessonAssessments = [
   {
     code: "CD9",
     desc: "Өгөгдсөн даалгаврын хүрээнд шийдвэрлэх асуудлаа тодорхойлж, томёолох",
-    def_grade: 5
+    def_grade: 5,
+    sort: 9,
   },
   {
     code: "CD10",
     desc: "Шийдвэрлэх асуудлын хүрээнд тодорхой шийдэл дэвшүүлэх, дүн шинжилгээ хийх",
-    def_grade: 5
+    def_grade: 5,
+    sort: 10,
   },
   {
     code: "CD11",
     desc: "Мэдлэг ур чадвараа ашиглан сонгосон шийдлийн дагуу асуудлыг шийдвэрлэх",
-    def_grade: 5
+    def_grade: 5,
+    sort: 11,
   },
   {
     code: "CD12",
     desc: "Бичгийн болон харилцах ур чадвараа ашиглан үр дүнг өгөгдсөн форматын дагуу тайлагнах илтгэх",
-    def_grade: 5
+    def_grade: 5,
+    sort: 12,
   },
 ];
 
@@ -131,12 +165,14 @@ const testLessonAssessments = [
   {
     code: "XX1",
     desc: "Тест үнэлгээ 1...",
-    def_grade: 5
+    def_grade: 5,
+    sort: 13,
   },
   {
     code: "XX2",
     desc: "Тест үнэлгээ 2...",
-    def_grade: 5
+    def_grade: 5,
+    sort: 14,
   },
 ];
 

@@ -1,6 +1,6 @@
 const allModels = require("../models");
 
-const getAllStudentGrades = async ({
+const getAllStudentGradesService = async ({
   where,
   limit,
   offset,
@@ -9,7 +9,7 @@ const getAllStudentGrades = async ({
   subjectId,
 }) => {
   const isUserIncludeSubject = await allModels.Subject.findOne({
-    where: { id: subjectId, user_id: userId },
+    where: { id: subjectId, teacher_user_id: userId },
   });
 
   if (!isUserIncludeSubject) {
@@ -32,16 +32,25 @@ const getAllStudentGrades = async ({
               "week_number",
               "createdAt",
               "lesson_number",
+              "convert_grade",
             ],
             where: { subject_id: subjectId },
             include: [
               {
                 model: allModels.LessonAssessment,
-                attributes: ["lesson_type_id", "lesson_assessment_code"],
-                include: {
-                  model: allModels.LessonType,
-                  attributes: ["id", "lesson_type_name"],
-                },
+                attributes: [
+                  "lesson_type_id",
+                  "lesson_assessment_code",
+                  "lesson_assessment_sort",
+                ],
+                // include: {
+                //   model: allModels.LessonType,
+                //   attributes: ["id", "lesson_type_name", "lesson_type_sort"],
+                // },
+              },
+              {
+                model: allModels.LessonType,
+                attributes: ["id", "lesson_type_name", "lesson_type_sort"],
               },
             ],
           },
@@ -176,7 +185,7 @@ const getAllStudentGrades = async ({
 //   distinct: true,
 // });
 
-const updateGrade = async (id, data, userId, isFromAttendance) => {
+const updateGradeService = async (id, data, userId, isFromAttendance) => {
   const gradeObject = await allModels.Grade.findByPk(id, {
     include: [
       {
@@ -194,7 +203,7 @@ const updateGrade = async (id, data, userId, isFromAttendance) => {
 
   if (!isFromAttendance) {
     const isUserIncludeGrade = await allModels.Subject.findOne({
-      where: { id: subjectId, user_id: userId },
+      where: { id: subjectId, teacher_user_id: userId },
     });
 
     if (!isUserIncludeGrade) {
@@ -212,6 +221,6 @@ const updateGrade = async (id, data, userId, isFromAttendance) => {
 };
 
 module.exports = {
-  getAllStudentGrades,
-  updateGrade,
+  getAllStudentGradesService,
+  updateGradeService,
 };

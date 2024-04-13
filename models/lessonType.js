@@ -18,6 +18,12 @@ class LessonType extends Model {
         lesson_type_iterate_count: {
           type: DataTypes.INTEGER,
         },
+        parent_lesson_type_id: {
+          type: DataTypes.INTEGER,
+        },
+        lesson_type_sort: {
+          type: DataTypes.INTEGER,
+        },
       },
       {
         sequelize,

@@ -43,6 +43,7 @@ class Lesson extends Model {
   }
 
   static associate(models) {
+    this.belongsTo(models.LessonType, { foreignKey: "lesson_type_id" });
     this.belongsTo(models.Subject, { foreignKey: "subject_id" });
     this.belongsTo(models.LessonAssessment, {
       foreignKey: "lesson_assessment_id",

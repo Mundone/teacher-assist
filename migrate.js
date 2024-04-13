@@ -66,16 +66,22 @@ const insertRandomData = async () => {
       lesson_type_name: lessonTypes[0].name,
       lesson_type_code_for_excel: lessonTypes[0].code,
       lesson_type_iterate_count: lessonTypes[0].count,
+      parent_lesson_type_id: lessonTypes[0].parent_lesson_type_id,
+      lesson_type_sort: lessonTypes[0].sort,
     },
     {
       lesson_type_name: lessonTypes[1].name,
       lesson_type_code_for_excel: lessonTypes[1].code,
       lesson_type_iterate_count: lessonTypes[1].count,
+      parent_lesson_type_id: lessonTypes[1].parent_lesson_type_id,
+      lesson_type_sort: lessonTypes[1].sort,
     },
     {
       lesson_type_name: lessonTypes[2].name,
       lesson_type_code_for_excel: lessonTypes[2].code,
       lesson_type_iterate_count: lessonTypes[2].count,
+      parent_lesson_type_id: lessonTypes[2].parent_lesson_type_id,
+      lesson_type_sort: lessonTypes[2].sort,
     },
   ]);
 
@@ -85,6 +91,8 @@ const insertRandomData = async () => {
         lesson_assessment_code: lectureLessonAssessments[j].code,
         lesson_assessment_description: lectureLessonAssessments[j].desc,
         lesson_type_id: lectureLessonTypes[i].id,
+        lesson_assessment_sort: lectureLessonAssessments[j].sort,
+        default_grade: lectureLessonAssessments[j].def_grade,
       });
     }
   }
@@ -94,16 +102,22 @@ const insertRandomData = async () => {
       lesson_type_name: lessonTypes[3].name,
       lesson_type_code_for_excel: lessonTypes[3].code,
       lesson_type_iterate_count: lessonTypes[3].count,
+      parent_lesson_type_id: lessonTypes[3].parent_lesson_type_id,
+      lesson_type_sort: lessonTypes[3].sort,
     },
     {
       lesson_type_name: lessonTypes[4].name,
       lesson_type_code_for_excel: lessonTypes[4].code,
       lesson_type_iterate_count: lessonTypes[4].count,
+      parent_lesson_type_id: lessonTypes[4].parent_lesson_type_id,
+      lesson_type_sort: lessonTypes[4].sort,
     },
     {
       lesson_type_name: lessonTypes[5].name,
       lesson_type_code_for_excel: lessonTypes[5].code,
       lesson_type_iterate_count: lessonTypes[5].count,
+      parent_lesson_type_id: lessonTypes[5].parent_lesson_type_id,
+      lesson_type_sort: lessonTypes[5].sort,
     },
   ]);
 
@@ -113,6 +127,8 @@ const insertRandomData = async () => {
         lesson_assessment_code: laboratoryLessonAssessments[j].code,
         lesson_assessment_description: laboratoryLessonAssessments[j].desc,
         lesson_type_id: laboratoryLessonTypes[i].id,
+        lesson_assessment_sort: laboratoryLessonAssessments[j].sort,
+        default_grade: laboratoryLessonAssessments[j].def_grade,
       });
     }
   }
@@ -122,16 +138,22 @@ const insertRandomData = async () => {
       lesson_type_name: lessonTypes[6].name,
       lesson_type_code_for_excel: lessonTypes[6].code,
       lesson_type_iterate_count: lessonTypes[6].count,
+      parent_lesson_type_id: lessonTypes[6].parent_lesson_type_id,
+      lesson_type_sort: lessonTypes[6].sort,
     },
     {
       lesson_type_name: lessonTypes[7].name,
       lesson_type_code_for_excel: lessonTypes[7].code,
       lesson_type_iterate_count: lessonTypes[7].count,
+      parent_lesson_type_id: lessonTypes[7].parent_lesson_type_id,
+      lesson_type_sort: lessonTypes[7].sort,
     },
     {
       lesson_type_name: lessonTypes[8].name,
       lesson_type_code_for_excel: lessonTypes[8].code,
       lesson_type_iterate_count: lessonTypes[8].count,
+      parent_lesson_type_id: lessonTypes[8].parent_lesson_type_id,
+      lesson_type_sort: lessonTypes[8].sort,
     },
   ]);
 
@@ -141,6 +163,8 @@ const insertRandomData = async () => {
         lesson_assessment_code: testLessonAssessments[j].code,
         lesson_assessment_description: testLessonAssessments[j].desc,
         lesson_type_id: seminarLessonTypes[i].id,
+        lesson_assessment_sort: testLessonAssessments[j].sort,
+        default_grade: testLessonAssessments[j].def_grade,
       });
     }
   }
@@ -149,6 +173,8 @@ const insertRandomData = async () => {
     lesson_type_name: lessonTypes[9].name,
     lesson_type_code_for_excel: lessonTypes[9].code,
     lesson_type_iterate_count: lessonTypes[9].count,
+    parent_lesson_type_id: lessonTypes[9].parent_lesson_type_id,
+    lesson_type_sort: lessonTypes[9].sort,
   });
 
   for (let i = 0; i < assignmentLessonAssessments.length; i++) {
@@ -156,6 +182,8 @@ const insertRandomData = async () => {
       lesson_assessment_code: assignmentLessonAssessments[i].code,
       lesson_assessment_description: assignmentLessonAssessments[i].desc,
       lesson_type_id: assignmentLessonType.id,
+      lesson_assessment_sort: assignmentLessonAssessments[i].sort,
+      default_grade: assignmentLessonAssessments[i].def_grade,
     });
   }
 
@@ -163,6 +191,8 @@ const insertRandomData = async () => {
     lesson_type_name: lessonTypes[10].name,
     lesson_type_code_for_excel: lessonTypes[10].code,
     lesson_type_iterate_count: lessonTypes[10].count,
+    parent_lesson_type_id: lessonTypes[10].parent_lesson_type_id,
+    lesson_type_sort: lessonTypes[10].sort,
   });
 
   for (let i = 0; i < testLessonAssessments.length; i++) {
@@ -170,6 +200,8 @@ const insertRandomData = async () => {
       lesson_assessment_code: testLessonAssessments[i].code,
       lesson_assessment_description: testLessonAssessments[i].desc,
       lesson_type_id: practicLessonType.id,
+      lesson_assessment_sort: testLessonAssessments[i].sort,
+      default_grade: testLessonAssessments[i].def_grade,
     });
   }
 

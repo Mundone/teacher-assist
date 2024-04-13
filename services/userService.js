@@ -270,13 +270,13 @@ async function createUsersBulk(transporter, data, schoolId) {
   }
 }
 
-async function processUsersFromExcelService(filepath, bodyData) {
+async function processUsersFromExcelService(filepath, bodyData, schoolId) {
   const extractedData = await readExcelAndExtractData(filepath);
 
   const createdUsers = await createUsersBulk(
     transporter,
     extractedData,
-    bodyData?.school_id
+    schoolId
   );
   return createdUsers;
 

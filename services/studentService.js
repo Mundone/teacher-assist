@@ -159,7 +159,7 @@ const createStudentService = async (data, subjectScheduleId, userId) => {
 };
 
 const createStudentBulkService = async (studentData, subjectScheduleId) => {
-  console.log(subjectScheduleId);
+  // console.log(subjectScheduleId);
 
   const transaction = await allModels.sequelize.transaction();
 

@@ -106,12 +106,14 @@ const deleteUser = async (req, res, next) => {
 };
 
 const createUsersBulkController = async (req, res, next) => {
+  const userData = req.user;
+  // console.log(userData);
   try {
     if (!req.file) {
       throw new Error("No file uploaded");
     }
     const filePath = req.file.path;
-    const newObjects = await userService.processUsersFromExcelService(filePath, req.body);
+    const newObjects = await userService.processUsersFromExcelService(filePath, req.body, userData.school_id);
     responses.created(res, newObjects);
   } catch (error) {
     if (error.statusCode == 403) {
