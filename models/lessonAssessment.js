@@ -14,7 +14,7 @@ class LessonAssessment extends Model {
       lesson_assessment_description: {
         type: DataTypes.STRING(255),
       },
-      score: {
+      default_grade: {
         type: DataTypes.FLOAT,
       },
       lesson_type_id: {

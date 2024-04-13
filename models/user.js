@@ -48,19 +48,19 @@ class User extends Model {
     this.belongsTo(models.UserRole, { foreignKey: "role_id" });
     this.hasMany(models.UserFile, { foreignKey: "user_id" });
     this.hasMany(models.Subject, {
-      foreignKey: "user_id",
+      foreignKey: "teacher_user_id",
     });
 
     this.belongsTo(models.School, { foreignKey: "school_id" });
     this.hasMany(models.Semester, {
-      foreignKey: "user_id",
+      foreignKey: "admin_user_id",
     });
 
     
-    this.hasMany(models.Subject, {
+    this.hasMany(models.Project, {
       foreignKey: "head_of_department_user_id",
     });
-    this.hasMany(models.Subject, {
+    this.hasMany(models.Project, {
       foreignKey: "secretary_user_id",
     });
   }

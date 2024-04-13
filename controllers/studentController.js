@@ -3,7 +3,7 @@ const studentService = require("../services/studentService");
 const buildWhereOptions = require("../utils/sequelizeUtil");
 const responses = require("../utils/responseUtil");
 
-const getStudents = async (req, res, next) => {
+const getStudentsController = async (req, res, next) => {
   try {
     const userId = req.user && req.user.id;
 
@@ -23,9 +23,8 @@ const getStudents = async (req, res, next) => {
 
     // console.log(req);
 
-    const { totalStudents, students } = await studentService.getAllStudents(
-      queryOptions
-    );
+    const { totalStudents, students } =
+      await studentService.getAllStudentsService(queryOptions);
 
     // var newStudents = students.map((student) => {
 
@@ -42,8 +41,7 @@ const getStudents = async (req, res, next) => {
     //       student?.student_subject_schedules?.subject_schedule?.lecture_time,
     //   };
     // });
-    
-    
+
     // const student = await subjectService.get(subject_id);
 
     var newStudents = students.map((student) => {
@@ -102,10 +100,10 @@ const getStudents = async (req, res, next) => {
 //   }
 // };
 
-const getStudentById = async (req, res, next) => {
+const getStudentByIdController = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const student = await studentService.getStudentById(id);
+    const student = await studentService.getStudentByIdService(id);
     if (!student) {
       // return res.status(404).json({ message: "Student not found" });
       responses.notFound(res);
@@ -120,9 +118,11 @@ const getStudentById = async (req, res, next) => {
   }
 };
 
-const createStudent = async (req, res, next) => {
+const createStudentController = async (req, res, next) => {
   try {
     const subjectScheduleId = req.body.subject_schedule_id ?? null;
+
+    const userId = req.user && req.user.id;
 
     if (subjectScheduleId == null) {
       return res
@@ -130,9 +130,10 @@ const createStudent = async (req, res, next) => {
         .json({ error: "subject_schedule_id -аа явуулаарай body-оороо." });
     }
 
-    const newObject = await studentService.createStudent(
+    const newObject = await studentService.createStudentService(
       req.body,
-      subjectScheduleId
+      subjectScheduleId,
+      userId
     );
     responses.created(res, newObject);
   } catch (error) {
@@ -167,10 +168,13 @@ const createStudentBulkController = async (req, res, next) => {
   }
 };
 
-const updateStudent = async (req, res, next) => {
+const updateStudentController = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const updatedStudent = await studentService.updateStudent(id, req.body);
+    const updatedStudent = await studentService.updateStudentService(
+      id,
+      req.body
+    );
     responses.updated(res, req.body);
   } catch (error) {
     if (error.statusCode == 403) {
@@ -181,10 +185,10 @@ const updateStudent = async (req, res, next) => {
   }
 };
 
-const deleteStudent = async (req, res, next) => {
+const deleteStudentController = async (req, res, next) => {
   try {
     const { id } = req.params;
-    await studentService.deleteStudent(id);
+    await studentService.deleteStudentService(id);
     responses.deleted(res, { id: id });
   } catch (error) {
     if (error.statusCode == 403) {
@@ -195,26 +199,12 @@ const deleteStudent = async (req, res, next) => {
   }
 };
 
-function numberToDay(number) {
-  const dayMap = {
-      1: 'Даваа',
-      2: 'Мягмар',
-      3: 'Лхагва',
-      4: 'Пүрэв',
-      5: 'Пүрэв',
-      6: 'Бямба',
-      7: 'Ням'
-  };
-
-  return dayMap[number] || 'Invalid day';
-}
-
 module.exports = {
-  getStudents,
+  getStudentsController,
   // getStudentsWithoutBody,
-  getStudentById,
-  createStudent,
+  getStudentByIdController,
+  createStudentController,
   createStudentBulkController,
-  updateStudent,
-  deleteStudent,
+  updateStudentController,
+  deleteStudentController,
 };

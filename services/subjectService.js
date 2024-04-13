@@ -220,7 +220,7 @@ const createSubject = async (data, user_id, transaction) => {
     {
       subject_name: data.subject_name,
       subject_code: data.subject_code,
-      user_id,
+      teacher_user_id: user_id,
     },
     options
   );
@@ -258,6 +258,11 @@ const createSubject = async (data, user_id, transaction) => {
         lessonAssessmentObjects = await allModels.LessonAssessment.findAll(
           {
             where: { lesson_type_id: subject_schedule },
+            include: [
+              {
+                model: allModels.LessonType,
+              },
+            ],
           },
           options
         );
@@ -265,17 +270,6 @@ const createSubject = async (data, user_id, transaction) => {
     }
     if (lessonAssessmentObjects) {
       for (const lessonAssessmentObject of lessonAssessmentObjects) {
-        const thatLessonAssessment = await allModels.LessonAssessment.findByPk(
-          lessonAssessmentObject.id,
-          {
-            include: [
-              {
-                model: allModels.LessonType,
-              },
-            ],
-            ...options,
-          }
-        );
         for (
           let i = 0;
           i < thatLessonAssessment?.lesson_type?.lesson_type_iterate_count;
@@ -286,7 +280,8 @@ const createSubject = async (data, user_id, transaction) => {
             lesson_assessment_id: lessonAssessmentObject?.id,
             week_number: i + 1,
             lesson_number: i + 1,
-            lesson_type_id: thatLessonAssessment?.lesson_type?.id,
+            lesson_type_id: lessonAssessmentObject?.lesson_type?.id,
+            convert_grade: lessonAssessmentObject?.default_grade
           });
         }
       }
@@ -318,7 +313,7 @@ const deleteSubject = async (id, userId) => {
 
 async function checkIfUserCorrect(id, userId) {
   const isUserCorrect = await allModels.Subject.findOne({
-    where: { id: id, user_id: userId },
+    where: { id: id, teacher_user_id: userId },
   });
 
   if (!isUserCorrect) {

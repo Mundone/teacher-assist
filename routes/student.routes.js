@@ -34,7 +34,7 @@ router.post(
   "/get_students/:subject_id",
   accessControl([1, 2, 3]),
   paginationMiddleware,
-  studentController.getStudents
+  studentController.getStudentsController
 );
 
 // router.get(
@@ -73,7 +73,7 @@ router.post(
 router.get(
   "/get_student/:id",
   accessControl([1, 2, 3]),
-  studentController.getStudentById
+  studentController.getStudentByIdController
 );
 
 /**
@@ -106,7 +106,7 @@ router.get(
 router.post(
   "/create_student",
   accessControl([1, 2, 3]),
-  studentController.createStudent
+  studentController.createStudentController
 );
 
 
@@ -157,7 +157,7 @@ router.post(
 router.put(
   "/update_student/:id",
   accessControl([1, 2, 3]),
-  studentController.updateStudent
+  studentController.updateStudentController
 );
 
 /**
@@ -196,7 +196,7 @@ router.put(
 router.delete(
   "/delete_student/:id",
   accessControl([1, 2, 3]),
-  studentController.deleteStudent
+  studentController.deleteStudentController
 );
 
 module.exports = router;

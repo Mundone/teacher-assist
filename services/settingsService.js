@@ -81,7 +81,7 @@ const getSemesterByIdService = async (id) => {
 };
 
 const createSemesterService = async (objectData, user_id) => {
-  return await allModels.Semester.create({ ...objectData, user_id });
+  return await allModels.Semester.create({ ...objectData, admin_user_id: user_id });
 };
 
 const updateSemesterService = async (id, objectData) => {

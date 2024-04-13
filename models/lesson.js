@@ -24,10 +24,13 @@ class Lesson extends Model {
           },
         },
         week_number: {
-          type: DataTypes.INTEGER ,
+          type: DataTypes.INTEGER,
         },
         lesson_number: {
-          type: DataTypes.INTEGER ,
+          type: DataTypes.INTEGER,
+        },
+        convert_grade: {
+          type: DataTypes.FLOAT,
         },
       },
       {
@@ -39,9 +42,11 @@ class Lesson extends Model {
     );
   }
 
-  static associate(models) { 
+  static associate(models) {
     this.belongsTo(models.Subject, { foreignKey: "subject_id" });
-    this.belongsTo(models.LessonAssessment, { foreignKey: "lesson_assessment_id" });
+    this.belongsTo(models.LessonAssessment, {
+      foreignKey: "lesson_assessment_id",
+    });
     this.hasMany(models.Attendance, {
       foreignKey: "lesson_id",
     });
