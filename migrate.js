@@ -61,29 +61,20 @@ const insertRandomData = async () => {
     });
   }
 
-  const lectureLessonTypes = await models.LessonType.bulkCreate([
-    {
-      lesson_type_name: lessonTypes[0].name,
-      lesson_type_code_for_excel: lessonTypes[0].code,
-      lesson_type_iterate_count: lessonTypes[0].count,
-      parent_lesson_type_id: lessonTypes[0].parent_lesson_type_id,
-      lesson_type_sort: lessonTypes[0].sort,
-    },
-    {
-      lesson_type_name: lessonTypes[1].name,
-      lesson_type_code_for_excel: lessonTypes[1].code,
-      lesson_type_iterate_count: lessonTypes[1].count,
-      parent_lesson_type_id: lessonTypes[1].parent_lesson_type_id,
-      lesson_type_sort: lessonTypes[1].sort,
-    },
-    {
-      lesson_type_name: lessonTypes[2].name,
-      lesson_type_code_for_excel: lessonTypes[2].code,
-      lesson_type_iterate_count: lessonTypes[2].count,
-      parent_lesson_type_id: lessonTypes[2].parent_lesson_type_id,
-      lesson_type_sort: lessonTypes[2].sort,
-    },
-  ]);
+  const lectureLessonTypesToCreate = [];
+  for (let i = 0; i < 3; i++) {
+    lectureLessonTypesToCreate.push({
+      lesson_type_name: lessonTypes[i].name,
+      lesson_type_code_for_excel: lessonTypes[i].code,
+      lesson_type_iterate_count: lessonTypes[i].count,
+      parent_lesson_type_id: lessonTypes[i].parent_lesson_type_id,
+      lesson_type_sort: lessonTypes[i].sort,
+      is_attendance_add: lessonTypes[i].is_attendance_add,
+    });
+  }
+  const lectureLessonTypes = await models.LessonType.bulkCreate(
+    lectureLessonTypesToCreate
+  );
 
   for (let i = 0; i < lectureLessonTypes.length; i++) {
     for (let j = 0; j < lectureLessonAssessments.length; j++) {
@@ -97,29 +88,20 @@ const insertRandomData = async () => {
     }
   }
 
-  const laboratoryLessonTypes = await models.LessonType.bulkCreate([
-    {
-      lesson_type_name: lessonTypes[3].name,
-      lesson_type_code_for_excel: lessonTypes[3].code,
-      lesson_type_iterate_count: lessonTypes[3].count,
-      parent_lesson_type_id: lessonTypes[3].parent_lesson_type_id,
-      lesson_type_sort: lessonTypes[3].sort,
-    },
-    {
-      lesson_type_name: lessonTypes[4].name,
-      lesson_type_code_for_excel: lessonTypes[4].code,
-      lesson_type_iterate_count: lessonTypes[4].count,
-      parent_lesson_type_id: lessonTypes[4].parent_lesson_type_id,
-      lesson_type_sort: lessonTypes[4].sort,
-    },
-    {
-      lesson_type_name: lessonTypes[5].name,
-      lesson_type_code_for_excel: lessonTypes[5].code,
-      lesson_type_iterate_count: lessonTypes[5].count,
-      parent_lesson_type_id: lessonTypes[5].parent_lesson_type_id,
-      lesson_type_sort: lessonTypes[5].sort,
-    },
-  ]);
+  const laboratoryLessonTypesToCreate = [];
+  for (let i = 3; i < 6; i++) {
+    laboratoryLessonTypesToCreate.push({
+      lesson_type_name: lessonTypes[i].name,
+      lesson_type_code_for_excel: lessonTypes[i].code,
+      lesson_type_iterate_count: lessonTypes[i].count,
+      parent_lesson_type_id: lessonTypes[i].parent_lesson_type_id,
+      lesson_type_sort: lessonTypes[i].sort,
+      is_attendance_add: lessonTypes[i].is_attendance_add,
+    });
+  }
+  const laboratoryLessonTypes = await models.LessonType.bulkCreate(
+    laboratoryLessonTypesToCreate
+  );
 
   for (let i = 0; i < laboratoryLessonTypes.length; i++) {
     for (let j = 0; j < laboratoryLessonAssessments.length; j++) {
@@ -133,29 +115,20 @@ const insertRandomData = async () => {
     }
   }
 
-  const seminarLessonTypes = await models.LessonType.bulkCreate([
-    {
-      lesson_type_name: lessonTypes[6].name,
-      lesson_type_code_for_excel: lessonTypes[6].code,
-      lesson_type_iterate_count: lessonTypes[6].count,
-      parent_lesson_type_id: lessonTypes[6].parent_lesson_type_id,
-      lesson_type_sort: lessonTypes[6].sort,
-    },
-    {
-      lesson_type_name: lessonTypes[7].name,
-      lesson_type_code_for_excel: lessonTypes[7].code,
-      lesson_type_iterate_count: lessonTypes[7].count,
-      parent_lesson_type_id: lessonTypes[7].parent_lesson_type_id,
-      lesson_type_sort: lessonTypes[7].sort,
-    },
-    {
-      lesson_type_name: lessonTypes[8].name,
-      lesson_type_code_for_excel: lessonTypes[8].code,
-      lesson_type_iterate_count: lessonTypes[8].count,
-      parent_lesson_type_id: lessonTypes[8].parent_lesson_type_id,
-      lesson_type_sort: lessonTypes[8].sort,
-    },
-  ]);
+  const seminarLessonTypesToCreate = [];
+  for (let i = 6; i < 9; i++) {
+    seminarLessonTypesToCreate.push({
+      lesson_type_name: lessonTypes[i].name,
+      lesson_type_code_for_excel: lessonTypes[i].code,
+      lesson_type_iterate_count: lessonTypes[i].count,
+      parent_lesson_type_id: lessonTypes[i].parent_lesson_type_id,
+      lesson_type_sort: lessonTypes[i].sort,
+      is_attendance_add: lessonTypes[i].is_attendance_add,
+    });
+  }
+  const seminarLessonTypes = await models.LessonType.bulkCreate(
+    seminarLessonTypesToCreate
+  );
 
   for (let i = 0; i < seminarLessonTypes.length; i++) {
     for (let j = 0; j < testLessonAssessments.length; j++) {
@@ -175,6 +148,7 @@ const insertRandomData = async () => {
     lesson_type_iterate_count: lessonTypes[9].count,
     parent_lesson_type_id: lessonTypes[9].parent_lesson_type_id,
     lesson_type_sort: lessonTypes[9].sort,
+    is_attendance_add: lessonTypes[9].is_attendance_add,
   });
 
   for (let i = 0; i < assignmentLessonAssessments.length; i++) {
@@ -193,6 +167,7 @@ const insertRandomData = async () => {
     lesson_type_iterate_count: lessonTypes[10].count,
     parent_lesson_type_id: lessonTypes[10].parent_lesson_type_id,
     lesson_type_sort: lessonTypes[10].sort,
+    is_attendance_add: lessonTypes[10].is_attendance_add,
   });
 
   for (let i = 0; i < testLessonAssessments.length; i++) {
@@ -232,7 +207,7 @@ const insertRandomData = async () => {
       role_id: 2,
       password: await bcrypt.hash("Pass@123", 10),
       school_id: 1,
-      is_head_of_department: true
+      is_head_of_department: true,
     },
     {
       name: "Нарийн бичиг хатагтай",
@@ -241,7 +216,7 @@ const insertRandomData = async () => {
       role_id: 2,
       password: await bcrypt.hash("Pass@123", 10),
       school_id: 1,
-      is_secretary: true
+      is_secretary: true,
     },
   ]);
 

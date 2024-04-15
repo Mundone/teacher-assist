@@ -38,10 +38,10 @@ router.post(
 );
 
 router.get(
-  "/get_subject_schedules/:subjectId",
+  "/get_subject_schedules_for_dropdown_attendance/:subjectId",
   accessControl([1, 2, 3]),
   paginationMiddleware,
-  subjectScheduleController.getSubjectSchedulesWithoutBody
+  subjectScheduleController.getSubjectSchedulesForDropdownAttendance
 );
 
 /**

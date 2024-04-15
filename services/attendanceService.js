@@ -133,13 +133,15 @@ const registerAttendanceService = async (objectData) => {
   // Check if the student is related to the subject schedule in one query
   const studentCount = await allModels.StudentSubjectSchedule.count({
     where: {
-      '$Student.student_code$': objectData.student_code,
+      "$Student.student_code$": objectData.student_code,
       subject_schedule_id: attendanceObject.subject_schedule_id,
     },
-    include: [{
-      model: allModels.Student,
-      attributes: [],
-    }],
+    include: [
+      {
+        model: allModels.Student,
+        attributes: [],
+      },
+    ],
   });
 
   if (studentCount === 0) {
@@ -167,11 +169,15 @@ const registerAttendanceService = async (objectData) => {
   });
 
   // Since the student is already verified above, directly update the grade without re-fetching the student
-  await gradeService.updateGrade(attendanceObject.lesson_id, { grade: 1 }, objectData.student_code, true);
+  await gradeService.updateGrade(
+    attendanceObject.lesson_id,
+    { grade: 1, updatedAt: new Date(), distance: 10 },
+    objectData.student_code,
+    true
+  );
 
   return returnData;
 };
-
 
 const getAllAttendanceResponsesService = async ({
   where,
@@ -222,6 +228,43 @@ const getAllAttendanceResponsesService = async ({
   };
 };
 
+const getStudentsWithAttendanceService = async ({
+  where,
+  limit,
+  offset,
+  order,
+  attendanceId,
+  userId,
+}) => {
+  console.log(attendanceId);
+  const attendanceObject = await allModels.Attendance.findByPk(attendanceId);
+  console.log(attendanceObject);
+  await checkIfUserCorrect(attendanceObject?.subject_schedule_id, userId);
+
+  const { count: totalAttendanceResponses, rows: attendanceResponses } =
+    await allModels.Student.findAndCountAll({
+      attributes: ["id", "name", "student_code", "createdAt"],
+      include: [
+        {
+          model: allModels.Grade,
+          where: {
+            lesson_id: attendanceObject.lesson_id,
+          },
+          attributes: ["grade", "distance", "updatedAt"],
+        },
+      ],
+      where: where,
+      limit: limit,
+      offset: offset,
+      order: order,
+      distinct: true,
+    });
+  return {
+    totalAttendanceResponses,
+    attendanceResponses,
+  };
+};
+
 async function checkIfUserCorrect(subjectScheduleId, userId) {
   const isUserCorrect = await allModels.SubjectSchedule.findByPk(
     subjectScheduleId,
@@ -229,8 +272,8 @@ async function checkIfUserCorrect(subjectScheduleId, userId) {
       include: [
         {
           model: allModels.Subject,
-          attributes: ["id", "user_id"],
-          where: { user_id: userId },
+          attributes: ["id", "teacher_user_id"],
+          where: { teacher_user_id: userId },
         },
       ],
     }
@@ -249,4 +292,5 @@ module.exports = {
   deleteAttendanceService,
   registerAttendanceService,
   getAllAttendanceResponsesService,
+  getStudentsWithAttendanceService,
 };

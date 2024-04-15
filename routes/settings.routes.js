@@ -47,7 +47,7 @@ router.put(
   settingsController.changeQRUrlController
 );
 
-router.post(
+router.get(
   "/reset_db",
   accessControl([1, 2, 3]),
   settingsController.resetDatabaseController

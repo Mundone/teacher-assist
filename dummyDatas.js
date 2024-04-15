@@ -5,6 +5,7 @@ const lessonTypes = [
     count: 16,
     parent_lesson_type_id: 0,
     sort: 1,
+    is_attendance_add: true,
   },
   {
     name: "Лекц тэгш",
@@ -12,6 +13,7 @@ const lessonTypes = [
     count: 8,
     parent_lesson_type_id: 1,
     sort: 2,
+    is_attendance_add: true,
   },
   {
     name: "Лекц сондгой",
@@ -19,6 +21,7 @@ const lessonTypes = [
     count: 8,
     parent_lesson_type_id: 1,
     sort: 3,
+    is_attendance_add: true,
   },
   {
     name: "Лаборатор",
@@ -26,6 +29,7 @@ const lessonTypes = [
     count: 16,
     parent_lesson_type_id: 0,
     sort: 4,
+    is_attendance_add: false,
   },
   {
     name: "Лаборатор тэгш",
@@ -33,6 +37,7 @@ const lessonTypes = [
     count: 8,
     parent_lesson_type_id: 4,
     sort: 5,
+    is_attendance_add: false,
   },
   {
     name: "Лаборатор сондгой",
@@ -40,6 +45,7 @@ const lessonTypes = [
     count: 8,
     parent_lesson_type_id: 4,
     sort: 6,
+    is_attendance_add: false,
   },
   {
     name: "Семинар",
@@ -47,6 +53,7 @@ const lessonTypes = [
     count: 16,
     parent_lesson_type_id: 0,
     sort: 7,
+    is_attendance_add: false,
   },
   {
     name: "Семинар тэгш",
@@ -54,6 +61,7 @@ const lessonTypes = [
     count: 8,
     parent_lesson_type_id: 7,
     sort: 8,
+    is_attendance_add: false,
   },
   {
     name: "Семинар сондгой",
@@ -61,6 +69,7 @@ const lessonTypes = [
     count: 8,
     parent_lesson_type_id: 7,
     sort: 9,
+    is_attendance_add: false,
   },
   {
     name: "Бие даалт",
@@ -68,6 +77,7 @@ const lessonTypes = [
     count: 3,
     parent_lesson_type_id: 0,
     sort: 10,
+    is_attendance_add: false,
   },
   {
     name: "Практик",
@@ -75,6 +85,7 @@ const lessonTypes = [
     count: 5,
     parent_lesson_type_id: 0,
     sort: 11,
+    is_attendance_add: false,
   },
 ];
 const lectureLessonAssessments = [
@@ -326,7 +337,7 @@ const menuDatas = [
     menu_code: "0106",
     parent_id: 2,
     menu_name: "Төсөл, диплом үзлэг",
-    router_link: "/dashboard/students",
+    router_link: "/dashboard/projects",
     sorted_order: 5,
     icon_name: "material-symbols-light:subject",
   },

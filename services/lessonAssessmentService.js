@@ -14,7 +14,8 @@ const getAllLessonAssessments = async ({
         "lesson_assessment_code",
         "lesson_assessment_description",
         "lesson_type_id",
-        "score"
+        "default_grade",
+        "lesson_assessment_sort"
       ],
       include: [
         {
@@ -32,7 +33,8 @@ const getAllLessonAssessments = async ({
         "lesson_assessment_code",
         "lesson_assessment_description",
         "lesson_type_id",
-        "score"
+        "default_grade",
+        "lesson_assessment_sort"
       ],
       include: [
         {

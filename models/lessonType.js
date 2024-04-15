@@ -24,6 +24,9 @@ class LessonType extends Model {
         lesson_type_sort: {
           type: DataTypes.INTEGER,
         },
+        is_attendance_add: {
+          type: DataTypes.BOOLEAN,
+        },
       },
       {
         sequelize,

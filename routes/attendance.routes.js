@@ -34,5 +34,14 @@ router.post(
   attendanceController.getAllAttendanceResponsesController
 );
 
+router.post(
+  "/get_students_with_attendance/:attendance_id",
+  accessControl([1, 2, 3]),
+  paginationMiddleware,
+  attendanceController.getStudentsWithAttendanceController
+);
+
+
+
 
 module.exports = router;

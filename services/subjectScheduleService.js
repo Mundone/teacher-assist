@@ -8,10 +8,32 @@ const getAllSubjectSchedules = async ({
   userId,
   subjectId,
   isWithoutBody,
+  isForAttendance,
 }) => {
   await checkIfUserCorrect(subjectId, userId);
 
   if (isWithoutBody) {
+    const includeOptions = [
+      {
+        model: allModels.Subject,
+        attributes: ["id", "subject_name"],
+        where: { id: subjectId },
+      },
+      {
+        model: allModels.LessonType,
+        attributes: ["id", "lesson_type_name"],
+      },
+      {
+        model: allModels.Schedule,
+        attributes: ["id", "schedule_name"],
+      },
+    ];
+  
+    // Conditionally add a `where` clause to LessonType
+    if (isForAttendance === true) {
+      includeOptions[1].where = { is_attendance_add: true }; // Assuming `subjectId` should be used here
+    }
+  
     return await allModels.SubjectSchedule.findAll({
       attributes: [
         "id",
@@ -21,22 +43,7 @@ const getAllSubjectSchedules = async ({
         // "lecture_time",
         "createdAt",
       ],
-      include: [
-        {
-          model: allModels.Subject,
-          attributes: ["id", "subject_name"],
-          where: { id: subjectId },
-        },
-        {
-          model: allModels.LessonType,
-          attributes: ["id", "lesson_type_name"],
-        },
-        
-        {
-          model: allModels.Schedule,
-          attributes: ["id", "schedule_name"],
-        }
-      ],
+      include: includeOptions,
     });
   }
 
@@ -102,12 +109,11 @@ const getSubjectScheduleById = async (id, userId) => {
 };
 
 // Service
-const createSubjectSchedule = async (
-  subjectScheduleData,
-   userId
-) => {
+const createSubjectSchedule = async (subjectScheduleData, userId) => {
   // Add the user_id to the subjectScheduleData object
-  const returnObject = await allModels.Lesson.findByPk(subjectScheduleData.subject_id);
+  const returnObject = await allModels.Lesson.findByPk(
+    subjectScheduleData.subject_id
+  );
   await checkIfUserCorrect(returnObject.subject_id, userId);
   return await allModels.SubjectSchedule.create({
     ...subjectScheduleData,
@@ -134,14 +140,13 @@ const deleteSubjectSchedule = async (id, userId) => {
 
 async function checkIfUserCorrect(subjectId, userId) {
   const isUserCorrect = await allModels.Subject.findOne({
-    where: { id: subjectId, user_id: userId },
+    where: { id: subjectId, teacher_user_id: userId },
   });
 
   if (!isUserCorrect) {
     const error = new Error("Зөвшөөрөлгүй хандалт.");
     error.statusCode = 403;
     throw error;
-    
   }
 }
 
