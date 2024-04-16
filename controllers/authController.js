@@ -76,7 +76,7 @@ const getAuthInfoController = async (req, res) => {
     }
     try {
       // Use the decoded ID to fetch the user and refresh the token
-      const { user, UserMenus } = await authService.refreshToken(decoded.id);
+      const { user, UserMenus } = await authService.refreshTokenService(decoded.id);
       res.json({ user, UserMenus });
     } catch (error) {
       responses.internalServerError(res, error);
