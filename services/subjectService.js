@@ -219,6 +219,12 @@ const getSubjectById = async (id, userId) => {
       {
         model: allModels.SubjectSchedule,
         attributes: ["lesson_type_id", "schedule_id"],
+        include: [
+          {
+            model: allModels.Schedule,
+            attributes: ["id", "schedule_name"],
+          },
+        ],
       },
     ],
   });
@@ -239,7 +245,10 @@ const getSubjectById = async (id, userId) => {
         };
         acc.push(group);
       }
-      group.schedule_ids.push(schedule.schedule_id);
+      group.schedule_ids.push({
+        schedule_id: schedule?.schedule_id,
+        schedule_name: schedule?.schedule?.schedule_name,
+      });
       return acc;
     }, []);
 
