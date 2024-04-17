@@ -14,6 +14,7 @@ const getAllSubjects = async ({
         "id",
         "subject_name",
         "subject_code",
+        "is_started",
         "createdAt",
         [
           Sequelize.literal(`(
@@ -83,6 +84,7 @@ const getAllSubjects = async ({
         "id",
         "subject_name",
         "subject_code",
+        "is_started",
         "createdAt",
         [
           Sequelize.literal(`(
@@ -112,7 +114,8 @@ const getAllSubjects = async ({
           include: [
             {
               model: allModels.Subject,
-              attributes: ["id", "subject_name"],
+              attributes: ["id", "subject_name",
+              "is_started",],
             },
             {
               model: allModels.LessonType,
@@ -206,7 +209,8 @@ const getAllSubjects = async ({
 const getSubjectById = async (id, userId) => {
   await checkIfUserCorrect(id, userId);
   return await allModels.Subject.findByPk(id, {
-    attributes: ["id", "subject_name", "subject_code", "createdAt"],
+    attributes: ["id", "subject_name", 
+    "is_started","subject_code", "createdAt"],
   });
 };
 
