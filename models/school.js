@@ -28,9 +28,13 @@ class School extends Model {
   static associate(models) {
     this.hasMany(models.User, {
       foreignKey: "school_id",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
     });
     this.hasMany(models.SubSchool, {
       foreignKey: "school_id",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
     });
   }
 }

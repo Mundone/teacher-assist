@@ -1,44 +1,43 @@
-const { Model, DataTypes } = require('sequelize');
+const { Model, DataTypes } = require("sequelize");
 
 class Schedule extends Model {
   static init(sequelize) {
-    super.init({
-      id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
+    super.init(
+      {
+        id: {
+          type: DataTypes.INTEGER,
+          primaryKey: true,
+          autoIncrement: true,
+        },
+        schedule_name: {
+          type: DataTypes.STRING,
+        },
+        schedule_day: {
+          type: DataTypes.STRING,
+        },
+        schedule_time: {
+          type: DataTypes.STRING,
+        },
       },
-      schedule_name: {
-        type: DataTypes.STRING,
-      },
-      schedule_day: {
-        type: DataTypes.STRING,
-      },
-      schedule_time: {
-        type: DataTypes.STRING,
-      },
-    }, {
-      sequelize,
-      modelName: 'schedule',
-      tableName: 'schedule', 
-      timestamps: true,
-    });
+      {
+        sequelize,
+        modelName: "schedule",
+        tableName: "schedule",
+        timestamps: true,
+      }
+    );
   }
 
   static associate(models) {
-    this.hasMany(models.SubjectSchedule, { foreignKey: 'schedule_id' });
-}
+    this.hasMany(models.SubjectSchedule, {
+      foreignKey: "schedule_id",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
+    });
+  }
 }
 
 module.exports = Schedule;
-
-
-
-
-
-
-
-
 
 // let weekTypes = [lessonType];
 
@@ -58,24 +57,6 @@ module.exports = Schedule;
 //     weekType: weekType,
 //   });
 // });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // async function readExcelAndExtractData(filepath) {
 //   function columnToLetter(column) {

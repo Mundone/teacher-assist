@@ -38,10 +38,26 @@ class LessonType extends Model {
   }
 
   static associate(models) {
-    this.hasMany(models.Lesson, { foreignKey: "lesson_type_id" });
-    this.hasMany(models.SubjectSchedule, { foreignKey: "lesson_type_id" });
-    this.hasMany(models.LessonAssessment, { foreignKey: "lesson_type_id" });
-    this.hasMany(models.SubjectLessonType, { foreignKey: "lesson_type_id" });
+    this.hasMany(models.Lesson, {
+      foreignKey: "lesson_type_id",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
+    });
+    this.hasMany(models.SubjectSchedule, {
+      foreignKey: "lesson_type_id",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
+    });
+    this.hasMany(models.LessonAssessment, {
+      foreignKey: "lesson_type_id",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
+    });
+    this.hasMany(models.SubjectLessonType, {
+      foreignKey: "lesson_type_id",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
+    });
   }
 }
 

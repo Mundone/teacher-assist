@@ -33,13 +33,21 @@ class Project extends Model {
   }
 
   static associate(models) {
-    this.belongsTo(models.User, { foreignKey: "head_of_department_user_id" });
-    this.belongsTo(models.User, { foreignKey: "secretary_user_id" });
+    this.belongsTo(models.User, {
+      foreignKey: "head_of_department_user_id",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
+    });
+    this.belongsTo(models.User, {
+      foreignKey: "secretary_user_id",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
+    });
     this.hasMany(models.StudentProject, {
       foreignKey: "project_id",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
     });
-
-    
   }
 }
 

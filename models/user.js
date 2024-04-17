@@ -45,23 +45,42 @@ class User extends Model {
   }
 
   static associate(models) {
-    this.belongsTo(models.UserRole, { foreignKey: "role_id" });
-    this.hasMany(models.UserFile, { foreignKey: "user_id" });
+    this.belongsTo(models.UserRole, {
+      foreignKey: "role_id",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
+    });
+    this.hasMany(models.UserFile, {
+      foreignKey: "user_id",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
+    });
     this.hasMany(models.Subject, {
       foreignKey: "teacher_user_id",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
     });
 
-    this.belongsTo(models.School, { foreignKey: "school_id" });
+    this.belongsTo(models.School, {
+      foreignKey: "school_id",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
+    });
     this.hasMany(models.Semester, {
       foreignKey: "admin_user_id",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
     });
 
-    
     this.hasMany(models.Project, {
       foreignKey: "head_of_department_user_id",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
     });
     this.hasMany(models.Project, {
       foreignKey: "secretary_user_id",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
     });
   }
 }

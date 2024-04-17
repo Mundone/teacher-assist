@@ -36,9 +36,13 @@ class LessonAssessment extends Model {
   }
 
   static associate(models) {
-    this.belongsTo(models.LessonType, { foreignKey: "lesson_type_id" });
+    this.belongsTo(models.LessonType, { foreignKey: "lesson_type_id",
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE", });
     this.hasMany(models.Lesson, {
       foreignKey: "lesson_assessment_id",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
     });
   }
 }

@@ -43,16 +43,30 @@ class Lesson extends Model {
   }
 
   static associate(models) {
-    this.belongsTo(models.LessonType, { foreignKey: "lesson_type_id" });
-    this.belongsTo(models.Subject, { foreignKey: "subject_id" });
+    this.belongsTo(models.LessonType, {
+      foreignKey: "lesson_type_id",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
+    });
+    this.belongsTo(models.Subject, {
+      foreignKey: "subject_id",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
+    });
     this.belongsTo(models.LessonAssessment, {
       foreignKey: "lesson_assessment_id",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
     });
     this.hasMany(models.Attendance, {
       foreignKey: "lesson_id",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
     });
     this.hasMany(models.Grade, {
       foreignKey: "lesson_id",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
     });
   }
 }

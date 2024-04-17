@@ -6,7 +6,7 @@ const getSubjects = async (req, res, next) => {
   try {
     const userId = req.user && req.user.id;
     req.pagination.filters.push({
-      fieldName: "user_id",
+      fieldName: "teacher_user_id",
       operation: "eq",
       value: userId,
     });
@@ -51,7 +51,7 @@ const getSubjectWithoutBody = async (req, res, next) => {
     const userId = req.user && req.user.id;
     const filters = [
       {
-        fieldName: "user_id",
+        fieldName: "teacher_user_id",
         operation: "eq",
         value: userId,
       },

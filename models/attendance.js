@@ -63,12 +63,18 @@ class Attendance extends Model {
   static associate(models) {
     this.hasMany(models.AttendanceResponse, {
       foreignKey: "attendance_id",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
     });
     this.belongsTo(models.SubjectSchedule, {
       foreignKey: "subject_schedule_id",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
     });
     this.belongsTo(models.Lesson, {
       foreignKey: "lesson_id",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
     });
   }
 }

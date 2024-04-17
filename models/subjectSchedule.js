@@ -41,13 +41,23 @@ class SubjectSchedule extends Model {
   }
 
   static associate(models) {
-    this.belongsTo(models.Subject, { foreignKey: "subject_id" });
-    this.belongsTo(models.LessonType, { foreignKey: "lesson_type_id" });
-    this.hasMany(models.Attendance, { foreignKey: "subject_schedule_id" });
+    this.belongsTo(models.Subject, { foreignKey: "subject_id",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE", });
+    this.belongsTo(models.LessonType, { foreignKey: "lesson_type_id",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE", });
+    this.hasMany(models.Attendance, { foreignKey: "subject_schedule_id",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE", });
     this.hasMany(models.StudentSubjectSchedule, {
       foreignKey: "subject_schedule_id",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
     });
-    this.belongsTo(models.Schedule, { foreignKey: "schedule_id" });
+    this.belongsTo(models.Schedule, { foreignKey: "schedule_id",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE", });
   }
 }
 

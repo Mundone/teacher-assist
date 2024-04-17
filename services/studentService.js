@@ -27,7 +27,7 @@ const getAllStudentsService = async ({
               include: [
                 {
                   model: allModels.Subject,
-                  attributes: ["id", "user_id"],
+                  attributes: ["id", "teacher_user_id"],
                 },
                 {
                   model: allModels.Schedule,
@@ -235,8 +235,10 @@ const deleteStudentService = async (id) => {
 };
 
 async function checkIfUserCorrect(id, userId) {
+  console.log(id);
+  console.log(userId);
   const isUserCorrect = await allModels.Subject.findOne({
-    where: { id: id, user_id: userId },
+    where: { id: id, teacher_user_id: userId },
   });
 
   if (!isUserCorrect) {

@@ -1,39 +1,46 @@
-const { Model, DataTypes } = require('sequelize');
+const { Model, DataTypes } = require("sequelize");
 
 class UserFile extends Model {
   static init(sequelize) {
-    super.init({
-      id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-      },
-      user_id: {
-        type: DataTypes.INTEGER,
-        references: {
-          model: "user", // Make sure this matches your User model name
-          key: "id",
+    super.init(
+      {
+        id: {
+          type: DataTypes.INTEGER,
+          primaryKey: true,
+          autoIncrement: true,
+        },
+        user_id: {
+          type: DataTypes.INTEGER,
+          references: {
+            model: "user", // Make sure this matches your User model name
+            key: "id",
+          },
+        },
+        file_name: {
+          type: DataTypes.STRING(255),
+        },
+        file_path: {
+          type: DataTypes.STRING(255),
+        },
+        file_type: {
+          type: DataTypes.STRING(255),
         },
       },
-      file_name: {
-        type: DataTypes.STRING(255),
-      },
-      file_path: {
-        type: DataTypes.STRING(255),
-      },
-      file_type: {
-        type: DataTypes.STRING(255),
-      },
-    }, {
-      sequelize,
-      modelName: 'user_file',
-      tableName: 'user_file', 
-      timestamps: true,
-    });
+      {
+        sequelize,
+        modelName: "user_file",
+        tableName: "user_file",
+        timestamps: true,
+      }
+    );
   }
 
   static associate(models) {
-    this.belongsTo(models.User, { foreignKey: 'user_id' });
+    this.belongsTo(models.User, {
+      foreignKey: "user_id",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
+    });
   }
 }
 
