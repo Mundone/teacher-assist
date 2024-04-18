@@ -33,7 +33,7 @@ class SubjectLessonType extends Model {
       {
         sequelize,
         modelName: "SubjectLessonType", // Change the modelName to match the class name
-        tableName: "subject_lesson_type", // Explicitly define the table name if it's different from the modelName
+        tableName: "subject_lesson_type", // define the table name if it's different from the modelName
       }
     );
   }
