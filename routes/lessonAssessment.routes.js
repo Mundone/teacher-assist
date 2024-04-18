@@ -191,4 +191,10 @@ router.delete(
   lessonAssessmentController.deleteLessonAssessment
 );
 
+router.get(
+  "/get_default_convert_grades/:subject_id",
+  accessControl([1, 2, 3]),
+  lessonAssessmentController.getDefaultConvertGradesBySubjectController
+);
+
 module.exports = router;

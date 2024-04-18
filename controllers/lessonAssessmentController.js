@@ -4,7 +4,6 @@ const responses = require("../utils/responseUtil");
 
 const getLessonAssessments = async (req, res, next) => {
   try {
-
     const { pageNo, pageSize, sortBy, sortOrder, filters } = req.pagination;
 
     const queryOptions = {
@@ -26,12 +25,10 @@ const getLessonAssessments = async (req, res, next) => {
       },
       data: lessonAssessments,
     });
-    
   } catch (error) {
     if (error.statusCode == 403) {
       responses.forbidden(res, error);
-    }
-    else{
+    } else {
       responses.internalServerError(res, error);
     }
   }
@@ -47,8 +44,7 @@ const getLessonAssessmentsWithoutBody = async (req, res, next) => {
   } catch (error) {
     if (error.statusCode == 403) {
       responses.forbidden(res, error);
-    }
-    else{
+    } else {
       responses.internalServerError(res, error);
     }
   }
@@ -66,8 +62,7 @@ const getLessonAssessmentById = async (req, res, next) => {
   } catch (error) {
     if (error.statusCode == 403) {
       responses.forbidden(res, error);
-    }
-    else{
+    } else {
       responses.internalServerError(res, error);
     }
   }
@@ -82,8 +77,7 @@ const createLessonAssessment = async (req, res, next) => {
   } catch (error) {
     if (error.statusCode == 403) {
       responses.forbidden(res, error);
-    }
-    else{
+    } else {
       responses.internalServerError(res, error);
     }
   }
@@ -97,8 +91,7 @@ const updateLessonAssessment = async (req, res, next) => {
   } catch (error) {
     if (error.statusCode == 403) {
       responses.forbidden(res, error);
-    }
-    else{
+    } else {
       responses.internalServerError(res, error);
     }
   }
@@ -108,12 +101,28 @@ const deleteLessonAssessment = async (req, res, next) => {
   try {
     const { id } = req.params;
     await lessonAssessmentService.deleteLessonAssessment(id);
-    responses.deleted(res, {id: id});
+    responses.deleted(res, { id: id });
   } catch (error) {
     if (error.statusCode == 403) {
       responses.forbidden(res, error);
+    } else {
+      responses.internalServerError(res, error);
     }
-    else{
+  }
+};
+
+const getDefaultConvertGradesBySubjectController = async (req, res, next) => {
+  try {
+    const { subject_id } = req.params;
+    const object =
+      await lessonAssessmentService.getDefaultConvertGradesBySubjectService(
+        subject_id
+      );
+    res.json(object);
+  } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res, error);
+    } else {
       responses.internalServerError(res, error);
     }
   }
@@ -126,4 +135,5 @@ module.exports = {
   createLessonAssessment,
   updateLessonAssessment,
   deleteLessonAssessment,
+  getDefaultConvertGradesBySubjectController,
 };

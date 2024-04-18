@@ -1,4 +1,5 @@
 const allModels = require("../models");
+const { Sequelize } = require("sequelize");
 
 const getAllLessonAssessments = async ({
   where,
@@ -15,7 +16,7 @@ const getAllLessonAssessments = async ({
         "lesson_assessment_description",
         "lesson_type_id",
         "default_grade",
-        "lesson_assessment_sort"
+        "lesson_assessment_sort",
       ],
       include: [
         {
@@ -34,7 +35,7 @@ const getAllLessonAssessments = async ({
         "lesson_assessment_description",
         "lesson_type_id",
         "default_grade",
-        "lesson_assessment_sort"
+        "lesson_assessment_sort",
       ],
       include: [
         {
@@ -79,10 +80,49 @@ const deleteLessonAssessment = async (id) => {
   return false;
 };
 
+const getDefaultConvertGradesBySubjectService = async (subjectId, data) => {
+  let subjectSchedules = await allModels.SubjectSchedule.findAll({
+    include: [
+      {
+        model: allModels.Subject,
+        where: { id: subjectId },
+      },
+    ],
+  });
+
+  thatSubjectsLessonTypes = await allModels.LessonType.findAll({
+    where: {
+      id: {
+        [Sequelize.Op.in]: subjectSchedules.map((data) => data.lesson_type_id),
+      },
+    },
+  });
+  console.log(thatSubjectsLessonTypes);
+
+  return await allModels.LessonAssessment.findAll({
+    attributes: [
+      "id",
+      "lesson_assessment_code",
+      "lesson_assessment_description",
+      "default_grade",
+      "lesson_type_id",
+      "lesson_assessment_sort",
+    ],
+    where: {
+      lesson_type_id: {
+        [Sequelize.Op.in]: thatSubjectsLessonTypes.map((data) => data.id),
+      },
+    },
+
+    order: [["lesson_assessment_sort", "asc"]],
+  });
+};
+
 module.exports = {
   getAllLessonAssessments,
   getLessonAssessmentById,
   createLessonAssessment,
   updateLessonAssessment,
   deleteLessonAssessment,
+  getDefaultConvertGradesBySubjectService,
 };
