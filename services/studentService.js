@@ -111,12 +111,13 @@ const createStudentService = async (data, subjectScheduleId, userId) => {
       transaction,
     });
 
-    const subjectScheduleObjects = await allModels.SubjectSchedule.findAll(
+    subjectScheduleObjects = await allModels.SubjectSchedule.findAll(
       {
-        where: { subject_id: subjectObject.id },
+        where: { subject_id: subjectObject?.subject_id },
       },
       { transaction }
     );
+    
 
     const studentSubjectScheduleData = subjectScheduleObjects.map(
       (subjectScheduleObject) => ({

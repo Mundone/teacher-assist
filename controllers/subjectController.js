@@ -103,7 +103,9 @@ const updateSubject = async (req, res, next) => {
   try {
     const userId = req.user && req.user.id;
     const { id } = req.params;
-    await subjectService.updateSubject(id, req.body, userId);
+    const x = await subjectService.updateSubject(id, req.body, userId);
+    
+    // res.json(x);
     responses.updated(res, req.body);
   } catch (error) {
     if (error.statusCode == 403) {
@@ -134,7 +136,7 @@ const startSubjectController = async (req, res, next) => {
     const userId = req.user && req.user.id;
     const { id } = req.params;
     const subject = await subjectService.startSubjectService(req.body, id, userId);
-    res.json(subject);
+    responses.created(res, req.body);
   } catch (error) {
     if (error.statusCode == 403) {
       responses.forbidden(res, error);
