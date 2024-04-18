@@ -39,8 +39,7 @@ const getSubjects = async (req, res, next) => {
   } catch (error) {
     if (error.statusCode == 403) {
       responses.forbidden(res, error);
-    }
-    else{
+    } else {
       responses.internalServerError(res, error);
     }
   }
@@ -65,8 +64,7 @@ const getSubjectWithoutBody = async (req, res, next) => {
   } catch (error) {
     if (error.statusCode == 403) {
       responses.forbidden(res, error);
-    }
-    else{
+    } else {
       responses.internalServerError(res, error);
     }
   }
@@ -81,8 +79,7 @@ const getSubject = async (req, res, next) => {
   } catch (error) {
     if (error.statusCode == 403) {
       responses.forbidden(res, error);
-    }
-    else{
+    } else {
       responses.internalServerError(res, error);
     }
   }
@@ -96,8 +93,7 @@ const createSubject = async (req, res, next) => {
   } catch (error) {
     if (error.statusCode == 403) {
       responses.forbidden(res, error);
-    }
-    else{
+    } else {
       responses.internalServerError(res, error);
     }
   }
@@ -112,8 +108,7 @@ const updateSubject = async (req, res, next) => {
   } catch (error) {
     if (error.statusCode == 403) {
       responses.forbidden(res, error);
-    }
-    else{
+    } else {
       responses.internalServerError(res, error);
     }
   }
@@ -128,8 +123,22 @@ const deleteSubject = async (req, res, next) => {
   } catch (error) {
     if (error.statusCode == 403) {
       responses.forbidden(res, error);
+    } else {
+      responses.internalServerError(res, error);
     }
-    else{
+  }
+};
+
+const startSubjectController = async (req, res, next) => {
+  try {
+    const userId = req.user && req.user.id;
+    const { id } = req.params;
+    const subject = await subjectService.startSubjectService(req.body, id, userId);
+    res.json(subject);
+  } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res, error);
+    } else {
       responses.internalServerError(res, error);
     }
   }
@@ -142,4 +151,5 @@ module.exports = {
   createSubject,
   updateSubject,
   deleteSubject,
+  startSubjectController,
 };

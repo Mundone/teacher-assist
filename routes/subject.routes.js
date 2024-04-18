@@ -194,4 +194,10 @@ router.delete(
   subjectController.deleteSubject
 );
 
+router.put(
+  "/start_subject/:id",
+  accessControl([1, 2, 3]),
+  subjectController.startSubjectController
+);
+
 module.exports = router;
