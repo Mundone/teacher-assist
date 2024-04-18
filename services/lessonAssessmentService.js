@@ -90,7 +90,7 @@ const getDefaultConvertGradesBySubjectService = async (subjectId, data) => {
     ],
   });
 
-  thatSubjectsLessonTypes = await allModels.LessonType.findAll({
+  const thatSubjectsLessonTypes = await allModels.LessonType.findAll({
     where: {
       id: {
         [Sequelize.Op.in]: subjectSchedules.map((data) => data.lesson_type_id),

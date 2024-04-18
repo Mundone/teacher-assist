@@ -118,7 +118,11 @@ const getDefaultConvertGradesBySubjectController = async (req, res, next) => {
       await lessonAssessmentService.getDefaultConvertGradesBySubjectService(
         subject_id
       );
-    res.json(object);
+    res.json(
+      object.map((data) => {
+        return { ...data.dataValues, grade: data.default_grade }; // Assuming you want to increase grade by 10%
+      })
+    );
   } catch (error) {
     if (error.statusCode == 403) {
       responses.forbidden(res, error);
