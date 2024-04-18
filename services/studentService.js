@@ -97,6 +97,7 @@ const createStudentService = async (data, subjectScheduleId, userId) => {
             where: { teacher_user_id: userId },
           },
         ],
+        where: { id: subjectScheduleId },
       },
       { transaction }
     );
@@ -117,7 +118,6 @@ const createStudentService = async (data, subjectScheduleId, userId) => {
       },
       { transaction }
     );
-    
 
     const studentSubjectScheduleData = subjectScheduleObjects.map(
       (subjectScheduleObject) => ({
