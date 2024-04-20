@@ -94,12 +94,14 @@ const lectureLessonAssessments = [
     desc: "Цаг төлөвлөлт, хариуцлага",
     def_grade: 5,
     sort: 1,
+    is_attendance_add: true,
   },
   {
     code: "CF2",
     desc: "Сурах хүсэл эрмэлзлэл, өөрийгөө илэрхийлэх",
     def_grade: 5,
     sort: 2,
+    is_attendance_add: true,
   },
 ];
 
@@ -109,24 +111,28 @@ const sorilLessonAssessments = [
     desc: "Мэдлэгээ сэргээн санах, тайлбарлах",
     def_grade: 5,
     sort: 3,
+    is_attendance_add: false,
   },
   {
     code: "CT4",
     desc: "Асуудал шийдвэрлэхэд мэдлэгээ хэрэглэх, задлан шинжлэх",
     def_grade: 5,
     sort: 4,
+    is_attendance_add: false,
   },
   {
     code: "CT5",
     desc: "Мэдлэгээ сэргээн санах, тайлбарлах",
     def_grade: 5,
     sort: 5,
+    is_attendance_add: false,
   },
   {
     code: "CT6",
     desc: "Асуудал шийдвэрлэхэд мэдлэгээ хэрэглэх, задлан шинжлэх",
     def_grade: 5,
     sort: 6,
+    is_attendance_add: false,
   },
 ];
 
@@ -136,12 +142,14 @@ const laboratoryLessonAssessments = [
     desc: "Лабаораторийн хэмжилт, туршилт, даалгавар гүйцэтгэх",
     def_grade: 15,
     sort: 7,
+    is_attendance_add: false,
   },
   {
     code: "CD8",
     desc: "Үр дүнг тохирох аргаар, өгөгдсөн форматын дагуу боловсруулж тайлагнах",
     def_grade: 5,
     sort: 8,
+    is_attendance_add: false,
   },
 ];
 
@@ -151,24 +159,28 @@ const assignmentLessonAssessments = [
     desc: "Өгөгдсөн даалгаврын хүрээнд шийдвэрлэх асуудлаа тодорхойлж, томёолох",
     def_grade: 5,
     sort: 9,
+    is_attendance_add: false,
   },
   {
     code: "CD10",
     desc: "Шийдвэрлэх асуудлын хүрээнд тодорхой шийдэл дэвшүүлэх, дүн шинжилгээ хийх",
     def_grade: 5,
     sort: 10,
+    is_attendance_add: false,
   },
   {
     code: "CD11",
     desc: "Мэдлэг ур чадвараа ашиглан сонгосон шийдлийн дагуу асуудлыг шийдвэрлэх",
     def_grade: 5,
     sort: 11,
+    is_attendance_add: false,
   },
   {
     code: "CD12",
     desc: "Бичгийн болон харилцах ур чадвараа ашиглан үр дүнг өгөгдсөн форматын дагуу тайлагнах илтгэх",
     def_grade: 5,
     sort: 12,
+    is_attendance_add: false,
   },
 ];
 
@@ -178,12 +190,14 @@ const testLessonAssessments = [
     desc: "Тест үнэлгээ 1...",
     def_grade: 5,
     sort: 13,
+    is_attendance_add: false,
   },
   {
     code: "XX2",
     desc: "Тест үнэлгээ 2...",
     def_grade: 5,
     sort: 14,
+    is_attendance_add: false,
   },
 ];
 

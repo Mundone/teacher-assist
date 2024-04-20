@@ -41,7 +41,12 @@ const authenticateUserService = async (code, password) => {
   }
 
   const token = jwt.sign(
-    { id: inputUser?.id, code: inputUser?.code, role_id: inputUser?.role_id, school_id: inputUser?.school_id },
+    {
+      id: inputUser?.id,
+      code: inputUser?.code,
+      role_id: inputUser?.role_id,
+      school_id: inputUser?.school_id,
+    },
     process.env.JWT_SECRET,
     { expiresIn: "365d" }
   );
@@ -116,6 +121,7 @@ const getHtmlContent = (fileName, replacements = {}) => {
   return htmlContent;
 };
 
+
 const mailOptionsStudent = (to, password, loginUrl) => {
   const htmlContent = getHtmlContent("mailBodyStudent.html", {
     password,
@@ -143,30 +149,42 @@ function generateCode(length) {
   return result;
 }
 
-const sendEmailStudentService = async (email) => {
+const sendEmailStudentService = async (email, student_code) => {
   const ACTION_URL = "https://teachas.online";
+  let isNewStudent = false;
 
   let inputStudent = await allModels.Student.findOne({
-    where: { email },
+    where: { student_code },
   });
 
+  // If student does not exist, create one and mark as new
   if (!inputStudent) {
-    inputStudent = await allModels.Student.create({ email });
+    inputStudent = await allModels.Student.create({ email, student_code });
+    isNewStudent = true;
   }
-  password = generateCode(6);
-  // console.log(inputStudent)
 
+  const password = generateCode(6);
   const options = mailOptionsStudent(inputStudent.email, password, ACTION_URL);
 
-  await transporter.sendMail(options);
-  const hashedPassword = await bcrypt.hash(password, 10);
-
-  return await allModels.Student.update(
-    { password: hashedPassword },
-    {
-      where: { id: inputStudent.id },
+  try {
+    // Attempt to send the email
+    await transporter.sendMail(options);
+    // If successful, hash and update the password
+    const hashedPassword = await bcrypt.hash(password, 10);
+    await allModels.Student.update(
+      { password: hashedPassword },
+      { where: { id: inputStudent.id } }
+    );
+  } catch (error) {
+    // If email sending fails, delete the student if they were newly created
+    if (isNewStudent) {
+      await allModels.Student.destroy({ where: { id: inputStudent.id } });
     }
-  );
+    // Rethrow the error to be handled by the caller
+    throw new Error(
+      "Failed to send email to student, the transaction has been reverted."
+    );
+  }
 };
 
 const authenticateStudentService = async (email, password) => {

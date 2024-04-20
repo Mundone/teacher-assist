@@ -32,6 +32,9 @@ class Attendance extends Model {
         response_url_path: {
           type: DataTypes.STRING(255),
         },
+        qr_containing_text: {
+          type: DataTypes.TEXT,
+        },
         is_active: {
           type: DataTypes.BOOLEAN,
         },

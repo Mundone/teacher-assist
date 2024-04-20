@@ -84,6 +84,7 @@ const insertRandomData = async () => {
         lesson_type_id: lectureLessonTypes[i].id,
         lesson_assessment_sort: lectureLessonAssessments[j].sort,
         default_grade: lectureLessonAssessments[j].def_grade,
+        is_attendance_add: lectureLessonAssessments[j].is_attendance_add,
       });
     }
   }
@@ -111,6 +112,7 @@ const insertRandomData = async () => {
         lesson_type_id: laboratoryLessonTypes[i].id,
         lesson_assessment_sort: laboratoryLessonAssessments[j].sort,
         default_grade: laboratoryLessonAssessments[j].def_grade,
+        is_attendance_add: laboratoryLessonAssessments[j].is_attendance_add,
       });
     }
   }
@@ -138,6 +140,7 @@ const insertRandomData = async () => {
         lesson_type_id: seminarLessonTypes[i].id,
         lesson_assessment_sort: testLessonAssessments[j].sort,
         default_grade: testLessonAssessments[j].def_grade,
+        is_attendance_add: testLessonAssessments[j].is_attendance_add,
       });
     }
   }
@@ -158,6 +161,7 @@ const insertRandomData = async () => {
       lesson_type_id: assignmentLessonType.id,
       lesson_assessment_sort: assignmentLessonAssessments[i].sort,
       default_grade: assignmentLessonAssessments[i].def_grade,
+      is_attendance_add: assignmentLessonAssessments[i].is_attendance_add,
     });
   }
 
@@ -177,6 +181,7 @@ const insertRandomData = async () => {
       lesson_type_id: practicLessonType.id,
       lesson_assessment_sort: testLessonAssessments[i].sort,
       default_grade: testLessonAssessments[i].def_grade,
+      is_attendance_add: testLessonAssessments[i].is_attendance_add,
     });
   }
 

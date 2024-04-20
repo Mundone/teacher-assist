@@ -27,6 +27,9 @@ class LessonAssessment extends Model {
       lesson_assessment_sort: {
         type: DataTypes.INTEGER,
       },
+      is_attendance_add: {
+        type: DataTypes.BOOLEAN,
+      }
     }, {
       sequelize,
       modelName: 'lesson_assessment',

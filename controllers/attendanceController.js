@@ -63,6 +63,23 @@ const deleteAttendanceController = async (req, res, next) => {
   }
 };
 
+const registerAttendanceInMobileController = async (req, res, next) => {
+  try {
+    const userId = req.user && req.user.id;
+    const newObject = await attendanceService.registerAttendanceInMobileService(
+      req.body,
+      userId
+    );
+    responses.created(res, newObject);
+  } catch (error) {
+    if (error.statusCode == 400) {
+      responses.badRequest(res, error);
+    } else {
+      responses.internalServerError(res, error);
+    }
+  }
+};
+
 const registerAttendanceController = async (req, res, next) => {
   try {
     const newObject = await attendanceService.registerAttendanceService(
@@ -175,4 +192,5 @@ module.exports = {
   registerAttendanceController,
   getAllAttendanceResponsesController,
   getStudentsWithAttendanceController,
+  registerAttendanceInMobileController,
 };

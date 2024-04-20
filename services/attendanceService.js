@@ -3,6 +3,7 @@ const QRCode = require("qrcode");
 const settingsService = require("../services/settingsService");
 const gradeService = require("../services/gradeService");
 const { Sequelize } = require("sequelize");
+const crypto = require("crypto");
 
 const getAttendanceByIdService = async (id, userId) => {
   const attendance = await allModels.Attendance.findOne({
@@ -37,10 +38,11 @@ const createAttendanceService = async (objectData, protocol, host, userId) => {
   // const fullUrl = `${protocol}://${host}${attendancePath}`;
   const attendanceFullUrl = `https://www.teachas.online${attendanceRandomPath}`;
   const responseFullUrl = `https://www.teachas.online${responseRandomPath}`;
+  const qrContainingText = crypto.randomBytes(1000).toString("hex");
   // const attendanceFullUrl = `192.168.165.4:3032${attendanceRandomPath}`;
   // const responseFullUrl = `192.168.165.4:3032${responseRandomPath}`;
 
-  const qrCodeImage = await QRCode.toDataURL(responseFullUrl);
+  const qrCodeImage = await QRCode.toDataURL(qrContainingText);
 
   const week = await settingsService.getCurrentWeekService();
 
@@ -87,6 +89,7 @@ const createAttendanceService = async (objectData, protocol, host, userId) => {
     latitude: objectData.latitude,
     longitude: objectData.longitude,
     duration: objectData.duration,
+    qr_containing_text: qrContainingText,
   });
 };
 
@@ -169,7 +172,7 @@ const registerAttendanceService = async (objectData) => {
   });
 
   // Since the student is already verified above, directly update the grade without re-fetching the student
-  await gradeService.updateGrade(
+  await gradeService.updateGradeService(
     attendanceObject.lesson_id,
     { grade: 1, updatedAt: new Date(), distance: 10 },
     objectData.student_code,
@@ -177,6 +180,81 @@ const registerAttendanceService = async (objectData) => {
   );
 
   return returnData;
+};
+
+const registerAttendanceInMobileService = async (objectData, userId) => {
+  const attendanceObject = await allModels.Attendance.findByPk(
+    objectData.attendance_id,
+    {
+      include: [allModels.SubjectSchedule, allModels.Lesson],
+    }
+  );
+
+  if (!attendanceObject) {
+    throw new Error("Олдсонгүй.", 404);
+  }
+
+  const studentObject = await allModels.Student.findByPk(userId);
+
+  // Check if the student is related to the subject schedule in one query
+  const studentCount = await allModels.StudentSubjectSchedule.count({
+    where: {
+      "$Student.student_code$": studentObject.student_code,
+      subject_schedule_id: attendanceObject.subject_schedule_id,
+    },
+    include: [
+      {
+        model: allModels.Student,
+        attributes: [],
+      },
+    ],
+  });
+
+  if (studentCount === 0) {
+    throw new Error("Энэ оюутан энэ хичээлийнх биш байна.", 403);
+  }
+  
+
+  if (attendanceObject.qr_containing_text == objectData.qr_containing_text) {
+    // Check if the student has already registered
+    const isRegistered = await allModels.AttendanceResponse.count({
+      where: {
+        submitted_code: studentObject.student_code,
+        attendance_id: attendanceObject.id,
+      },
+    });
+
+    if (isRegistered > 0) {
+      throw new Error("Энэ оюутан бүртгэгдсэн байна.", 400);
+    }
+
+    // Create the attendance response
+    const returnData = await allModels.AttendanceResponse.create({
+      attendance_id: attendanceObject.id,
+      submitted_code: studentObject.student_code,
+      submitted_name: studentObject.student_name,
+      attendance_date: new Date(),
+    });
+
+    const gradeObject = await allModels.Grade.findOne({
+      where: {
+        student_id: studentObject.id,
+        lesson_id: attendanceObject.lesson_id,
+      },
+    });
+
+    // Since the student is already verified above, directly update the grade without re-fetching the student
+    await gradeService.updateGradeService(
+      gradeObject.id,
+      { grade: 1, updatedAt: new Date(), distance: 10 },
+      null,
+      true
+    );
+    return returnData;
+  } else {
+    throw new Error("qr string буруу байна.", 400);
+  }
+
 };
 
 const getAllAttendanceResponsesService = async ({
@@ -293,4 +371,5 @@ module.exports = {
   registerAttendanceService,
   getAllAttendanceResponsesService,
   getStudentsWithAttendanceService,
+  registerAttendanceInMobileService,
 };

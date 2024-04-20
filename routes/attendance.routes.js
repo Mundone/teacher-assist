@@ -28,6 +28,11 @@ router.post(
 );
 
 router.post(
+  "/register_attendance_in_mobile",
+  attendanceController.registerAttendanceInMobileController
+);
+
+router.post(
   "/get_attendance_responses/:subject_schedule_id",
   accessControl([1, 2, 3]),
   paginationMiddleware,

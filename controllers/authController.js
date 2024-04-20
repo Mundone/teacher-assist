@@ -131,8 +131,8 @@ const getAuthInfoStudentController = async (req, res) => {
 
 const sendOTPStudentController = async (req, res) => {
   try {
-    const { email } = req.body;
-    await authService.sendEmailStudentService(email);
+    const { email, student_code } = req.body;
+    await authService.sendEmailStudentService(email, student_code);
 
     res.status(200).json({
       message: "Амжилттай код явууллаа.",

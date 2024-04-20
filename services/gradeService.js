@@ -60,7 +60,7 @@ const getAllStudentGradesService = async ({
       ],
       attributes: ["name", "student_code"],
 
-      where: { subject_id: subjectId },
+      // where: { subject_id: subjectId },
 
       where: where,
       limit: limit,
