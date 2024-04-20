@@ -38,11 +38,24 @@ const createAttendanceService = async (objectData, protocol, host, userId) => {
   // const fullUrl = `${protocol}://${host}${attendancePath}`;
   const attendanceFullUrl = `https://www.teachas.online${attendanceRandomPath}`;
   const responseFullUrl = `https://www.teachas.online${responseRandomPath}`;
-  const qrContainingText = crypto.randomBytes(1000).toString("hex");
   // const attendanceFullUrl = `192.168.165.4:3032${attendanceRandomPath}`;
   // const responseFullUrl = `192.168.165.4:3032${responseRandomPath}`;
 
-  const qrCodeImage = await QRCode.toDataURL(qrContainingText);
+  // Generate a random string as part of the QR data
+  const qrContainingText = crypto.randomBytes(1000).toString("hex");
+
+  // Combine the random data with attendance_id
+  const qrData = JSON.stringify({
+    qrContainingText: qrContainingText,
+    attendanceId: attendance_id,
+  });
+  const qrCodeImage = await QRCode.toDataURL(qrData, {
+    errorCorrectionLevel: 'H', // High error correction level
+    type: 'image/jpeg',
+    quality: 0.3, // Lower for smaller file size
+    margin: 1, // Set the margin around the QR code
+    width: 256 // Smaller width for smaller QR codes
+  });
 
   const week = await settingsService.getCurrentWeekService();
 
@@ -213,7 +226,6 @@ const registerAttendanceInMobileService = async (objectData, userId) => {
   if (studentCount === 0) {
     throw new Error("Энэ оюутан энэ хичээлийнх биш байна.", 403);
   }
-  
 
   if (attendanceObject.qr_containing_text == objectData.qr_containing_text) {
     // Check if the student has already registered
@@ -254,7 +266,6 @@ const registerAttendanceInMobileService = async (objectData, userId) => {
   } else {
     throw new Error("qr string буруу байна.", 400);
   }
-
 };
 
 const getAllAttendanceResponsesService = async ({
