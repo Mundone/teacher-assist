@@ -98,17 +98,16 @@ const createAttendanceService = async (objectData, protocol, host, userId) => {
     qrContainingText: qrContainingText,
     attendanceId: attendanceObject.id,
   });
-  const qrCodeImage = await QRCode.toDataURL(qrData
-  //   ,{
-  //   // errorCorrectionLevel: "H",
-  //   type: "image/jpeg",
-  //   // quality: 0.3,
-  //   // margin: 1,
-  //   // width: 256,
-  // }
+  const qrCodeImage = await QRCode.toDataURL(
+    qrData
+    //   ,{
+    //   // errorCorrectionLevel: "H",
+    //   type: "image/jpeg",
+    //   // quality: 0.3,
+    //   // margin: 1,
+    //   // width: 256,
+    // }
   );
-
-
 
   await attendanceObject.update({
     qr_code: qrCodeImage,
@@ -209,6 +208,38 @@ const registerAttendanceService = async (objectData) => {
   return returnData;
 };
 
+function calculateDistance(lat1, lon1, lat2, lon2) {
+  const R = 6371e3; // Radius of the Earth in meters
+  const p1 = (lat1 * Math.PI) / 180; // φ, λ in radians
+  const p2 = (lat2 * Math.PI) / 180;
+  const triangle_p = ((lat2 - lat1) * Math.PI) / 180;
+  const triangleSigma = ((lon2 - lon1) * Math.PI) / 180;
+
+  const a =
+    Math.sin(triangle_p / 2) * Math.sin(triangle_p / 2) +
+    Math.cos(p1) *
+      Math.cos(p2) *
+      Math.sin(triangleSigma / 2) *
+      Math.sin(triangleSigma / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+  const distance = R * c; // in meters
+  return distance;
+}
+
+const attendanceRadius = 5;
+
+function isWithinRadius(attendanceObject, objectData, radius = attendanceRadius) {
+  const distance = calculateDistance(
+    attendanceObject.latitude,
+    attendanceObject.longitude,
+    objectData.latitude,
+    objectData.longitude
+  );
+
+  return distance <= radius;
+}
+
 const registerAttendanceInMobileService = async (objectData, userId) => {
   const attendanceObject = await allModels.Attendance.findByPk(
     objectData.attendance_id,
@@ -221,64 +252,71 @@ const registerAttendanceInMobileService = async (objectData, userId) => {
     throw new Error("Олдсонгүй.", 404);
   }
 
-  const studentObject = await allModels.Student.findByPk(userId);
+  if (isWithinRadius(attendanceObject, objectData)) {
+    const studentObject = await allModels.Student.findByPk(userId);
 
-  // Check if the student is related to the subject schedule in one query
-  const studentCount = await allModels.StudentSubjectSchedule.count({
-    where: {
-      "$Student.student_code$": studentObject.student_code,
-      subject_schedule_id: attendanceObject.subject_schedule_id,
-    },
-    include: [
-      {
-        model: allModels.Student,
-        attributes: [],
-      },
-    ],
-  });
+    // Check if the student is related to the subject schedule in one query
+    // const studentCount = await allModels.StudentSubjectSchedule.count({
+    //   where: {
+    //     "$Student.student_code$": studentObject.student_code,
+    //     subject_schedule_id: attendanceObject.subject_schedule_id,
+    //   },
+    //   include: [
+    //     {
+    //       model: allModels.Student,
+    //       attributes: [],
+    //     },
+    //   ],
+    // });
 
-  if (studentCount === 0) {
-    throw new Error("Энэ оюутан энэ хичээлийнх биш байна.", 403);
-  }
+    // if (studentCount === 0) {
+    //   throw new Error("Энэ оюутан энэ хичээлийнх биш байна.", 403);
+    // }
 
-  if (attendanceObject.qr_containing_text == objectData.qr_containing_text) {
-    // Check if the student has already registered
-    const isRegistered = await allModels.AttendanceResponse.count({
-      where: {
-        submitted_code: studentObject.student_code,
+    if (attendanceObject.qr_containing_text == objectData.qr_containing_text) {
+      // Check if the student has already registered
+      const isRegistered = await allModels.AttendanceResponse.count({
+        where: {
+          submitted_code: studentObject.student_code,
+          attendance_id: attendanceObject.id,
+        },
+      });
+
+      if (isRegistered > 0) {
+        throw new Error("Энэ оюутан бүртгэгдсэн байна.", 400);
+      }
+
+      // Create the attendance response
+      const returnData = await allModels.AttendanceResponse.create({
         attendance_id: attendanceObject.id,
-      },
-    });
+        submitted_code: studentObject.student_code,
+        submitted_name: studentObject.student_name,
+        attendance_date: new Date(),
+      });
 
-    if (isRegistered > 0) {
-      throw new Error("Энэ оюутан бүртгэгдсэн байна.", 400);
+      console.log(studentObject.id);
+      console.log(attendanceObject.lesson_id);
+
+      const gradeObject = await allModels.Grade.findOne({
+        where: {
+          student_id: studentObject.id,
+          lesson_id: attendanceObject.lesson_id,
+        },
+      });
+
+      // Since the student is already verified above, directly update the grade without re-fetching the student
+      await gradeService.updateGradeService(
+        gradeObject?.id,
+        { grade: 1, updatedAt: new Date(), distance: 10 },
+        null,
+        true
+      );
+      return returnData;
+    } else {
+      throw new Error("qr string буруу байна.", 400);
     }
-
-    // Create the attendance response
-    const returnData = await allModels.AttendanceResponse.create({
-      attendance_id: attendanceObject.id,
-      submitted_code: studentObject.student_code,
-      submitted_name: studentObject.student_name,
-      attendance_date: new Date(),
-    });
-
-    const gradeObject = await allModels.Grade.findOne({
-      where: {
-        student_id: studentObject.id,
-        lesson_id: attendanceObject.lesson_id,
-      },
-    });
-
-    // Since the student is already verified above, directly update the grade without re-fetching the student
-    await gradeService.updateGradeService(
-      gradeObject.id,
-      { grade: 1, updatedAt: new Date(), distance: 10 },
-      null,
-      true
-    );
-    return returnData;
   } else {
-    throw new Error("qr string буруу байна.", 400);
+    throw new Error("Байршил " + attendanceRadius +"м-ээс хол байна.", 400);
   }
 };
 
