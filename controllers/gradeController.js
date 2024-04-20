@@ -28,6 +28,7 @@ const getGradesController = async (req, res, next) => {
     const { totalGrades, grades } =
       await gradeService.getAllStudentGradesService(queryOptions);
     const students = grades;
+    console.log(grades)
 
     var newStudents = students.map((student) => {
       const grades = student?.grades.map((innerGrade) => {
@@ -88,6 +89,7 @@ const getGradesController = async (req, res, next) => {
         })
       ),
     }));
+
 
     const tableData = newStudents.map((newStudent) => ({
       student_name: newStudent.student_name,

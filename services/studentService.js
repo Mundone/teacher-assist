@@ -134,11 +134,13 @@ const createStudentService = async (data, subjectScheduleId, userId) => {
     const lessonObjects = await allModels.Lesson.findAll(
       {
         where: {
-          subject_id: subjectObject.id,
+          subject_id: subjectObject?.subject_id,
         },
       },
       { transaction }
     );
+
+    console.log(subjectObject)
 
     const gradeData = lessonObjects.map((lessonObject) => ({
       student_id: createdStudentObject.id,
