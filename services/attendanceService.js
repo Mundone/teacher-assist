@@ -87,8 +87,8 @@ const createAttendanceService = async (objectData, protocol, host, userId) => {
     response_url_path: responseFullUrl,
     is_active: true,
     usage_count: 0,
-    latitude: objectData.latitude,
-    longitude: objectData.longitude,
+    latitude: objectData.lat,
+    longitude: objectData.long,
     duration: objectData.duration,
     qr_containing_text: qrContainingText,
   });
