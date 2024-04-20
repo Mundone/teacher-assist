@@ -149,6 +149,7 @@ function generateCode(length) {
 }
 
 const sendEmailStudentService = async (email, student_code) => {
+  // console.log()
   const ACTION_URL = "https://teachas.online";
   let isNewStudent = false;
 
@@ -163,10 +164,14 @@ const sendEmailStudentService = async (email, student_code) => {
       student_code: student_code?.toUpperCase(),
     });
     isNewStudent = true;
+  } else {
+    inputStudent.update({
+      email: email,
+    });
   }
 
   const password = generateCode(6);
-  const options = mailOptionsStudent(inputStudent.email, password, ACTION_URL);
+  const options = mailOptionsStudent(email, password, ACTION_URL);
 
   try {
     // Attempt to send the email
