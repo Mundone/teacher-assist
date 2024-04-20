@@ -229,7 +229,11 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
 
 const attendanceRadius = 5;
 
-function isWithinRadius(attendanceObject, objectData, radius = attendanceRadius) {
+function isWithinRadius(
+  attendanceObject,
+  objectData,
+  radius = attendanceRadius
+) {
   const distance = calculateDistance(
     attendanceObject.latitude,
     attendanceObject.longitude,
@@ -316,7 +320,19 @@ const registerAttendanceInMobileService = async (objectData, userId) => {
       throw new Error("qr string буруу байна.", 400);
     }
   } else {
-    throw new Error("Байршил " + attendanceRadius +"м-ээс хол байна.", 400);
+    throw new Error(
+      "Байршил " +
+        attendanceRadius +
+        "м-ээс хол байна. Багшийн latitude: " +
+        attendanceObject.latitude +
+        ", longitude: " +
+        attendanceObject.longitude+
+        ". Оюутны latitude: " +
+        objectData.latitude +
+        ", longitude: " +
+        objectData.longitude,
+      400
+    );
   }
 };
 
