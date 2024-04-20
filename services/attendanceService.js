@@ -92,18 +92,20 @@ const createAttendanceService = async (objectData, protocol, host, userId) => {
   });
 
   // Combine the random data with attendance_id
-  const qrContainingText = crypto.randomBytes(500).toString("hex");
+  const qrContainingText = crypto.randomBytes(100).toString("hex");
   const qrData = JSON.stringify({
     qrContainingText: qrContainingText,
     attendanceId: attendanceObject.id,
   });
-  const qrCodeImage = await QRCode.toDataURL(qrData, {
-    errorCorrectionLevel: "H",
-    type: "image/jpeg",
-    quality: 0.3,
-    margin: 1,
-    width: 256,
-  });
+  const qrCodeImage = await QRCode.toDataURL(qrData
+  //   ,{
+  //   // errorCorrectionLevel: "H",
+  //   type: "image/jpeg",
+  //   // quality: 0.3,
+  //   // margin: 1,
+  //   // width: 256,
+  // }
+  );
 
 
 
@@ -113,7 +115,7 @@ const createAttendanceService = async (objectData, protocol, host, userId) => {
 
   // const x = JSON.parse(qrCodeImage)
   // console.log(x);
-  
+
   return attendanceObject;
 };
 
