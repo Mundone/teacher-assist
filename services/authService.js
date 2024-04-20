@@ -153,14 +153,14 @@ const sendEmailStudentService = async (email, student_code) => {
   let isNewStudent = false;
 
   let inputStudent = await allModels.Student.findOne({
-    where: { student_code: student_code.toUpperCase() },
+    where: { student_code: student_code?.toUpperCase() },
   });
 
   // If student does not exist, create one and mark as new
   if (!inputStudent) {
     inputStudent = await allModels.Student.create({
-      email: email.toUpperCase(),
-      student_code: student_code.toUpperCase(),
+      email: email?.toUpperCase(),
+      student_code: student_code?.toUpperCase(),
     });
     isNewStudent = true;
   }
@@ -191,7 +191,7 @@ const sendEmailStudentService = async (email, student_code) => {
 
 const authenticateStudentService = async (email, password) => {
   const inputStudent = await allModels.Student.findOne({
-    where: { email: email.toUpperCase() },
+    where: { email: email?.toUpperCase() },
   });
   const isMatch = await bcrypt.compare(password, inputStudent?.password);
   if (!inputStudent || !isMatch) {
@@ -205,7 +205,7 @@ const authenticateStudentService = async (email, password) => {
       id: inputStudent?.id,
       name: inputStudent?.name,
       code: inputStudent?.student_code,
-      email: inputStudent?.email.toUpperCase(),
+      email: inputStudent?.email?.toUpperCase(),
     },
     process.env.JWT_SECRET,
     { expiresIn: "365d" }
@@ -215,7 +215,7 @@ const authenticateStudentService = async (email, password) => {
     id: inputStudent?.id,
     name: inputStudent?.name,
     student_code: inputStudent?.student_code,
-    email: inputStudent?.email.toUpperCase(),
+    email: inputStudent?.email?.toUpperCase(),
   };
 
   return { user, token };
