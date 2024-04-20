@@ -7,6 +7,8 @@ const getAllStudentGradesService = async ({
   order,
   userId,
   subjectId,
+  isForStudent,
+  studentCode
 }) => {
   const isUserIncludeSubject = await allModels.Subject.findOne({
     where: { id: subjectId, teacher_user_id: userId },
