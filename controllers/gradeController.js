@@ -79,6 +79,8 @@ const getGradesController = async (req, res, next) => {
       });
     });
 
+    console.log(newStudents)
+
     const headerData = newStudents.map((newStudent) => ({
       grades: newStudent.grades.map(
         ({ week_no, lesson_no, lesson_assessment_code, lesson_type_name }) => ({
@@ -127,7 +129,12 @@ const getDirectConvertedGradesController = async (req, res, next) => {
 
     const subjectId = req.body.subject_id ?? null;
 
+    const { pageNo, pageSize, sortBy, sortOrder, filters } = req.pagination;
     const queryOptions = {
+      where: buildWhereOptions(filters),
+      limit: pageSize,
+      offset: pageNo * pageSize,
+      order: [[sortBy, sortOrder]],
       userId: userId,
       subjectId: subjectId,
     };
