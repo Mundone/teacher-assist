@@ -42,20 +42,6 @@ const createAttendanceService = async (objectData, protocol, host, userId) => {
   // const responseFullUrl = `192.168.165.4:3032${responseRandomPath}`;
 
   // Generate a random string as part of the QR data
-  const qrContainingText = crypto.randomBytes(1000).toString("hex");
-
-  // Combine the random data with attendance_id
-  const qrData = JSON.stringify({
-    qrContainingText: qrContainingText,
-    attendanceId: attendance_id,
-  });
-  const qrCodeImage = await QRCode.toDataURL(qrData, {
-    errorCorrectionLevel: 'H', // High error correction level
-    type: 'image/jpeg',
-    quality: 0.3, // Lower for smaller file size
-    margin: 1, // Set the margin around the QR code
-    width: 256 // Smaller width for smaller QR codes
-  });
 
   const week = await settingsService.getCurrentWeekService();
 
@@ -91,10 +77,10 @@ const createAttendanceService = async (objectData, protocol, host, userId) => {
   //   where: (week_number = objectData.week),
   // });
 
-  return await allModels.Attendance.create({
+  const attendanceObject = await allModels.Attendance.create({
     subject_schedule_id: objectData.subject_schedule_id,
     lesson_id: thatLesson.id,
-    qr_code: qrCodeImage,
+    // qr_code: qrCodeImage,
     attendance_url_path: attendanceFullUrl,
     response_url_path: responseFullUrl,
     is_active: true,
@@ -102,8 +88,33 @@ const createAttendanceService = async (objectData, protocol, host, userId) => {
     latitude: objectData.latitude,
     longitude: objectData.longitude,
     duration: objectData.duration,
-    qr_containing_text: qrContainingText,
+    // qr_containing_text: qrContainingText,
   });
+
+  // Combine the random data with attendance_id
+  const qrContainingText = crypto.randomBytes(500).toString("hex");
+  const qrData = JSON.stringify({
+    qrContainingText: qrContainingText,
+    attendanceId: attendanceObject.id,
+  });
+  const qrCodeImage = await QRCode.toDataURL(qrData, {
+    errorCorrectionLevel: "H",
+    type: "image/jpeg",
+    quality: 0.3,
+    margin: 1,
+    width: 256,
+  });
+
+
+
+  await attendanceObject.update({
+    qr_code: qrCodeImage,
+  });
+
+  // const x = JSON.parse(qrCodeImage)
+  // console.log(x);
+  
+  return attendanceObject;
 };
 
 const deleteAttendanceService = async (id, userId) => {
