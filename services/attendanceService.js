@@ -77,6 +77,8 @@ const createAttendanceService = async (objectData, protocol, host, userId) => {
   //   where: (week_number = objectData.week),
   // });
 
+  const qrContainingText = crypto.randomBytes(50).toString("hex");
+
   const attendanceObject = await allModels.Attendance.create({
     subject_schedule_id: objectData.subject_schedule_id,
     lesson_id: thatLesson.id,
@@ -88,11 +90,10 @@ const createAttendanceService = async (objectData, protocol, host, userId) => {
     latitude: objectData.latitude,
     longitude: objectData.longitude,
     duration: objectData.duration,
-    // qr_containing_text: qrContainingText,
+    qr_containing_text: qrContainingText,
   });
 
   // Combine the random data with attendance_id
-  const qrContainingText = crypto.randomBytes(100).toString("hex");
   const qrData = JSON.stringify({
     qrContainingText: qrContainingText,
     attendanceId: attendanceObject.id,
