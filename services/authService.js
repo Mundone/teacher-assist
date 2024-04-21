@@ -198,7 +198,10 @@ const authenticateStudentService = async (email, password) => {
   const inputStudent = await allModels.Student.findOne({
     where: { email: email?.toUpperCase() },
   });
-  const isMatch = await bcrypt.compare(password, inputStudent?.password);
+  const isMatch = await bcrypt.compare(
+    password?.toUpperCase(),
+    inputStudent?.password
+  );
   if (!inputStudent || !isMatch) {
     const error = new Error("Имейл рүү явсан код буруу байна.");
     error.statusCode = 403;
