@@ -258,7 +258,7 @@ const registerAttendanceInMobileService = async (objectData, userId) => {
   }
 
   await attendanceObject.update({
-    usage_count: attendanceTempObject.usage_count + 1,
+    usage_count: attendanceObject.usage_count + 1,
   });
 
   if (isWithinRadius(attendanceObject, objectData)) {
