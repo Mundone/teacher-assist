@@ -502,6 +502,18 @@ async function checkIfUserCorrect(subjectScheduleId, userId) {
 //   };
 // };
 
+const updateAtteandanceReadCountService = async (id) => {
+  const attendanceObject = await allModels.Attendance.findByPk(id);
+  if (attendanceObject) {
+    return await attendanceObject.update({
+      usage_count: attendanceObject.usage_count + 1,
+    });
+  }
+  const error = new Error("Зөвшөөрөлгүй хандалт.");
+  error.statusCode = 403;
+  throw error;
+};
+
 module.exports = {
   getAttendanceByIdService,
   createAttendanceService,
@@ -510,5 +522,6 @@ module.exports = {
   getAllAttendanceResponsesService,
   getStudentsWithAttendanceService,
   registerAttendanceInMobileService,
-  getStudentsAttendanceListService,
+  updateAtteandanceReadCountService,
+  // getStudentsAttendanceListService,
 };

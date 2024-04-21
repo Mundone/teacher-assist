@@ -21,7 +21,6 @@ const { parse, stringify } = require("flatted");
 //     // const { totalObjects, objects } =
 //     //   await userService.getStudentsAttendanceListService(queryOptions);
 
-      
 //     const returnObject =
 //     await userService.getStudentsAttendanceListService(queryOptions);
 //     res.json(returnObject);
@@ -226,7 +225,20 @@ const getStudentsWithAttendanceController = async (req, res, next) => {
   }
 };
 
-addAtteandanceReadCountController
+const updateAtteandanceReadCountController = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const updatedStudent =
+      await studentService.updateAtteandanceReadCountService(id);
+    responses.updated(res, updatedStudent);
+  } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res, error);
+    } else {
+      responses.internalServerError(res, error);
+    }
+  }
+};
 
 module.exports = {
   getAttendanceController,
@@ -236,5 +248,6 @@ module.exports = {
   getAllAttendanceResponsesController,
   getStudentsWithAttendanceController,
   registerAttendanceInMobileController,
-  getStudentsAttendanceListController,
+  // getStudentsAttendanceListController,
+  updateAtteandanceReadCountController,
 };
