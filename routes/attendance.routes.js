@@ -47,6 +47,18 @@ router.post(
 );
 
 
+router.get(
+  "/get_students/:id",
+  accessControl([1, 2, 3]),
+  attendanceController.getStudentsAttendanceListController
+);
+
+router.get(
+  "/add_attendance_read_count/:id",
+  accessControl([1, 2, 3]),
+  attendanceController.addAtteandanceReadCountController
+);
+
 
 
 module.exports = router;

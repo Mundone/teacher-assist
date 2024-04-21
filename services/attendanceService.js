@@ -87,8 +87,8 @@ const createAttendanceService = async (objectData, protocol, host, userId) => {
     response_url_path: responseFullUrl,
     is_active: true,
     usage_count: 0,
-    latitude: objectData.lat,
-    longitude: objectData.long,
+    latitude: objectData.latitude,
+    longitude: objectData.longitude,
     duration: objectData.duration,
     qr_containing_text: qrContainingText,
   });
@@ -326,7 +326,7 @@ const registerAttendanceInMobileService = async (objectData, userId) => {
         "м-ээс хол байна. Багшийн latitude: " +
         attendanceObject.latitude +
         ", longitude: " +
-        attendanceObject.longitude+
+        attendanceObject.longitude +
         ". Оюутны latitude: " +
         objectData.latitude +
         ", longitude: " +
@@ -443,6 +443,65 @@ async function checkIfUserCorrect(subjectScheduleId, userId) {
   }
 }
 
+// const getStudentsAttendanceListService = async ({
+//   where,
+//   limit,
+//   offset,
+//   order,
+//   attendanceId,
+//   userId,
+// }) => {
+//   const attendanceObject = allModels.Attendance.findByPk(attendanceId, {
+//     include: [
+//       {
+//         model: allModels.Lesson,
+//         include: [
+//           {
+//             model: allModels.Grade,
+//           },
+//           {
+//             model: allModels.LessonAssessment,
+//             where: {
+//               is_attendance_add: true,
+//             },
+//           },
+//         ],
+//       },
+//     ],
+//   });
+
+//   return attendanceObject;
+//   let { count: totalObjects, rows: objects } =
+//     await allModels.Student.findAndCountAll({
+//       include: [
+//         {
+//           model: allModels.UserRole,
+//           attributes: ["id", "role_name"],
+//         },
+//       ],
+//       attributes: [
+//         "id",
+//         "name",
+//         "email",
+//         "code",
+//         "role_id",
+//         "school_id",
+//         "createdAt",
+//       ],
+
+//       where: where,
+//       limit: limit,
+//       offset: offset,
+//       order: order,
+//       distinct: true,
+//     });
+
+//   return {
+//     totalObjects,
+//     objects,
+//   };
+// };
+
 module.exports = {
   getAttendanceByIdService,
   createAttendanceService,
@@ -451,4 +510,5 @@ module.exports = {
   getAllAttendanceResponsesService,
   getStudentsWithAttendanceService,
   registerAttendanceInMobileService,
+  getStudentsAttendanceListService,
 };
