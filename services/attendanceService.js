@@ -241,7 +241,7 @@ function isWithinRadius(
     objectData.longitude
   );
 
-  return distance <= radius;
+  return distance <= radius ? distance : false;
 }
 
 const registerAttendanceInMobileService = async (objectData, userId) => {
@@ -260,8 +260,9 @@ const registerAttendanceInMobileService = async (objectData, userId) => {
   await attendanceObject.update({
     usage_count: attendanceObject.usage_count + 1,
   });
+  const studentDistance = isWithinRadius(attendanceObject, objectData);
 
-  if (isWithinRadius(attendanceObject, objectData)) {
+  if (studentDistance) {
     const studentObject = await allModels.Student.findByPk(userId);
 
     // Check if the student is related to the subject schedule in one query
@@ -316,7 +317,7 @@ const registerAttendanceInMobileService = async (objectData, userId) => {
       // Since the student is already verified above, directly update the grade without re-fetching the student
       await gradeService.updateGradeService(
         gradeObject?.id,
-        { grade: 1, updatedAt: new Date(), distance: 10 },
+        { grade: 1, updatedAt: new Date(), distance: studentDistance },
         null,
         true
       );
