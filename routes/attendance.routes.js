@@ -53,12 +53,4 @@ router.post(
 //   attendanceController.getStudentsAttendanceListController
 // );
 
-router.get(
-  "/update_attendance_read_count/:id",
-  accessControl([1, 2, 3]),
-  attendanceController.updateAtteandanceReadCountController
-);
-
-
-
 module.exports = router;

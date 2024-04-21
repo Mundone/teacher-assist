@@ -225,20 +225,6 @@ const getStudentsWithAttendanceController = async (req, res, next) => {
   }
 };
 
-const updateAtteandanceReadCountController = async (req, res, next) => {
-  try {
-    const { id } = req.params;
-    const updatedAttendance =
-      await attendanceService.updateAtteandanceReadCountService(id);
-    responses.updated(res, updatedAttendance);
-  } catch (error) {
-    if (error.statusCode == 403) {
-      responses.forbidden(res, error);
-    } else {
-      responses.internalServerError(res, error);
-    }
-  }
-};
 
 module.exports = {
   getAttendanceController,
@@ -249,5 +235,4 @@ module.exports = {
   getStudentsWithAttendanceController,
   registerAttendanceInMobileController,
   // getStudentsAttendanceListController,
-  updateAtteandanceReadCountController,
 };

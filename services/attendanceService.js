@@ -245,6 +245,7 @@ function isWithinRadius(
 }
 
 const registerAttendanceInMobileService = async (objectData, userId) => {
+
   const attendanceObject = await allModels.Attendance.findByPk(
     objectData.attendance_id,
     {
@@ -255,6 +256,10 @@ const registerAttendanceInMobileService = async (objectData, userId) => {
   if (!attendanceObject) {
     throw new Error("Олдсонгүй.", 404);
   }
+
+  await attendanceObject.update({
+    usage_count: attendanceTempObject.usage_count + 1,
+  });
 
   if (isWithinRadius(attendanceObject, objectData)) {
     const studentObject = await allModels.Student.findByPk(userId);
@@ -502,18 +507,6 @@ async function checkIfUserCorrect(subjectScheduleId, userId) {
 //   };
 // };
 
-const updateAtteandanceReadCountService = async (id) => {
-  const attendanceObject = await allModels.Attendance.findByPk(id);
-  if (attendanceObject) {
-    return await attendanceObject.update({
-      usage_count: attendanceObject.usage_count + 1,
-    });
-  }
-  const error = new Error("Зөвшөөрөлгүй хандалт.");
-  error.statusCode = 403;
-  throw error;
-};
-
 module.exports = {
   getAttendanceByIdService,
   createAttendanceService,
@@ -522,6 +515,5 @@ module.exports = {
   getAllAttendanceResponsesService,
   getStudentsWithAttendanceService,
   registerAttendanceInMobileService,
-  updateAtteandanceReadCountService,
   // getStudentsAttendanceListService,
 };
