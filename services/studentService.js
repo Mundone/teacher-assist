@@ -90,13 +90,18 @@ const createStudentService = async (data, subjectScheduleId, userId) => {
 
   try {
     // Check for existing SubjectSchedule with the given ID and teacher_user_id
-    const subjectObject = await allModels.SubjectSchedule.findOne({
-      include: [{
-        model: allModels.Subject,
-        where: { teacher_user_id: userId },
-      }],
-      where: { id: subjectScheduleId },
-    }, { transaction });
+    const subjectObject = await allModels.SubjectSchedule.findOne(
+      {
+        include: [
+          {
+            model: allModels.Subject,
+            where: { teacher_user_id: userId },
+          },
+        ],
+        where: { id: subjectScheduleId },
+      },
+      { transaction }
+    );
 
     if (!subjectObject) {
       const error = new Error("Зөвшөөрөлгүй хандалт");
@@ -105,13 +110,22 @@ const createStudentService = async (data, subjectScheduleId, userId) => {
     }
 
     // Check if the student already exists by student_code
-    const existingStudentObject = await allModels.Student.findOne({
-      where: { student_code: data.student_code }
-    }, { transaction });
+    const existingStudentObject = await allModels.Student.findOne(
+      {
+        where: { student_code: data.student_code },
+      },
+      { transaction }
+    );
 
     let studentObject;
 
     if (existingStudentObject) {
+      existingStudentObject.update(
+        {
+          where: { name: data.name },
+        },
+        { transaction }
+      );
       studentObject = existingStudentObject;
     } else {
       // Create a new student if one does not exist
@@ -119,26 +133,35 @@ const createStudentService = async (data, subjectScheduleId, userId) => {
     }
 
     // Retrieve all SubjectSchedules associated with the subject_id
-    const subjectScheduleObjects = await allModels.SubjectSchedule.findAll({
-      where: { subject_id: subjectObject.subject_id },
-    }, { transaction });
+    const subjectScheduleObjects = await allModels.SubjectSchedule.findAll(
+      {
+        where: { subject_id: subjectObject.subject_id },
+      },
+      { transaction }
+    );
 
     // Prepare data for linking student with subject schedules
-    const studentSubjectScheduleData = subjectScheduleObjects.map(ss => ({
+    const studentSubjectScheduleData = subjectScheduleObjects.map((ss) => ({
       student_id: studentObject.id,
       subject_schedule_id: ss.id,
     }));
 
     // Link student to subject schedules
-    await allModels.StudentSubjectSchedule.bulkCreate(studentSubjectScheduleData, { transaction });
+    await allModels.StudentSubjectSchedule.bulkCreate(
+      studentSubjectScheduleData,
+      { transaction }
+    );
 
     // Retrieve all lessons associated with the subject_id
-    const lessonObjects = await allModels.Lesson.findAll({
-      where: { subject_id: subjectObject.subject_id },
-    }, { transaction });
+    const lessonObjects = await allModels.Lesson.findAll(
+      {
+        where: { subject_id: subjectObject.subject_id },
+      },
+      { transaction }
+    );
 
     // Prepare initial grade data for the student for each lesson
-    const gradeData = lessonObjects.map(lesson => ({
+    const gradeData = lessonObjects.map((lesson) => ({
       student_id: studentObject.id,
       lesson_id: lesson.id,
       grade: 0, // Assume initial grade is set to 0
@@ -158,14 +181,16 @@ const createStudentService = async (data, subjectScheduleId, userId) => {
   }
 };
 
-
 const createStudentBulkService = async (studentData, subjectScheduleId) => {
   const transaction = await allModels.sequelize.transaction();
 
   try {
-    const subjectSchedule = await allModels.SubjectSchedule.findOne({
-      where: { id: subjectScheduleId },
-    }, { transaction });
+    const subjectSchedule = await allModels.SubjectSchedule.findOne(
+      {
+        where: { id: subjectScheduleId },
+      },
+      { transaction }
+    );
 
     if (!subjectSchedule) {
       const error = new Error("Зөвшөөрөлгүй хандалт");
@@ -178,30 +203,35 @@ const createStudentBulkService = async (studentData, subjectScheduleId) => {
       const [student, created] = await allModels.Student.findOrCreate({
         where: { student_code: data.student_code },
         defaults: data,
-        transaction
+        transaction,
       });
       return student;
     });
 
     const students = await Promise.all(studentPromises);
-    const studentIds = students.map(student => student.id);
+    const studentIds = students.map((student) => student.id);
 
     // Link students to the subject schedule
-    const studentSubjectSchedules = studentIds.map(studentId => ({
+    const studentSubjectSchedules = studentIds.map((studentId) => ({
       student_id: studentId,
       subject_schedule_id: subjectScheduleId,
     }));
 
-    await allModels.StudentSubjectSchedule.bulkCreate(studentSubjectSchedules, { transaction });
+    await allModels.StudentSubjectSchedule.bulkCreate(studentSubjectSchedules, {
+      transaction,
+    });
 
     // Retrieve lessons associated with the subject
-    const lessonObjects = await allModels.Lesson.findAll({
-      where: { subject_id: subjectSchedule.subject_id },
-    }, { transaction });
+    const lessonObjects = await allModels.Lesson.findAll(
+      {
+        where: { subject_id: subjectSchedule.subject_id },
+      },
+      { transaction }
+    );
 
     // Prepare grades data
     const grades = lessonObjects.reduce((acc, lesson) => {
-      const lessonGrades = studentIds.map(studentId => ({
+      const lessonGrades = studentIds.map((studentId) => ({
         student_id: studentId,
         lesson_id: lesson.id,
         grade: 0,
@@ -218,7 +248,6 @@ const createStudentBulkService = async (studentData, subjectScheduleId) => {
     throw error;
   }
 };
-
 
 const updateStudentService = async (id, data) => {
   const student = await allModels.Student.findByPk(id);
