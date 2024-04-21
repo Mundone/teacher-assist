@@ -228,9 +228,9 @@ const getStudentsWithAttendanceController = async (req, res, next) => {
 const updateAtteandanceReadCountController = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const updatedStudent =
-      await studentService.updateAtteandanceReadCountService(id);
-    responses.updated(res, updatedStudent);
+    const updatedAttendance =
+      await attendanceService.updateAtteandanceReadCountService(id);
+    responses.updated(res, updatedAttendance);
   } catch (error) {
     if (error.statusCode == 403) {
       responses.forbidden(res, error);
