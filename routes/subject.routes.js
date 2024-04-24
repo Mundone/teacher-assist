@@ -200,4 +200,11 @@ router.put(
   subjectController.startSubjectController
 );
 
+
+router.get(
+  "/get_students_subjects",
+  paginationMiddleware,
+  subjectController.getStudentsSubjectsController
+);
+
 module.exports = router;

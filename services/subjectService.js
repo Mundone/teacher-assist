@@ -144,6 +144,44 @@ const getAllSubjects = async ({
   };
 };
 
+const getAllStudentsSubjectsService = async ({ studentId }) => {
+  return await allModels.Subject.findAll({
+    attributes: [
+      "id",
+      "subject_name",
+      "subject_code",
+      "is_started",
+      "createdAt",
+    ],
+    include: [
+      {
+        model: allModels.SubjectSchedule,
+        attributes: ["lesson_type_id"],
+        include: [
+          {
+            model: allModels.StudentSubjectSchedule,
+            attributes: [], // No need for specific attributes in this model
+            where: { student_id: studentId },
+          },
+          {
+            model: allModels.LessonType,
+            attributes: ["id", "lesson_type_name"],
+          },
+          {
+            model: allModels.Schedule,
+          },
+        ],
+        attributes: ["id", "subject_id", "lesson_type_id", "createdAt"],
+      },
+    ],
+    order: [["createdAt", "DESC"]],
+    distinct: true,
+    where: {
+      "$subject_schedules.student_subject_schedules.student_id$": studentId,
+    },
+  });
+};
+
 // const getAllSubjects = async ({
 //   where,
 //   limit,
@@ -409,16 +447,16 @@ const startSubjectService = async (datas, subjectId, user_id) => {
   // Fetch all lessons once based on all provided `data.id` and `subjectId`
   const lessonsToUpdate = await allModels.Lesson.findAll({
     where: {
-      lesson_assessment_id: datas.map(data => data.id),
-      subject_id: subjectId
-    }
+      lesson_assessment_id: datas.map((data) => data.id),
+      subject_id: subjectId,
+    },
   });
 
   // Create a map of data.id to grade for quick lookup
-  const gradeMap = new Map(datas.map(data => [data.id, data.grade]));
+  const gradeMap = new Map(datas.map((data) => [data.id, data.grade]));
 
   // Prepare bulk update data
-  const updatePromises = lessonsToUpdate.map(lesson => {
+  const updatePromises = lessonsToUpdate.map((lesson) => {
     const newGrade = gradeMap.get(lesson.lesson_assessment_id);
     if (newGrade) {
       return allModels.Lesson.update(
@@ -444,7 +482,7 @@ const updateSubject = async (subjectId, data, userId, transaction) => {
   // Validate existence of subject before update
   const existingSubject = await allModels.Subject.findByPk(subjectId, options);
   if (!existingSubject) {
-    throw new Error('Subject not found with the provided ID.');
+    throw new Error("Subject not found with the provided ID.");
   }
 
   // Start by updating the subject
@@ -479,19 +517,27 @@ const updateSubject = async (subjectId, data, userId, transaction) => {
   // Process each schedule in the updated data
   for (const subject_schedule of data.subject_schedules) {
     // Validate lesson type existence
-    const lessonType = await allModels.LessonType.findByPk(subject_schedule.lesson_type_id, options);
+    const lessonType = await allModels.LessonType.findByPk(
+      subject_schedule.lesson_type_id,
+      options
+    );
     if (!lessonType) {
-      throw new Error(`Lesson type not found with ID: ${subject_schedule.lesson_type_id}`);
+      throw new Error(
+        `Lesson type not found with ID: ${subject_schedule.lesson_type_id}`
+      );
     }
 
     // Create or recreate the lesson type associations
-    await allModels.SubjectLessonType.create({
-      subject_id: subjectId,
-      lesson_type_id: subject_schedule.lesson_type_id,
-    }, options);
+    await allModels.SubjectLessonType.create(
+      {
+        subject_id: subjectId,
+        lesson_type_id: subject_schedule.lesson_type_id,
+      },
+      options
+    );
 
     // Prepare schedules for bulk creation
-    subject_schedule.schedule_ids.forEach(schedule_id => {
+    subject_schedule.schedule_ids.forEach((schedule_id) => {
       subjectSchedulesToCreate.push({
         subject_id: subjectId,
         lesson_type_id: subject_schedule.lesson_type_id,
@@ -502,15 +548,19 @@ const updateSubject = async (subjectId, data, userId, transaction) => {
     // Fetch lesson assessments
     const lessonAssessments = await allModels.LessonAssessment.findAll({
       where: {
-        lesson_type_id: subject_schedule.lesson_type_id
+        lesson_type_id: subject_schedule.lesson_type_id,
       },
       include: { model: allModels.LessonType },
-      ...options
+      ...options,
     });
 
     // Add lessons based on lesson assessments
-    lessonAssessments.forEach(assessment => {
-      for (let i = 0; i < assessment.lesson_type.lesson_type_iterate_count; i++) {
+    lessonAssessments.forEach((assessment) => {
+      for (
+        let i = 0;
+        i < assessment.lesson_type.lesson_type_iterate_count;
+        i++
+      ) {
         lessonsToCreate.push({
           subject_id: subjectId,
           lesson_assessment_id: assessment.id,
@@ -531,8 +581,6 @@ const updateSubject = async (subjectId, data, userId, transaction) => {
 
   return { message: "Subject updated successfully!" };
 };
-
-
 
 const deleteSubject = async (id, userId) => {
   await checkIfUserCorrect(id, userId);
@@ -560,4 +608,5 @@ module.exports = {
   getSubjectById,
   deleteSubject,
   startSubjectService,
+  getAllStudentsSubjectsService,
 };
