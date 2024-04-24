@@ -392,8 +392,16 @@ const adminMenuCodes = [
   "0201",
   "0202",
 ];
-const headOfDepartmentMenuCodes = ["00", "0001", "01", "0106", "02", "0203"];
-const teacherMenuCodes = ["00", "0001", "01", "0101", "0106", "02", "0203"];
+const headOfDepartmentMenuCodes = ["00", "0001", "01", 
+// "0106",
+ "02", 
+//  "0203"
+];
+const teacherMenuCodes = ["00", "0001", "01", "0101", 
+// "0106",
+ "02", 
+//  "0203"
+];
 
 module.exports = {
   lessonTypes,
