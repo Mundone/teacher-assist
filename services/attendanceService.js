@@ -262,7 +262,7 @@ const registerAttendanceInMobileService = async (objectData, userId) => {
   });
   const studentDistance = isWithinRadius(attendanceObject, objectData);
 
-  if (studentDistance) {
+  // if (studentDistance) {
     const studentObject = await allModels.Student.findByPk(userId);
 
     // Check if the student is related to the subject schedule in one query
@@ -325,21 +325,21 @@ const registerAttendanceInMobileService = async (objectData, userId) => {
     } else {
       throw new Error("qr string буруу байна.", 400);
     }
-  } else {
-    throw new Error(
-      "Байршил " +
-        attendanceRadius +
-        "м-ээс хол байна. Багшийн latitude: " +
-        attendanceObject.latitude +
-        ", longitude: " +
-        attendanceObject.longitude +
-        ". Оюутны latitude: " +
-        objectData.latitude +
-        ", longitude: " +
-        objectData.longitude,
-      400
-    );
-  }
+  // } else {
+  //   throw new Error(
+  //     "Байршил " +
+  //       attendanceRadius +
+  //       "м-ээс хол байна. Багшийн latitude: " +
+  //       attendanceObject.latitude +
+  //       ", longitude: " +
+  //       attendanceObject.longitude +
+  //       ". Оюутны latitude: " +
+  //       objectData.latitude +
+  //       ", longitude: " +
+  //       objectData.longitude,
+  //     400
+  //   );
+  // }
 };
 
 const getAllAttendanceResponsesService = async ({
