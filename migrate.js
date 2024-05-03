@@ -2,6 +2,7 @@ const models = require("./models/index");
 const sequelize = require("./config/sequelizeConfig");
 const bcrypt = require("bcryptjs");
 const { Sequelize } = require("sequelize");
+const { profileUrl } = require("./config/const");
 
 const {
   lessonTypes,
@@ -205,6 +206,7 @@ const insertRandomData = async () => {
       role_id: 1,
       password: await bcrypt.hash("Pass@123", 10),
       school_id: 1,
+      profile_image: profileUrl + "admin",
     },
     {
       name: "Тэнхимийн эрхлэгч өвөө",
@@ -214,6 +216,7 @@ const insertRandomData = async () => {
       password: await bcrypt.hash("Pass@123", 10),
       school_id: 1,
       is_head_of_department: true,
+      profile_image: profileUrl + "dep",
     },
     {
       name: "Нарийн бичиг хатагтай",
@@ -223,6 +226,7 @@ const insertRandomData = async () => {
       password: await bcrypt.hash("Pass@123", 10),
       school_id: 1,
       is_secretary: true,
+      profile_image: profileUrl + "sec",
     },
   ]);
 
