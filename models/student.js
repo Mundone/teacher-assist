@@ -15,6 +15,9 @@ class Student extends Model {
         student_code: {
           type: DataTypes.STRING(255),
         },
+        profile_image: {
+          type: DataTypes.STRING(255),
+        },
         email: {
           type: DataTypes.STRING(255),
         },

@@ -34,6 +34,9 @@ class User extends Model {
         password: {
           type: DataTypes.STRING,
         },
+        profile_image: {
+          type: DataTypes.STRING(255),
+        },
       },
       {
         sequelize,

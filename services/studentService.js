@@ -1,6 +1,7 @@
 // services/studentService.js
 const allModels = require("../models");
 const { Sequelize } = require("sequelize");
+const { profileUrl } = require("../config/const");
 
 const getAllStudentsService = async ({
   where,
@@ -129,7 +130,10 @@ const createStudentService = async (data, subjectScheduleId, userId) => {
       studentObject = existingStudentObject;
     } else {
       // Create a new student if one does not exist
-      studentObject = await allModels.Student.create(data, { transaction });
+      studentObject = await allModels.Student.create(
+        { ...data, profile_image: profileUrl + data.student_code },
+        { transaction }
+      );
     }
 
     // Retrieve all SubjectSchedules associated with the subject_id

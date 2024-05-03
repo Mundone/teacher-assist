@@ -9,6 +9,7 @@ const {
   sorilLessonAssessments,
   laboratoryLessonAssessments,
   assignmentLessonAssessments,
+  seminarLessonAssessments,
   testLessonAssessments,
   subjectCodes,
   scheduleNames,
@@ -133,14 +134,14 @@ const insertRandomData = async () => {
   );
 
   for (let i = 0; i < seminarLessonTypes.length; i++) {
-    for (let j = 0; j < testLessonAssessments.length; j++) {
+    for (let j = 0; j < seminarLessonAssessments.length; j++) {
       await models.LessonAssessment.create({
-        lesson_assessment_code: testLessonAssessments[j].code,
-        lesson_assessment_description: testLessonAssessments[j].desc,
+        lesson_assessment_code: seminarLessonAssessments[j].code,
+        lesson_assessment_description: seminarLessonAssessments[j].desc,
         lesson_type_id: seminarLessonTypes[i].id,
-        lesson_assessment_sort: testLessonAssessments[j].sort,
-        default_grade: testLessonAssessments[j].def_grade,
-        is_attendance_add: testLessonAssessments[j].is_attendance_add,
+        lesson_assessment_sort: seminarLessonAssessments[j].sort,
+        default_grade: seminarLessonAssessments[j].def_grade,
+        is_attendance_add: seminarLessonAssessments[j].is_attendance_add,
       });
     }
   }
@@ -174,16 +175,16 @@ const insertRandomData = async () => {
     is_attendance_add: lessonTypes[10].is_attendance_add,
   });
 
-  for (let i = 0; i < testLessonAssessments.length; i++) {
-    await models.LessonAssessment.create({
-      lesson_assessment_code: testLessonAssessments[i].code,
-      lesson_assessment_description: testLessonAssessments[i].desc,
-      lesson_type_id: practicLessonType.id,
-      lesson_assessment_sort: testLessonAssessments[i].sort,
-      default_grade: testLessonAssessments[i].def_grade,
-      is_attendance_add: testLessonAssessments[i].is_attendance_add,
-    });
-  }
+  // for (let i = 0; i < testLessonAssessments.length; i++) {
+  //   await models.LessonAssessment.create({
+  //     lesson_assessment_code: testLessonAssessments[i].code,
+  //     lesson_assessment_description: testLessonAssessments[i].desc,
+  //     lesson_type_id: practicLessonType.id,
+  //     lesson_assessment_sort: testLessonAssessments[i].sort,
+  //     default_grade: testLessonAssessments[i].def_grade,
+  //     is_attendance_add: testLessonAssessments[i].is_attendance_add,
+  //   });
+  // }
 
   await models.School.bulkCreate([
     {

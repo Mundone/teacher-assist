@@ -153,6 +153,23 @@ const laboratoryLessonAssessments = [
   },
 ];
 
+const seminarLessonAssessments = [
+  {
+    code: "CD7",
+    desc: "Лабаораторийн хэмжилт, туршилт, даалгавар гүйцэтгэх",
+    def_grade: 15,
+    sort: 7,
+    is_attendance_add: false,
+  },
+  {
+    code: "CD8",
+    desc: "Үр дүнг тохирох аргаар, өгөгдсөн форматын дагуу боловсруулж тайлагнах",
+    def_grade: 5,
+    sort: 8,
+    is_attendance_add: false,
+  },
+];
+
 const assignmentLessonAssessments = [
   {
     code: "CD9",
@@ -313,7 +330,7 @@ const menuDatas = [
     menu_name: "Хичээл",
     router_link: "/dashboard/subject",
     sorted_order: 1,
-    icon_name: "material-symbols-light:subject",
+    icon_name: "streamline:class-lesson",
   },
   {
     menu_code: "0102",
@@ -321,7 +338,7 @@ const menuDatas = [
     menu_name: "Хичээлийн задаргаа",
     router_link: "/dashboard/lessons",
     sorted_order: 2,
-    icon_name: "material-symbols-light:subject",
+    icon_name: "nonicons-class-16",
   },
   {
     menu_code: "0103",
@@ -329,7 +346,7 @@ const menuDatas = [
     menu_name: "Хичээл орох хэлбэр",
     router_link: "/dashboard/lessonTypes",
     sorted_order: 3,
-    icon_name: "material-symbols-light:subject",
+    icon_name: "mdi:blackboard",
   },
   {
     menu_code: "0104",
@@ -337,7 +354,7 @@ const menuDatas = [
     menu_name: "Дүнгийн задаргаа",
     router_link: "/dashboard/lessonAsses",
     sorted_order: 4,
-    icon_name: "material-symbols-light:subject",
+    icon_name: "clarity:tree-view-line",
   },
   {
     menu_code: "0105",
@@ -345,7 +362,7 @@ const menuDatas = [
     menu_name: "Оюутнууд",
     router_link: "/dashboard/students",
     sorted_order: 4,
-    icon_name: "material-symbols-light:subject",
+    icon_name: "ph:student",
   },
   {
     menu_code: "0106",
@@ -356,12 +373,20 @@ const menuDatas = [
     icon_name: "material-symbols-light:subject",
   },
   {
+    menu_code: "0107",
+    parent_id: 2,
+    menu_name: "Санал асуулга",
+    router_link: "/dashboard/survey",
+    sorted_order: 6,
+    icon_name: "wpf:survey",
+  },
+  {
     menu_code: "0201",
     parent_id: 3,
     menu_name: "Хэрэглэгч",
     router_link: "/dashboard/users",
     sorted_order: 1,
-    icon_name: "material-symbols-light:subject",
+    icon_name: "mdi:user-outline",
   },
   {
     menu_code: "0202",
@@ -369,7 +394,7 @@ const menuDatas = [
     menu_name: "Хэрэглэгчийн бүлэг",
     router_link: "/dashboard/userRole",
     sorted_order: 2,
-    icon_name: "material-symbols-light:subject",
+    icon_name: "mdi:user-group-outline",
   },
   {
     menu_code: "0203",
@@ -392,15 +417,23 @@ const adminMenuCodes = [
   "0201",
   "0202",
 ];
-const headOfDepartmentMenuCodes = ["00", "0001", "01", 
-// "0106",
- "02", 
-//  "0203"
+const headOfDepartmentMenuCodes = [
+  "00",
+  "0001",
+  "01",
+  // "0106",
+  // "02",
+  //  "0203"
 ];
-const teacherMenuCodes = ["00", "0001", "01", "0101", 
-// "0106",
- "02", 
-//  "0203"
+const teacherMenuCodes = [
+  "00",
+  "0001",
+  "01",
+  "0101",
+  "0107",
+  // "0106",
+  // "02",
+  //  "0203"
 ];
 
 module.exports = {
@@ -418,4 +451,5 @@ module.exports = {
   adminMenuCodes,
   headOfDepartmentMenuCodes,
   teacherMenuCodes,
+  seminarLessonAssessments,
 };

@@ -8,6 +8,7 @@ const subjectService = require("./subjectService");
 const transporter = require("../config/email.config");
 const fs = require("fs");
 const path = require("path");
+const { profileUrl } = require("../config/const");
 
 const getAllUsers = async ({ where, limit, offset, order, isWithoutBody }) => {
   if (isWithoutBody) {
@@ -91,6 +92,7 @@ const createUser = async (data) => {
     name: data.name,
     password: hashedPassword,
     role_id: data.role_id,
+    profile_image: profileUrl + data.code,
   });
 };
 
@@ -166,14 +168,14 @@ async function createUsersBulk(transporter, data, schoolId) {
             password: thatUserPassword,
             role_id: 2,
             school_id: schoolId,
+            profile_image: profileUrl + data.userCode,
           },
           { transaction }
         );
-        
+
         // Send email here, so only new users receive it
         // console.log(userData.userEmail);
-        if(userData.userEmail){
-
+        if (userData.userEmail) {
           const options = mailOptions(
             userData.userEmail,
             userData.userName,
@@ -220,7 +222,7 @@ async function createUsersBulk(transporter, data, schoolId) {
             subject_schedules: uniqueLessonTypeIds,
           },
           user.id,
-          transaction,
+          transaction
         );
       }
 
