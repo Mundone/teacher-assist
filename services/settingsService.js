@@ -81,7 +81,10 @@ const getSemesterByIdService = async (id) => {
 };
 
 const createSemesterService = async (objectData, user_id) => {
-  return await allModels.Semester.create({ ...objectData, admin_user_id: user_id });
+  return await allModels.Semester.create({
+    ...objectData,
+    admin_user_id: user_id,
+  });
 };
 
 const updateSemesterService = async (id, objectData) => {
@@ -158,13 +161,72 @@ const resetDatabaseService = async () => {
     return await resetDBFunction();
   } catch (error) {
     // console.error("Error resetting DB:", error);
-    
+
     const error1 = new Error(error);
     error1.statusCode = 500;
     throw error1;
 
     // return null;
   }
+};
+
+const getAllTeacherCountService = async () => {
+  return await allModels.User.count();
+};
+
+const getAllTeachersSubjectCountService = async (userId) => {
+  return await allModels.Subject.count({
+    where: {
+      teacher_user_id: userId,
+    },
+  });
+};
+
+const getAllTeachersStudentCountService = async (userId) => {
+  return await allModels.Student.count({
+    include: [
+      {
+        model: allModels.StudentSubjectSchedule,
+        include: [
+          {
+            model: allModels.SubjectSchedule,
+            include: [
+              {
+                model: allModels.Subject,
+                where: {
+                  teacher_user_id: userId,
+                },
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  });
+};
+
+
+const getAllTeachersSubjectWithStudentCountService = async (userId) => {
+  return await allModels.Student.count({
+    include: [
+      {
+        model: allModels.StudentSubjectSchedule,
+        include: [
+          {
+            model: allModels.SubjectSchedule,
+            include: [
+              {
+                model: allModels.Subject,
+                where: {
+                  teacher_user_id: userId,
+                },
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  });
 };
 
 module.exports = {
@@ -177,4 +239,7 @@ module.exports = {
   getCurrentWeekFunction,
   changeQRUrlService,
   resetDatabaseService,
+  getAllTeacherCountService,
+  getAllTeachersSubjectCountService,
+  getAllTeachersStudentCountService,
 };

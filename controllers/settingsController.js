@@ -135,6 +135,73 @@ const resetDatabaseController = async (req, res, next) => {
   }
 };
 
+const getAllTeacherCountController = async (req, res, next) => {
+  try {
+    const data = await settingsService.getAllTeacherCountService();
+    if (!data) {
+      responses.notFound(res);
+    }
+    res.json(data);
+  } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res, error);
+    } else {
+      responses.internalServerError(res, error);
+    }
+  }
+};
+
+const getAllTeachersSubjectCountController = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const data = await settingsService.getAllTeachersSubjectCountService(id);
+    if (!data) {
+      responses.notFound(res);
+    }
+    res.json(data);
+  } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res, error);
+    } else {
+      responses.internalServerError(res, error);
+    }
+  }
+};
+
+const getAllTeachersStudentCountController = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const data = await settingsService.getAllTeachersStudentCountService(id);
+    if (!data) {
+      responses.notFound(res);
+    }
+    res.json(data);
+  } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res, error);
+    } else {
+      responses.internalServerError(res, error);
+    }
+  }
+};
+
+const getAllTeachersSubjectWithStudentCountController = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const data = await settingsService.getAllTeachersStudentCountService(id);
+    if (!data) {
+      responses.notFound(res);
+    }
+    res.json(data);
+  } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res, error);
+    } else {
+      responses.internalServerError(res, error);
+    }
+  }
+};
+
 module.exports = {
   getCurrentWeekController,
   getSemestersController,
@@ -144,4 +211,7 @@ module.exports = {
   deleteSemesterController,
   changeQRUrlController,
   resetDatabaseController,
+  getAllTeacherCountController,
+  getAllTeachersSubjectCountController,
+  getAllTeachersStudentCountController,
 };

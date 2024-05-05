@@ -26,6 +26,7 @@ const getAllUsers = async ({ where, limit, offset, order, isWithoutBody }) => {
         "code",
         "role_id",
         "school_id",
+        "profile_image",
         "createdAt",
       ],
     });
@@ -45,6 +46,7 @@ const getAllUsers = async ({ where, limit, offset, order, isWithoutBody }) => {
         "code",
         "role_id",
         "school_id",
+        "profile_image",
         "createdAt",
       ],
 
@@ -76,6 +78,7 @@ const getUserById = async (id) => {
       "code",
       "role_id",
       "school_id",
+      "profile_image",
       "createdAt",
     ],
   });

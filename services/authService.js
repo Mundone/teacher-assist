@@ -46,6 +46,7 @@ const authenticateUserService = async (code, password) => {
       code: inputUser?.code,
       role_id: inputUser?.role_id,
       school_id: inputUser?.school_id,
+      profile_image: inputUser?.profile_image,
     },
     process.env.JWT_SECRET,
     { expiresIn: "365d" }
@@ -58,6 +59,7 @@ const authenticateUserService = async (code, password) => {
     code: inputUser?.code,
     role_id: inputUser?.role_id,
     user_role: inputUser?.user_role,
+    profile_image: inputUser?.profile_image,
   };
 
   const userMenus = await allModels.Menu.findAll({
@@ -214,6 +216,7 @@ const authenticateStudentService = async (email, password) => {
       name: inputStudent?.name,
       code: inputStudent?.student_code,
       email: inputStudent?.email?.toUpperCase(),
+      profile_image: inputStudent?.profile_image,
     },
     process.env.JWT_SECRET,
     { expiresIn: "365d" }
@@ -224,6 +227,7 @@ const authenticateStudentService = async (email, password) => {
     name: inputStudent?.name,
     student_code: inputStudent?.student_code,
     email: inputStudent?.email?.toUpperCase(),
+    profile_image: inputStudent?.profile_image,
   };
 
   return { user, token };
@@ -238,7 +242,14 @@ const refreshTokenService = async (userId) => {
         attributes: ["id", "role_name"],
       },
     ],
-    attributes: ["id", "name", "email", ["code", "teacher_code"], "role_id"],
+    attributes: [
+      "id",
+      "name",
+      "email",
+      ["code", "teacher_code"],
+      "role_id",
+      "profile_image",
+    ],
   });
   if (!user) {
     const error = new Error("User not found.");
@@ -302,7 +313,14 @@ const refreshTokenStudentService = async (userId) => {
     //     attributes: ["id", "role_name"],
     //   },
     // ],
-    attributes: ["id", "name", "student_code", "email", "createdAt"],
+    attributes: [
+      "id",
+      "name",
+      "student_code",
+      "email",
+      "profile_image",
+      "createdAt",
+    ],
   });
   if (!user) {
     const error = new Error("User not found.");
