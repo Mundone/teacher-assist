@@ -153,8 +153,10 @@ const getAllTeacherCountController = async (req, res, next) => {
 
 const getAllTeachersSubjectCountController = async (req, res, next) => {
   try {
-    const { id } = req.params;
-    const data = await settingsService.getAllTeachersSubjectCountService(id);
+    const userId = req.user && req.user.id;
+    const data = await settingsService.getAllTeachersSubjectCountService(
+      userId
+    );
     if (!data) {
       responses.notFound(res);
     }
@@ -170,8 +172,10 @@ const getAllTeachersSubjectCountController = async (req, res, next) => {
 
 const getAllTeachersStudentCountController = async (req, res, next) => {
   try {
-    const { id } = req.params;
-    const data = await settingsService.getAllTeachersStudentCountService(id);
+    const userId = req.user && req.user.id;
+    const data = await settingsService.getAllTeachersStudentCountService(
+      userId
+    );
     if (!data) {
       responses.notFound(res);
     }
@@ -185,13 +189,97 @@ const getAllTeachersStudentCountController = async (req, res, next) => {
   }
 };
 
-const getAllTeachersSubjectWithStudentCountController = async (req, res, next) => {
+const getAllTeachersSubjecsWithStudentCountController = async (
+  req,
+  res,
+  next
+) => {
   try {
-    const { id } = req.params;
-    const data = await settingsService.getAllTeachersStudentCountService(id);
+    const userId = req.user && req.user.id;
+    const data =
+      await settingsService.getAllTeachersSubjecsWithStudentCountService(
+        userId
+      );
     if (!data) {
       responses.notFound(res);
     }
+    res.json(data);
+  } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res, error);
+    } else {
+      responses.internalServerError(res, error);
+    }
+  }
+};
+
+const getStudentsAttendanceWithWeekForEachSubjectController = async (
+  req,
+  res,
+  next
+) => {
+  try {
+    const userId = req.user && req.user.id;
+    const { subject_id } = req.params;
+    const students =
+      await settingsService.getStudentsAttendanceWithWeekForEachSubjectService(
+        subject_id
+      );
+    if (!students) {
+      responses.notFound(res);
+    }
+    res.json({
+      header_data: [
+        { week: "1" },
+        { week: "2" },
+        { week: "3" },
+        { week: "4" },
+        { week: "5" },
+        { week: "6" },
+        { week: "7" },
+        { week: "8" },
+        { week: "9" },
+        { week: "10" },
+        { week: "11" },
+        { week: "12" },
+        { week: "13" },
+        { week: "14" },
+        { week: "15" },
+        { week: "16" },
+      ],
+      students, // Renamed data to students
+    });
+  } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res, error);
+    } else {
+      responses.internalServerError(res, error);
+    }
+  }
+};
+
+const getDashboardController = async (req, res, next) => {
+  try {
+    const userId = req.user && req.user.id;
+
+    const allTeacherData = await settingsService.getAllTeacherCountService();
+    const allTeacherSubjectData =
+      await settingsService.getAllTeachersSubjectCountService(userId);
+    const allTeachersStudentData =
+      await settingsService.getAllTeachersStudentCountService(userId);
+    const allTeachersSubjectStudentData =
+      await settingsService.getAllTeachersSubjecsWithStudentCountService(
+        userId
+      );
+
+    // Combine all data into a single object
+    const data = {
+      teacher_count: allTeacherData,
+      subject_count: allTeacherSubjectData,
+      student_count: allTeachersStudentData,
+      subject_with_student: allTeachersSubjectStudentData,
+    };
+
     res.json(data);
   } catch (error) {
     if (error.statusCode == 403) {
@@ -214,4 +302,7 @@ module.exports = {
   getAllTeacherCountController,
   getAllTeachersSubjectCountController,
   getAllTeachersStudentCountController,
+  getAllTeachersSubjecsWithStudentCountController,
+  getStudentsAttendanceWithWeekForEachSubjectController,
+  getDashboardController,
 };

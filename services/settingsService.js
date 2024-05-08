@@ -182,6 +182,66 @@ const getAllTeachersSubjectCountService = async (userId) => {
   });
 };
 
+const getAllTeachersSubjecsWithStudentCountService = async (userId) => {
+  return await allModels.Subject.findAll({
+    attributes: [
+      // "id",
+      "subject_name",
+      "subject_code",
+      // "is_started",
+      // "updated_by",
+      // "createdAt",
+      // "updatedAt",
+      // "user_id",
+      // "teacher_user_id",
+      [
+        allModels.sequelize.fn(
+          "COUNT",
+          allModels.sequelize.fn(
+            "DISTINCT",
+            allModels.sequelize.col(
+              "subject_schedules.student_subject_schedules.student_id"
+            )
+          )
+        ),
+        "student_count",
+      ],
+      // [
+      //   allModels.sequelize.fn(
+      //     "COUNT",
+      //     allModels.sequelize.col(
+      //       "subject_schedules.student_subject_schedules.student_id"
+      //     )
+      //   ),
+      //   "student_count",
+      // ],
+    ],
+    where: {
+      teacher_user_id: userId,
+    },
+    include: [
+      {
+        model: allModels.SubjectSchedule,
+        attributes: [],
+        include: [
+          {
+            model: allModels.StudentSubjectSchedule,
+            attributes: [],
+            include: [
+              {
+                model: allModels.Student,
+                attributes: [],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    // distinct: true, // Count only distinct students
+    group: ["Subject.id"], // Group by subject's ID
+  });
+};
+
 const getAllTeachersStudentCountService = async (userId) => {
   return await allModels.Student.count({
     include: [
@@ -202,24 +262,36 @@ const getAllTeachersStudentCountService = async (userId) => {
         ],
       },
     ],
+    distinct: true, // Count only distinct students
   });
 };
 
-
-const getAllTeachersSubjectWithStudentCountService = async (userId) => {
-  return await allModels.Student.count({
+const getStudentsAttendanceWithWeekForEachSubjectService = async (
+  subjectId
+) => {
+  return await allModels.Student.findAll({
+    attributes: ["name", "student_code"],
     include: [
       {
-        model: allModels.StudentSubjectSchedule,
+        model: allModels.Grade,
+        attributes: ["grade"],
+        required: true,
         include: [
           {
-            model: allModels.SubjectSchedule,
+            model: allModels.Lesson,
+            attributes: [],
+            where: {
+              subject_id: subjectId,
+            },
+            required: true,
             include: [
               {
-                model: allModels.Subject,
+                model: allModels.LessonAssessment,
+                attributes: [],
                 where: {
-                  teacher_user_id: userId,
+                  is_attendance_add: true,
                 },
+                required: true,
               },
             ],
           },
@@ -242,4 +314,6 @@ module.exports = {
   getAllTeacherCountService,
   getAllTeachersSubjectCountService,
   getAllTeachersStudentCountService,
+  getAllTeachersSubjecsWithStudentCountService,
+  getStudentsAttendanceWithWeekForEachSubjectService,
 };

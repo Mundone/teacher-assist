@@ -101,7 +101,7 @@ const lectureLessonAssessments = [
     desc: "Сурах хүсэл эрмэлзлэл, өөрийгөө илэрхийлэх",
     def_grade: 5,
     sort: 2,
-    is_attendance_add: true,
+    is_attendance_add: false,
   },
 ];
 
@@ -375,9 +375,17 @@ const menuDatas = [
   {
     menu_code: "0107",
     parent_id: 2,
+    menu_name: "Дүн",
+    router_link: "/dashboard/grades",
+    sorted_order: 6,
+    icon_name: "solar:document-add-broken",
+  },
+  {
+    menu_code: "0108",
+    parent_id: 2,
     menu_name: "Санал асуулга",
     router_link: "/dashboard/survey",
-    sorted_order: 6,
+    sorted_order: 7,
     icon_name: "wpf:survey",
   },
   {
@@ -431,6 +439,7 @@ const teacherMenuCodes = [
   "01",
   "0101",
   "0107",
+  "0108",
   // "0106",
   // "02",
   //  "0203"

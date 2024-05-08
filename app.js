@@ -1,3 +1,5 @@
+// app.js
+
 const express = require("express");
 const swaggerUi = require("swagger-ui-express");
 const logger = require("morgan");
@@ -8,6 +10,7 @@ const passport = require("passport");
 const flash = require("connect-flash");
 const cors = require("cors");
 const { methodCheckMiddleware } = require("./middlewares/authMiddleware");
+const { fetchGoogleSheetData } = require("./googleSheets"); // Import the function from googleSheets.js
 require("dotenv").config();
 require("./config/passport-setup");
 
@@ -21,11 +24,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(
-  session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
-  })
+    session({
+        secret: process.env.SESSION_SECRET,
+        resave: false,
+        saveUninitialized: false,
+    })
 );
 app.use(passport.initialize());
 app.use(passport.session());
@@ -39,5 +42,14 @@ app.use("/api", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 const indexRouter = require("./routes/index.routes");
 app.use(methodCheckMiddleware);
 app.use("/", indexRouter);
+
+// Fetch Google Sheet Data
+fetchGoogleSheetData()
+    .then(() => {
+        console.log("Google Sheet data fetched successfully.");
+    })
+    .catch((error) => {
+        console.error("Error fetching Google Sheet data:", error);
+    });
 
 module.exports = app;

@@ -53,5 +53,42 @@ router.get(
   settingsController.resetDatabaseController
 );
 
+router.get(
+  "/dashboard/get_teacher_count",
+  accessControl([1, 2, 3]),
+  settingsController.getAllTeacherCountController
+);
+
+router.get(
+  "/dashboard/get_his_subject_count",
+  accessControl([1, 2, 3]),
+  settingsController.getAllTeachersSubjectCountController
+);
+
+router.get(
+  "/dashboard/get_his_student_count",
+  accessControl([1, 2, 3]),
+  settingsController.getAllTeachersStudentCountController
+);
+
+router.get(
+  "/dashboard/get_his_subjects_with_student_count",
+  accessControl([1, 2, 3]),
+  settingsController.getAllTeachersSubjecsWithStudentCountController
+);
+
+router.get(
+  "/dashboard/get_students_attendance/:subject_id",
+  accessControl([1, 2, 3]),
+  settingsController.getStudentsAttendanceWithWeekForEachSubjectController
+);
+
+
+router.get(
+  "/dashboard/get_dashboard",
+  accessControl([1, 2, 3]),
+  settingsController.getDashboardController
+);
+
 
 module.exports = router;
