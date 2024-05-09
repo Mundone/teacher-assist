@@ -18,8 +18,6 @@ const getAllLessonTypes = async ({
     });
   }
 
-  console.log(where);
-
   let { count: totalLessonTypes, rows: lessonTypes } =
     await allModels.LessonType.findAndCountAll({
       attributes: [
@@ -68,6 +66,19 @@ const deleteLessonType = async (id) => {
   });
 };
 
+const getAllLessonTypesOfSubjectService = async (subjectId) => {
+  return await allModels.LessonType.findAll({
+    attributes: ["id", "lesson_type_name"],
+    include: {
+      model: allModels.SubjectLessonType,
+      where: {
+        subject_id: subjectId,
+      },
+      attributes: [],
+    },
+  });
+};
+
 module.exports = {
   getAllLessonTypes,
   getLessonTypeById,
@@ -75,4 +86,5 @@ module.exports = {
   updateLessonType,
   deleteLessonType,
   getLessonTypeByCode,
+  getAllLessonTypesOfSubjectService,
 };

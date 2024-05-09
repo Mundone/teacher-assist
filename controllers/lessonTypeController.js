@@ -34,8 +34,7 @@ const getLessonTypes = async (req, res, next) => {
   } catch (error) {
     if (error.statusCode == 403) {
       responses.forbidden(res, error);
-    }
-    else{
+    } else {
       responses.internalServerError(res, error);
     }
   }
@@ -43,16 +42,14 @@ const getLessonTypes = async (req, res, next) => {
 
 const getLessonTypesWithoutBody = async (req, res, next) => {
   try {
-    const lessonTypes =
-      await lessonTypeService.getAllLessonTypes({
-        isWithoutBody: true,
-      });
+    const lessonTypes = await lessonTypeService.getAllLessonTypes({
+      isWithoutBody: true,
+    });
     res.json(lessonTypes);
   } catch (error) {
     if (error.statusCode == 403) {
       responses.forbidden(res, error);
-    }
-    else{
+    } else {
       responses.internalServerError(res, error);
     }
   }
@@ -70,8 +67,7 @@ const getLessonTypeById = async (req, res, next) => {
   } catch (error) {
     if (error.statusCode == 403) {
       responses.forbidden(res, error);
-    }
-    else{
+    } else {
       responses.internalServerError(res, error);
     }
   }
@@ -84,8 +80,7 @@ const createLessonType = async (req, res, next) => {
   } catch (error) {
     if (error.statusCode == 403) {
       responses.forbidden(res, error);
-    }
-    else{
+    } else {
       responses.internalServerError(res, error);
     }
   }
@@ -94,16 +89,12 @@ const createLessonType = async (req, res, next) => {
 const updateLessonType = async (req, res, next) => {
   try {
     const { id } = req.params;
-    await lessonTypeService.updateLessonType(
-      id,
-      req.body
-    );
+    await lessonTypeService.updateLessonType(id, req.body);
     responses.updated(res, req.body);
   } catch (error) {
     if (error.statusCode == 403) {
       responses.forbidden(res, error);
-    }
-    else{
+    } else {
       responses.internalServerError(res, error);
     }
   }
@@ -113,12 +104,27 @@ const deleteLessonType = async (req, res, next) => {
   try {
     const { id } = req.params;
     await lessonTypeService.deleteLessonType(id);
-    responses.deleted(res, {id: id});
+    responses.deleted(res, { id: id });
   } catch (error) {
     if (error.statusCode == 403) {
       responses.forbidden(res, error);
+    } else {
+      responses.internalServerError(res, error);
     }
-    else{
+  }
+};
+
+const getLessonTypesOfSubjectController = async (req, res, next) => {
+  try {
+    const { subject_id } = req.params;
+    const lessonTypes = await lessonTypeService.getAllLessonTypesOfSubjectService(
+      subject_id
+    );
+    res.json(lessonTypes);
+  } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res, error);
+    } else {
       responses.internalServerError(res, error);
     }
   }
@@ -131,4 +137,5 @@ module.exports = {
   createLessonType,
   updateLessonType,
   deleteLessonType,
+  getLessonTypesOfSubjectController,
 };

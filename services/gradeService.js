@@ -8,7 +8,8 @@ const getAllStudentGradesService = async ({
   userId,
   subjectId,
   isForStudent,
-  studentCode
+  studentCode,
+  lessonTypeId,
 }) => {
   const isUserIncludeSubject = await allModels.Subject.findOne({
     where: { id: subjectId, teacher_user_id: userId },
@@ -18,6 +19,14 @@ const getAllStudentGradesService = async ({
     const error = new Error("Зөвшөөрөлгүй хандалт.");
     error.statusCode = 403;
     throw error;
+  }
+
+  const whereClause = {
+    subject_id: subjectId
+  };
+
+  if (lessonTypeId !== 0) {
+    whereClause.lesson_type_id = lessonTypeId;
   }
 
   let { count: totalGrades, rows: grades } =
@@ -36,7 +45,7 @@ const getAllStudentGradesService = async ({
               "lesson_number",
               "convert_grade",
             ],
-            where: { subject_id: subjectId },
+            where: whereClause,
             include: [
               {
                 model: allModels.LessonAssessment,

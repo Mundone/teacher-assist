@@ -171,7 +171,11 @@ const resetDatabaseService = async () => {
 };
 
 const getAllTeacherCountService = async () => {
-  return await allModels.User.count();
+  return await allModels.User.count({
+    where: {
+      role_id: 2,
+    },
+  });
 };
 
 const getAllTeachersSubjectCountService = async (userId) => {
@@ -269,13 +273,49 @@ const getAllTeachersStudentCountService = async (userId) => {
 const getStudentsAttendanceWithWeekForEachSubjectService = async (
   subjectId
 ) => {
+  const result = await allModels.Lesson.findAll({
+    attributes: [
+      'id',
+      [
+        Sequelize.literal('COUNT(DISTINCT CASE WHEN `Grades`.`grade` >= 1 THEN `Grades`.`student_id` END)'), 
+        'studentCount'
+      ]
+    ],
+    where: {
+      subject_id: subjectId,
+    },
+    include: [
+      {
+        model: allModels.Grade,
+        attributes: [],
+        required: false,
+      },{
+        model: allModels.LessonAssessment,
+        attributes: [],
+        where: {
+          is_attendance_add: true,
+        },
+        // required: true,
+      },
+    ],
+    group: ['Lesson.id'],
+    raw: true,
+  });
+
+  const studentCounts = result.map(lesson => (lesson.studentCount || 0));
+  return studentCounts;
+
   return await allModels.Student.findAll({
     attributes: ["name", "student_code"],
     include: [
       {
         model: allModels.Grade,
         attributes: ["grade"],
-        required: true,
+        // where: {
+        //   grade: { [Sequelize.Op.gte]: 1 },
+
+        // },
+        // required: true,
         include: [
           {
             model: allModels.Lesson,
@@ -283,7 +323,7 @@ const getStudentsAttendanceWithWeekForEachSubjectService = async (
             where: {
               subject_id: subjectId,
             },
-            required: true,
+            // required: true,
             include: [
               {
                 model: allModels.LessonAssessment,
@@ -291,7 +331,7 @@ const getStudentsAttendanceWithWeekForEachSubjectService = async (
                 where: {
                   is_attendance_add: true,
                 },
-                required: true,
+                // required: true,
               },
             ],
           },

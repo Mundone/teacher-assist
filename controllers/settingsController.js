@@ -221,34 +221,37 @@ const getStudentsAttendanceWithWeekForEachSubjectController = async (
   try {
     const userId = req.user && req.user.id;
     const { subject_id } = req.params;
-    const students =
+    const student_count =
       await settingsService.getStudentsAttendanceWithWeekForEachSubjectService(
         subject_id
       );
-    if (!students) {
+    if (!student_count) {
       responses.notFound(res);
+    } else {
+      // res.json(students)
+      res.json({
+        header_data: [
+          "1" ,
+          "2" ,
+          "3" ,
+          "4" ,
+          "5" ,
+          "6" ,
+          "7" ,
+          "8" ,
+          "9" ,
+          "10" ,
+          "11" ,
+          "12" ,
+          "13" ,
+          "14" ,
+          "15" ,
+          "16" ,
+        ],
+        student_count, // Renamed data to students
+      });
     }
-    res.json({
-      header_data: [
-        { week: "1" },
-        { week: "2" },
-        { week: "3" },
-        { week: "4" },
-        { week: "5" },
-        { week: "6" },
-        { week: "7" },
-        { week: "8" },
-        { week: "9" },
-        { week: "10" },
-        { week: "11" },
-        { week: "12" },
-        { week: "13" },
-        { week: "14" },
-        { week: "15" },
-        { week: "16" },
-      ],
-      students, // Renamed data to students
-    });
+    
   } catch (error) {
     if (error.statusCode == 403) {
       responses.forbidden(res, error);

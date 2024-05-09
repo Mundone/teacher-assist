@@ -132,6 +132,31 @@ const getDefaultConvertGradesBySubjectController = async (req, res, next) => {
   }
 };
 
+const getLessonAssessmentsOfSubjectController = async (req, res, next) => {
+  try {
+    const { subject_id } = req.params;
+    const object =
+      await lessonAssessmentService.getLessonAssessmentsOfSubjectService(
+        subject_id
+      );
+    res.json(
+      object.map((item) => ({
+        lesson_type_name: item.lesson_assessment.lesson_type.lesson_type_name,
+        lesson_assessment_code: item.lesson_assessment.lesson_assessment_code,
+        lesson_assessment_description:
+          item.lesson_assessment.lesson_assessment_description,
+        convert_grade: item.convert_grade,
+      }))
+    );
+  } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res, error);
+    } else {
+      responses.internalServerError(res, error);
+    }
+  }
+};
+
 module.exports = {
   getLessonAssessments,
   getLessonAssessmentsWithoutBody,
@@ -140,4 +165,5 @@ module.exports = {
   updateLessonAssessment,
   deleteLessonAssessment,
   getDefaultConvertGradesBySubjectController,
+  getLessonAssessmentsOfSubjectController,
 };

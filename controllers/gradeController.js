@@ -7,6 +7,7 @@ const getGradesController = async (req, res, next) => {
     const userId = req.user && req.user.id;
 
     const subjectId = req.body.subject_id ?? null;
+    const lessonTypeId = req.body.lesson_type_id ?? null;
 
     if (subjectId == null) {
       return res
@@ -23,12 +24,13 @@ const getGradesController = async (req, res, next) => {
       order: [[sortBy, sortOrder]],
       userId: userId,
       subjectId: subjectId,
+      lessonTypeId: lessonTypeId,
     };
 
     const { totalGrades, grades } =
       await gradeService.getAllStudentGradesService(queryOptions);
     const students = grades;
-    console.log(grades)
+    console.log(grades);
 
     var newStudents = students.map((student) => {
       const grades = student?.grades.map((innerGrade) => {
@@ -79,7 +81,7 @@ const getGradesController = async (req, res, next) => {
       });
     });
 
-    console.log(newStudents)
+    console.log(newStudents);
 
     const headerData = newStudents.map((newStudent) => ({
       grades: newStudent.grades.map(
@@ -91,7 +93,6 @@ const getGradesController = async (req, res, next) => {
         })
       ),
     }));
-
 
     const tableData = newStudents.map((newStudent) => ({
       student_name: newStudent.student_name,
@@ -114,6 +115,7 @@ const getGradesController = async (req, res, next) => {
       table_header: headerData[0]?.grades,
       table_data: tableData,
     });
+    // res.json({grades})
   } catch (error) {
     if (error.statusCode == 403) {
       responses.forbidden(res, error);
@@ -231,15 +233,20 @@ const getDirectConvertedGradesController = async (req, res, next) => {
     const tableData = newStudents.map((newStudent) => ({
       student_name: newStudent.student_name,
       student_code: newStudent.student_code,
-      grades: newStudent.grades.map(({ grade_id, convertedGrade }) => ({
-        grade_id,
-        grade: convertedGrade, // Only return converted grades
-      })),
+      // grades: newStudent.grades.map(({ grade_id, convertedGrade }) => ({
+      //   grade_id,
+      //   grade: convertedGrade, // Only return converted grades
+      // })),
       grade_sums_by_assessment: newStudent.grade_sums_by_assessment,
     }));
 
+    // res.json({
+    //   table_header: headerData[0]?.grades,
+    //   table_data: tableData,
+    // });
+
     res.json({
-      table_header: headerData[0]?.grades,
+      // table_header: headerData[0]?.grades,
       table_data: tableData,
     });
   } catch (error) {
@@ -250,7 +257,6 @@ const getDirectConvertedGradesController = async (req, res, next) => {
     }
   }
 };
-
 
 const getStudentOwnGradesController = async (req, res, next) => {
   try {
@@ -268,7 +274,7 @@ const getStudentOwnGradesController = async (req, res, next) => {
       subjectId: subjectId,
     };
 
-    queryOptions.where.push({})
+    queryOptions.where.push({});
 
     const { grades } = await gradeService.getAllStudentGradesService(
       queryOptions
@@ -398,124 +404,148 @@ const updateGradeController = async (req, res) => {
   }
 };
 
-  const getSDConvertedGradesController = async (req, res, next) => {
-    try {
-      const userId = req.user && req.user.id;
-      const subjectId = req.body.subject_id ?? null;
-  
-      const queryOptions = {
-        userId: userId,
-        subjectId: subjectId,
-      };
-  
-      const { grades } = await gradeService.getAllStudentGradesService(queryOptions);
-      let students = grades;
-  
-      let maxGrades = {};
-      let sumGrades = {};
-      let countGrades = {};
-  
-      // Initialize data for each student
-      const newStudents = students.map((student) => {
-        const gradeSums = {};
-        const grades = student.grades.map((innerGrade) => {
-          const assessmentCode = innerGrade.lesson.lesson_assessment.lesson_assessment_code;
-          gradeSums[assessmentCode] = gradeSums[assessmentCode] || { original_sum: 0, converted_sum: 0 };
-          gradeSums[assessmentCode].original_sum += innerGrade.grade;
-          maxGrades[assessmentCode] = Math.max(maxGrades[assessmentCode] || 0, gradeSums[assessmentCode].original_sum);
-          sumGrades[assessmentCode] = (sumGrades[assessmentCode] || 0) + innerGrade.grade;
-          countGrades[assessmentCode] = (countGrades[assessmentCode] || 0) + 1;
-          return {
-            grade_id: innerGrade.id,
-            grade: innerGrade.grade,
-            week_no: innerGrade.lesson.week_number,
-            lesson_no: innerGrade.lesson.lesson_number,
-            lesson_assessment_code: assessmentCode,
-            lesson_assessment_sort: innerGrade.lesson.lesson_assessment.lesson_assessment_sort,
-            lesson_type_name: innerGrade.lesson.lesson_type.lesson_type_name,
-            lesson_type_sort: innerGrade.lesson.lesson_type.lesson_type_sort,
-            convert_grade: innerGrade.lesson.convert_grade,
-          };
-        });
-  
+const getSDConvertedGradesController = async (req, res, next) => {
+  try {
+    const userId = req.user && req.user.id;
+    const subjectId = req.body.subject_id ?? null;
+
+    const queryOptions = {
+      userId: userId,
+      subjectId: subjectId,
+    };
+
+    const { grades } = await gradeService.getAllStudentGradesService(
+      queryOptions
+    );
+    let students = grades;
+
+    let maxGrades = {};
+    let sumGrades = {};
+    let countGrades = {};
+
+    // Initialize data for each student
+    const newStudents = students.map((student) => {
+      const gradeSums = {};
+      const grades = student.grades.map((innerGrade) => {
+        const assessmentCode =
+          innerGrade.lesson.lesson_assessment.lesson_assessment_code;
+        gradeSums[assessmentCode] = gradeSums[assessmentCode] || {
+          original_sum: 0,
+          converted_sum: 0,
+        };
+        gradeSums[assessmentCode].original_sum += innerGrade.grade;
+        maxGrades[assessmentCode] = Math.max(
+          maxGrades[assessmentCode] || 0,
+          gradeSums[assessmentCode].original_sum
+        );
+        sumGrades[assessmentCode] =
+          (sumGrades[assessmentCode] || 0) + innerGrade.grade;
+        countGrades[assessmentCode] = (countGrades[assessmentCode] || 0) + 1;
         return {
-          student_name: student.name,
-          student_code: student.student_code,
-          grades,
-          grade_sums_by_assessment: gradeSums
+          grade_id: innerGrade.id,
+          grade: innerGrade.grade,
+          week_no: innerGrade.lesson.week_number,
+          lesson_no: innerGrade.lesson.lesson_number,
+          lesson_assessment_code: assessmentCode,
+          lesson_assessment_sort:
+            innerGrade.lesson.lesson_assessment.lesson_assessment_sort,
+          lesson_type_name: innerGrade.lesson.lesson_type.lesson_type_name,
+          lesson_type_sort: innerGrade.lesson.lesson_type.lesson_type_sort,
+          convert_grade: innerGrade.lesson.convert_grade,
         };
       });
-  
-      // Calculate averages and standard deviations
-      let avgGrades = {};
-      let stdDeviations = {};
-      Object.keys(sumGrades).forEach(key => {
-        avgGrades[key] = sumGrades[key] / countGrades[key];
-        let variance = 0;
-        newStudents.forEach(student => {
-          if (student.grade_sums_by_assessment[key]) {
-            variance += Math.pow(student.grade_sums_by_assessment[key].original_sum - avgGrades[key], 2);
-          }
-        });
-        stdDeviations[key] = Math.sqrt(variance / countGrades[key]);
-      });
-  
-      // Convert grades using standard deviation
+
+      return {
+        student_name: student.name,
+        student_code: student.student_code,
+        grades,
+        grade_sums_by_assessment: gradeSums,
+      };
+    });
+
+    // Calculate averages and standard deviations
+    let avgGrades = {};
+    let stdDeviations = {};
+    Object.keys(sumGrades).forEach((key) => {
+      avgGrades[key] = sumGrades[key] / countGrades[key];
+      let variance = 0;
       newStudents.forEach((student) => {
-        student.grades.forEach((grade) => {
-          const maxGradeSum = maxGrades[grade.lesson_assessment_code];
-          const stdDev = stdDeviations[grade.lesson_assessment_code];
-          if (maxGradeSum > 0 && stdDev > 0) {
-            const scoreAdjustment = (grade.grade - avgGrades[grade.lesson_assessment_code]) / stdDev;
-            grade.convertedGrade = (scoreAdjustment * stdDev + avgGrades[grade.lesson_assessment_code]) / maxGradeSum * grade.convert_grade;
-          } else {
-            grade.convertedGrade = (grade.grade / maxGradeSum) * grade.convert_grade;
-          }
-          if (isNaN(grade.convertedGrade)) {
-            grade.convertedGrade = 0;  // Handle NaN by setting to zero or another default value
-          }
-          student.grade_sums_by_assessment[grade.lesson_assessment_code].converted_sum += grade.convertedGrade;
-        });
+        if (student.grade_sums_by_assessment[key]) {
+          variance += Math.pow(
+            student.grade_sums_by_assessment[key].original_sum - avgGrades[key],
+            2
+          );
+        }
       });
-  
-      const headerData = newStudents.map((newStudent) => ({
-        grades: newStudent.grades.map(
-          ({ week_no, lesson_no, lesson_assessment_code, lesson_type_name }) => ({
-            lesson_type_name,
-            week_no,
-            lesson_no,
-            lesson_assessment_code,
-          })
-        ),
-      }));
-  
-      const tableData = newStudents.map((newStudent) => ({
-        student_name: newStudent.student_name,
-        student_code: newStudent.student_code,
-        grades: newStudent.grades.map(({ grade_id, convertedGrade }) => ({
-          grade_id,
-          grade: convertedGrade.toFixed(2)  // Format the converted grade
-        })),
-        grade_sums_by_assessment: Object.entries(newStudent.grade_sums_by_assessment).map(([key, sums]) => ({
-          lesson_assessment_code: key,
-          original_sum: sums.original_sum.toFixed(2),
-          converted_sum: sums.converted_sum.toFixed(2)
-        }))
-      }));
-  
-      res.json({
-        table_header: headerData[0]?.grades,
-        table_data: tableData,
+      stdDeviations[key] = Math.sqrt(variance / countGrades[key]);
+    });
+
+    // Convert grades using standard deviation
+    newStudents.forEach((student) => {
+      student.grades.forEach((grade) => {
+        const maxGradeSum = maxGrades[grade.lesson_assessment_code];
+        const stdDev = stdDeviations[grade.lesson_assessment_code];
+        if (maxGradeSum > 0 && stdDev > 0) {
+          const scoreAdjustment =
+            (grade.grade - avgGrades[grade.lesson_assessment_code]) / stdDev;
+          grade.convertedGrade =
+            ((scoreAdjustment * stdDev +
+              avgGrades[grade.lesson_assessment_code]) /
+              maxGradeSum) *
+            grade.convert_grade;
+        } else {
+          grade.convertedGrade =
+            (grade.grade / maxGradeSum) * grade.convert_grade;
+        }
+        if (isNaN(grade.convertedGrade)) {
+          grade.convertedGrade = 0; // Handle NaN by setting to zero or another default value
+        }
+        student.grade_sums_by_assessment[
+          grade.lesson_assessment_code
+        ].converted_sum += grade.convertedGrade;
       });
-    } catch (error) {
-      if (error.statusCode == 403) {
-        responses.forbidden(res, error);
-      } else {
-        responses.internalServerError(res, error);
-      }
+    });
+
+    const headerData = newStudents.map((newStudent) => ({
+      grades: newStudent.grades.map(
+        ({ week_no, lesson_no, lesson_assessment_code, lesson_type_name }) => ({
+          lesson_type_name,
+          week_no,
+          lesson_no,
+          lesson_assessment_code,
+        })
+      ),
+    }));
+
+    const tableData = newStudents.map((newStudent) => ({
+      student_name: newStudent.student_name,
+      student_code: newStudent.student_code,
+      // grades: newStudent.grades.map(({ grade_id, convertedGrade }) => ({
+      //   grade_id,
+      //   grade: convertedGrade.toFixed(2), // Format the converted grade
+      // })),
+      grade_sums_by_assessment: Object.entries(
+        newStudent.grade_sums_by_assessment
+      ).map(([key, sums]) => ({
+        lesson_assessment_code: key,
+        original_sum: sums.original_sum.toFixed(2),
+        converted_sum: sums.converted_sum.toFixed(2),
+      })),
+    }));
+
+    res.json({
+      // table_header: headerData[0]?.grades,
+      table_data: tableData,
+    });
+  } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res, error);
+    } else {
+      responses.internalServerError(res, error);
     }
-  };
-  
+  }
+};
+
 module.exports = {
   getGradesController,
   updateGradeController,

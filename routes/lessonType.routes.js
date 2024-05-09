@@ -66,4 +66,10 @@ router.delete(
   lessonTypeController.deleteLessonType
 );
 
+router.get(
+  "/get_lesson_types_of_subject/:subject_id",
+  accessControl([1, 2, 3]),
+  lessonTypeController.getLessonTypesOfSubjectController
+);
+
 module.exports = router;

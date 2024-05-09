@@ -197,4 +197,10 @@ router.get(
   lessonAssessmentController.getDefaultConvertGradesBySubjectController
 );
 
+router.get(
+  "/get_lesson_assessments_of_subject/:subject_id",
+  accessControl([1, 2, 3]),
+  lessonAssessmentController.getLessonAssessmentsOfSubjectController
+);
+
 module.exports = router;

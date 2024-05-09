@@ -97,7 +97,75 @@ const getDefaultConvertGradesBySubjectService = async (subjectId, data) => {
       },
     },
   });
-  console.log(thatSubjectsLessonTypes);
+
+  return await allModels.LessonAssessment.findAll({
+    attributes: [
+      "id",
+      "lesson_assessment_code",
+      "lesson_assessment_description",
+      "default_grade",
+      "lesson_type_id",
+      "lesson_assessment_sort",
+    ],
+    where: {
+      lesson_type_id: {
+        [Sequelize.Op.in]: thatSubjectsLessonTypes.map((data) => data.id),
+      },
+    },
+
+    order: [["lesson_assessment_sort", "asc"]],
+  });
+};
+
+const getLessonAssessmentsOfSubjectService = async (subjectId) => {
+  return await allModels.Lesson.findAll({
+    attributes: ["convert_grade"],
+    include: [
+      {
+        model: allModels.LessonAssessment,
+        attributes: [
+          "lesson_assessment_code",
+          "lesson_assessment_description",
+          "lesson_assessment_sort",
+        ],
+        required: true,
+        include: [
+          {
+            model: allModels.LessonType,
+            attributes: ["lesson_type_name"],
+          },
+        ],
+        required: true,
+      },
+      {
+        model: allModels.Subject,
+        where: { id: subjectId },
+        attributes: [],
+        required: true,
+      },
+    ],
+    group: ["lesson_assessment.id"],
+    order: [
+      [{ model: allModels.LessonAssessment }, "lesson_assessment_sort", "asc"],
+    ],
+  });
+
+  let subjectSchedules = await allModels.SubjectSchedule.findAll({
+    include: [
+      {
+        model: allModels.Subject,
+        where: { id: subjectId },
+      },
+    ],
+  });
+
+  const thatSubjectsLessonTypes = await allModels.LessonType.findAll({
+    where: {
+      id: {
+        [Sequelize.Op.in]: subjectSchedules.map((data) => data.lesson_type_id),
+      },
+    },
+  });
 
   return await allModels.LessonAssessment.findAll({
     attributes: [
@@ -125,4 +193,5 @@ module.exports = {
   updateLessonAssessment,
   deleteLessonAssessment,
   getDefaultConvertGradesBySubjectService,
+  getLessonAssessmentsOfSubjectService,
 };
