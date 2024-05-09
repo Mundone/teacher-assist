@@ -109,6 +109,104 @@ const authenticateUserService = async (code, password) => {
   return { user, token, UserMenus: topLevelMenus };
 };
 
+const authenticateUserMicrosoftService = async (profile) => {
+  console.log("Microsoft User Profile:", profile);
+  const microsoftUser = {
+    name: profile.displayName,
+    email: profile.emails[0].value,
+  };
+  return microsoftUser;
+};
+
+
+// const authenticateUserMicrosoftService = async (code, password) => {
+//   const microsoftUser = await authenticateWithMicrosoft(code); // Implement this function to handle Microsoft authentication
+
+//   const inputUser = await allModels.User.findOne({
+//     where: { email: microsoftUser.email }, // Assuming 'email' column stores Microsoft email
+//     include: [
+//       {
+//         model: allModels.UserRole,
+//         attributes: ["id", "role_name"],
+//       },
+//     ],
+//   });
+//   const isMatch = await bcrypt.compare(password, inputUser?.password);
+//   if (!inputUser || !isMatch) {
+//     const error = new Error("Нууц үг буруу байна.");
+//     error.statusCode = 403;
+//     throw error;
+//   }
+
+//   const token = jwt.sign(
+//     {
+//       id: inputUser?.id,
+//       code: inputUser?.code,
+//       role_id: inputUser?.role_id,
+//       school_id: inputUser?.school_id,
+//       profile_image: inputUser?.profile_image,
+//     },
+//     process.env.JWT_SECRET,
+//     { expiresIn: "365d" }
+//   );
+
+//   var user = {
+//     id: inputUser?.id,
+//     name: inputUser?.name,
+//     email: inputUser?.email,
+//     code: inputUser?.code,
+//     role_id: inputUser?.role_id,
+//     user_role: inputUser?.user_role,
+//     profile_image: inputUser?.profile_image,
+//   };
+
+//   const userMenus = await allModels.Menu.findAll({
+//     include: [
+//       {
+//         model: allModels.UserRoleMenu,
+//         where: { user_role_id: user.role_id },
+//         include: [
+//           {
+//             model: allModels.UserRole,
+//             where: { id: user.role_id },
+//             attributes: [],
+//           },
+//         ],
+//         attributes: [],
+//       },
+//     ],
+//     order: [
+//       ["parent_id", "ASC"],
+//       ["sorted_order", "ASC"],
+//     ],
+//   });
+
+//   const menusJson = userMenus.map((menu) => menu.toJSON());
+
+//   let menuMap = {};
+//   menusJson.forEach((menu) => {
+//     if (menu.parent_id === 0) {
+//       menu.ChildMenu = [];
+//     }
+//     menuMap[menu.id] = menu;
+
+//     if (menu.parent_id !== 0) {
+//       if (menuMap[menu.parent_id]) {
+//         menuMap[menu.parent_id].ChildMenu.push(menu);
+//         delete menu.ChildMenu;
+//       } else {
+//         menuMap[menu.parent_id] = { ChildMenu: [menu] };
+//       }
+//     }
+//   });
+
+//   let topLevelMenus = Object.values(menuMap).filter(
+//     (menu) => menu.parent_id === 0
+//   );
+
+//   return { user, token, UserMenus: topLevelMenus };
+// };
+
 const getHtmlContent = (fileName, replacements = {}) => {
   const filePath = path.join(__dirname, "../public", fileName);
   let htmlContent = fs.readFileSync(filePath, "utf8");
@@ -337,4 +435,5 @@ module.exports = {
   authenticateStudentService,
   refreshTokenStudentService,
   sendEmailStudentService,
+  authenticateUserMicrosoftService,
 };
