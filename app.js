@@ -17,6 +17,7 @@ require("./config/passport-setup");
 const authService = require("./services/authService");
 const axios = require("axios");
 const allModels = require("./models");
+const authService = require("./services/authService");
 
 const app = express();
 
@@ -81,14 +82,9 @@ passport.use(
     {
       clientID: process.env.CLIENT_ID,
       clientSecret: process.env.CLIENT_SECRET_VALUE,
-      // callbackURL: "http://localhost:3000/auth/microsoft/callback",
-      callbackURL: "https://www.teachas.online/dashboard/",
-      scope: [
-        "user.read",
-        "openid",
-        "profile",
-        "email",
-      ],
+      // callbackURL: "https://www.teachas.online/dashboard/",
+      callbackURL: "http://localhost:3032/dashboard/",
+      scope: ["user.read", "openid", "profile", "email"],
       authorizationURL:
         "https://login.microsoftonline.com/common/oauth2/v2.0/authorize",
       tokenURL: "https://login.microsoftonline.com/common/oauth2/v2.0/token",
@@ -97,27 +93,48 @@ passport.use(
     async function (accessToken, refreshToken, profile, done) {
       try {
         // Check if the user already exists in the database
-        let user = await allModels.User.findOne({ where: { email: profile.emails[0].value } });
+        let updateUser = await allModels.User.findOne({
+          where: { email: profile.emails[0].value },
+        });
 
         // If the user doesn't exist, create a new one
-        if (!user) {
-          user = await allModels.User.create({
-            email: profile.emails[0].value,
-            name: profile.displayName,
-            // Add other fields as needed
-          });
+        if (!updateUser) {
+          // updateUser = await allModels.User.create({
+          //   email: profile.emails[0].value,
+          //   name: profile.displayName,
+          //   // Add other fields as needed
+          // });
         } else {
           // Update existing user's profile information
-          user.name = profile.displayName;
+          updateUser.name = profile.displayName;
           // Update other fields as needed
-          await user.save();
+          await updateUser.save();
         }
 
         // You can set the profile image here as well if it's provided by Microsoft
         // Example: user.profileImage = profile.photos[0].value;
 
         // Return the user object
-        return done(null, user);
+        // return done(null, user);
+
+        const { user, token, UserMenus } =
+          await authService.authenticateUserService({
+            email: updateUser?.email,
+            isDirect: true,
+          });
+        res.status(200).json({
+          message: "Амжилттай нэвтэрлээ.",
+          accessToken: token,
+          user,
+          UserMenus,
+        });
+
+        res.status(200).json({
+          message: "Амжилттай нэвтэрлээ.",
+          accessToken: token,
+          user,
+          UserMenus,
+        });
       } catch (error) {
         return done(error);
       }

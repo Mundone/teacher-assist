@@ -23,21 +23,34 @@ const registerUserService = async ({ code, name, password, roleID }) => {
   return newUser;
 };
 
-const authenticateUserService = async (code, password) => {
-  const inputUser = await allModels.User.findOne({
-    where: { code },
-    include: [
-      {
-        model: allModels.UserRole,
-        attributes: ["id", "role_name"],
-      },
-    ],
-  });
-  const isMatch = await bcrypt.compare(password, inputUser?.password);
-  if (!inputUser || !isMatch) {
-    const error = new Error("Нууц үг буруу байна.");
-    error.statusCode = 403;
-    throw error;
+const authenticateUserService = async ({code, password, isDirect, email}) => {
+  let inputUser = null;
+  if (isDirect == true) {
+    inputUser = await allModels.User.findOne({
+      where: { email },
+      include: [
+        {
+          model: allModels.UserRole,
+          attributes: ["id", "role_name"],
+        },
+      ],
+    });
+  } else {
+    inputUser = await allModels.User.findOne({
+      where: { code },
+      include: [
+        {
+          model: allModels.UserRole,
+          attributes: ["id", "role_name"],
+        },
+      ],
+    });
+    const isMatch = await bcrypt.compare(password, inputUser?.password);
+    if (!inputUser || !isMatch) {
+      const error = new Error("Нууц үг буруу байна.");
+      error.statusCode = 403;
+      throw error;
+    }
   }
 
   const token = jwt.sign(
@@ -117,7 +130,6 @@ const authenticateUserMicrosoftService = async (profile) => {
   };
   return microsoftUser;
 };
-
 
 // const authenticateUserMicrosoftService = async (code, password) => {
 //   const microsoftUser = await authenticateWithMicrosoft(code); // Implement this function to handle Microsoft authentication

@@ -45,7 +45,7 @@ const loginController = async (req, res) => {
   try {
     const { code, password } = req.body;
     const { user, token, UserMenus } =
-      await authService.authenticateUserService(code, password);
+      await authService.authenticateUserService({ code, password });
     res.status(200).json({
       message: "Амжилттай нэвтэрлээ.",
       accessToken: token,
@@ -76,7 +76,9 @@ const getAuthInfoController = async (req, res) => {
     }
     try {
       // Use the decoded ID to fetch the user and refresh the token
-      const { user, UserMenus } = await authService.refreshTokenService(decoded.id);
+      const { user, UserMenus } = await authService.refreshTokenService(
+        decoded.id
+      );
       res.json({ user, UserMenus });
     } catch (error) {
       responses.internalServerError(res, error);
@@ -87,8 +89,10 @@ const getAuthInfoController = async (req, res) => {
 const loginStudentController = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const { user, token } =
-      await authService.authenticateStudentService(email, password);
+    const { user, token } = await authService.authenticateStudentService(
+      email,
+      password
+    );
     res.status(200).json({
       message: "Амжилттай нэвтэрлээ.",
       accessToken: token,
@@ -119,9 +123,7 @@ const getAuthInfoStudentController = async (req, res) => {
     }
     try {
       // Use the decoded ID to fetch the user and refresh the token
-      const { user } = await authService.refreshTokenStudentService(
-        decoded.id
-      );
+      const { user } = await authService.refreshTokenStudentService(decoded.id);
       res.json({ user });
     } catch (error) {
       responses.internalServerError(res, error);
