@@ -16,6 +16,7 @@ require("dotenv").config();
 require("./config/passport-setup");
 const authService = require("./services/authService");
 const axios = require("axios");
+const allModels = require("./models");
 
 const app = express();
 
@@ -80,15 +81,13 @@ passport.use(
     {
       clientID: process.env.CLIENT_ID,
       clientSecret: process.env.CLIENT_SECRET_VALUE,
-      callbackURL: "http://localhost:3000/auth/microsoft/callback",
+      // callbackURL: "http://localhost:3000/auth/microsoft/callback",
+      callbackURL: "https://www.teachas.online/dashboard/",
       scope: [
-        // ".default",
         "user.read",
         "openid",
         "profile",
         "email",
-        // "files.read",
-        // "sites.read.all",
       ],
       authorizationURL:
         "https://login.microsoftonline.com/common/oauth2/v2.0/authorize",
@@ -97,7 +96,28 @@ passport.use(
     },
     async function (accessToken, refreshToken, profile, done) {
       try {
-        console.log(accessToken);
+        // Check if the user already exists in the database
+        let user = await allModels.User.findOne({ where: { email: profile.emails[0].value } });
+
+        // If the user doesn't exist, create a new one
+        if (!user) {
+          user = await allModels.User.create({
+            email: profile.emails[0].value,
+            name: profile.displayName,
+            // Add other fields as needed
+          });
+        } else {
+          // Update existing user's profile information
+          user.name = profile.displayName;
+          // Update other fields as needed
+          await user.save();
+        }
+
+        // You can set the profile image here as well if it's provided by Microsoft
+        // Example: user.profileImage = profile.photos[0].value;
+
+        // Return the user object
+        return done(null, user);
       } catch (error) {
         return done(error);
       }

@@ -130,6 +130,7 @@ const getDirectConvertedGradesController = async (req, res, next) => {
     const userId = req.user && req.user.id;
 
     const subjectId = req.body.subject_id ?? null;
+    const lessonTypeId = req.body.lesson_type_id ?? null;
 
     const { pageNo, pageSize, sortBy, sortOrder, filters } = req.pagination;
     const queryOptions = {
@@ -139,6 +140,7 @@ const getDirectConvertedGradesController = async (req, res, next) => {
       order: [[sortBy, sortOrder]],
       userId: userId,
       subjectId: subjectId,
+      lessonTypeId: lessonTypeId,
     };
 
     const { grades } = await gradeService.getAllStudentGradesService(

@@ -131,7 +131,8 @@ const createStudentService = async (data, subjectScheduleId, userId) => {
     } else {
       // Create a new student if one does not exist
       studentObject = await allModels.Student.create(
-        { ...data, profile_image: profileUrl + data.student_code },
+        // { ...data, profile_image: profileUrl + data.student_code },
+        { ...data },
         { transaction }
       );
     }

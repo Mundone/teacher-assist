@@ -37,6 +37,9 @@ class User extends Model {
         profile_image: {
           type: DataTypes.STRING(255),
         },
+        teams_auth_token: {
+          type: DataTypes.STRING(255),
+        },
       },
       {
         sequelize,

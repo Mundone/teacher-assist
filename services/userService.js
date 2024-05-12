@@ -95,7 +95,7 @@ const createUser = async (data) => {
     name: data.name,
     password: hashedPassword,
     role_id: data.role_id,
-    profile_image: profileUrl + data.code,
+    // profile_image: profileUrl + data.code,
   });
 };
 
@@ -171,7 +171,7 @@ async function createUsersBulk(transporter, data, schoolId) {
             password: thatUserPassword,
             role_id: 2,
             school_id: schoolId,
-            profile_image: profileUrl + data.userCode,
+            // profile_image: profileUrl + data.userCode,
           },
           { transaction }
         );
