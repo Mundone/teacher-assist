@@ -127,13 +127,8 @@ passport.use(
           user,
           UserMenus,
         });
-
-        res.status(200).json({
-          message: "Амжилттай нэвтэрлээ.",
-          accessToken: token,
-          user,
-          UserMenus,
-        });
+        console.log(accessToken);
+        console.log(user);
       } catch (error) {
         return done(error);
       }
