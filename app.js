@@ -47,33 +47,33 @@ const indexRouter = require("./routes/index.routes");
 app.use(methodCheckMiddleware);
 app.use("/", indexRouter);
 
-fetchGoogleSheetData()
-  .then(() => {
-    console.log("Google Sheet data fetched successfully.");
-    // Example form creation
-    const formTitle = "Test Form";
-    const questions = [
-      { question: "What is your name?", type: "short answer" },
-      {
-        question: "How satisfied are you with the product?",
-        type: "multiple choice",
-        options: [
-          "Very satisfied",
-          "Satisfied",
-          "Neutral",
-          "Dissatisfied",
-          "Very dissatisfied",
-        ],
-      },
-    ];
-    return createGoogleForm(formTitle, questions);
-  })
-  .then((formUrl) => {
-    console.log("Google Form created successfully:", formUrl);
-  })
-  .catch((error) => {
-    console.error("Error:", error);
-  });
+// fetchGoogleSheetData()
+//   .then(() => {
+//     console.log("Google Sheet data fetched successfully.");
+//     // Example form creation
+//     const formTitle = "Test Form";
+//     const questions = [
+//       { question: "What is your name?", type: "short answer" },
+//       {
+//         question: "How satisfied are you with the product?",
+//         type: "multiple choice",
+//         options: [
+//           "Very satisfied",
+//           "Satisfied",
+//           "Neutral",
+//           "Dissatisfied",
+//           "Very dissatisfied",
+//         ],
+//       },
+//     ];
+//     return createGoogleForm(formTitle, questions);
+//   })
+//   .then((formUrl) => {
+//     console.log("Google Form created successfully:", formUrl);
+//   })
+//   .catch((error) => {
+//     console.error("Error:", error);
+//   });
 
 // Configure Microsoft authentication strategy
 passport.use(
