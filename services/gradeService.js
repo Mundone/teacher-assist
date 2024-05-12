@@ -22,11 +22,13 @@ const getAllStudentGradesService = async ({
   }
 
   const whereClause = {
-    subject_id: subjectId
+    subject_id: subjectId,
   };
 
-  if (lessonTypeId !== 0) {
-    whereClause.lesson_type_id = lessonTypeId;
+  if (lessonTypeId != null) {
+    if (lessonTypeId !== 0) {
+      whereClause.lesson_type_id = lessonTypeId;
+    }
   }
 
   let { count: totalGrades, rows: grades } =
