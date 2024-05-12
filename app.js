@@ -46,33 +46,33 @@ const indexRouter = require("./routes/index.routes");
 app.use(methodCheckMiddleware);
 app.use("/", indexRouter);
 
-// fetchGoogleSheetData()
-//   .then(() => {
-//     console.log("Google Sheet data fetched successfully.");
-//     // Example form creation
-//     const formTitle = "Test Form";
-//     const questions = [
-//       { question: "What is your name?", type: "short answer" },
-//       {
-//         question: "How satisfied are you with the product?",
-//         type: "multiple choice",
-//         options: [
-//           "Very satisfied",
-//           "Satisfied",
-//           "Neutral",
-//           "Dissatisfied",
-//           "Very dissatisfied",
-//         ],
-//       },
-//     ];
-//     return createGoogleForm(formTitle, questions);
-//   })
-//   .then((formUrl) => {
-//     console.log("Google Form created successfully:", formUrl);
-//   })
-//   .catch((error) => {
-//     console.error("Error:", error);
-//   });
+fetchGoogleSheetData()
+  .then(() => {
+    console.log("Google Sheet data fetched successfully.");
+    // Example form creation
+    const formTitle = "Test Form";
+    const questions = [
+      { question: "What is your name?", type: "short answer" },
+      {
+        question: "How satisfied are you with the product?",
+        type: "multiple choice",
+        options: [
+          "Very satisfied",
+          "Satisfied",
+          "Neutral",
+          "Dissatisfied",
+          "Very dissatisfied",
+        ],
+      },
+    ];
+    return createGoogleForm(formTitle, questions);
+  })
+  .then((formUrl) => {
+    console.log("Google Form created successfully:", formUrl);
+  })
+  .catch((error) => {
+    console.error("Error:", error);
+  });
 
 // Configure Microsoft authentication strategy
 passport.use(
@@ -82,30 +82,22 @@ passport.use(
       clientSecret: process.env.CLIENT_SECRET_VALUE,
       callbackURL: "http://localhost:3000/auth/microsoft/callback",
       scope: [
+        // ".default",
         "user.read",
         "openid",
         "profile",
         "email",
-        "files.read",
-        "group.read.all",
+        // "files.read",
+        // "sites.read.all",
       ],
       authorizationURL:
         "https://login.microsoftonline.com/common/oauth2/v2.0/authorize",
       tokenURL: "https://login.microsoftonline.com/common/oauth2/v2.0/token",
+      tenant: "common",
     },
     async function (accessToken, refreshToken, profile, done) {
       try {
-        console.log("hi");
         console.log(accessToken);
-
-        console.log("hi");
-        const microsoftUser =
-          await authService.authenticateUserMicrosoftService(profile);
-
-        // console.log(microsoftUser);
-
-        // const accessToken = "YOUR_ACCESS_TOKEN"; // Replace with the actual access token
-        await printMicrosoftForms(accessToken);
       } catch (error) {
         return done(error);
       }

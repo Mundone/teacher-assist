@@ -45,6 +45,11 @@ async function fetchGoogleSheetData() {
 
 async function createGoogleForm(formTitle, questions) {
     try {
+        
+    console.log({
+        formTitle: formTitle,
+        questions: JSON.stringify(questions)
+    })
         const response = await axios.post(
             "https://script.google.com/macros/s/AKfycbzplKp1ERAIEo_RTYweAT4m6pkwWxZnRto6Z46UTmgKFAv-KxEp7WFlC9abaaC3-Mc/exec",
             {
@@ -52,6 +57,7 @@ async function createGoogleForm(formTitle, questions) {
                 questions: JSON.stringify(questions)
             }
         );
+        // console.log(response)
         return response.data;
     } catch (error) {
         console.error("Error creating Google Form:", error);
