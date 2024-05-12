@@ -17,7 +17,6 @@ require("./config/passport-setup");
 const authService = require("./services/authService");
 const axios = require("axios");
 const allModels = require("./models");
-const authService = require("./services/authService");
 
 const app = express();
 
