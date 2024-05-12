@@ -116,19 +116,21 @@ passport.use(
         // Return the user object
         // return done(null, user);
 
-        const { user, token, UserMenus } =
-          await authService.authenticateUserService({
-            email: updateUser?.email,
-            isDirect: true,
-          });
+        const { user: authenticatedUser, token, UserMenus } = await authService.authenticateUserService({
+          email: user.email,
+          isDirect: true,
+        });
+
+          done(null, authenticatedUser);
+
         res.status(200).json({
           message: "Амжилттай нэвтэрлээ.",
           accessToken: token,
-          user,
-          UserMenus,
+          user: authenticatedUser,
+          UserMenus: UserMenus,
         });
-        console.log(accessToken);
-        console.log(user);
+        console.log(token);
+        console.log(authenticatedUser);
       } catch (error) {
         return done(error);
       }
