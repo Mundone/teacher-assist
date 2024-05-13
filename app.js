@@ -82,8 +82,8 @@ passport.use(
     {
       clientID: process.env.CLIENT_ID,
       clientSecret: process.env.CLIENT_SECRET_VALUE,
-      callbackURL: "http://localhost:3000/auth/microsoft/callback",
-      // callbackURL: "http://localhost:3032/",
+      // callbackURL: "http://localhost:3000/auth/microsoft/callback",
+      callbackURL: "http://localhost:3032/",
       scope: ["user.read", "openid", "profile", "email"],
       authorizationURL:
         "https://login.microsoftonline.com/common/oauth2/v2.0/authorize",
@@ -108,8 +108,8 @@ passport.use(
             isDirect: true,
           });
 
-        console.log("hahah", UserMenus);
-        done(null, user);
+        // console.log(user);
+        done(null, user, token, UserMenus);
       } catch (error) {
         return done(error);
       }
@@ -125,43 +125,31 @@ passport.deserializeUser(function (user, done) {
   done(null, user);
 });
 
-// const corsOptions = {
-//   origin: 'http://localhost:3032',
-//   methods: 'GET, POST, OPTIONS',
-//   allowedHeaders: ['Content-Type', 'Authorization'],
-// };
-
-// app.use(cors(corsOptions));
-
-app.get('/auth/microsoft', (req, res) => {
-  const redirectUrl = 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize' +
-    '?prompt=select_account' +
-    '&response_type=code' +
-    '&redirect_uri=http://localhost:3000/auth/microsoft/callback' + // Callback URL on your backend
-    '&scope=user.read%20openid%20profile%20email' +
-    '&client_id=' + process.env.CLIENT_ID;
-    // res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3032'); // Allow CORS from http://localhost:3032
-
-  res.redirect(redirectUrl);
-});
+// app.get("/auth/microsoft", passport.authenticate("microsoft"));
 
 app.get(
-  "/auth/microsoft/callback",
+  "/auth/microsoft",
   passport.authenticate("microsoft"),
   async (req, res) => {
     try {
-      console.log(res);
+      const user = req.user;
+      // console.log(user)
 
-      const authUser = req.user;
-
-      const { user, token, UserMenus } =
-      await authService.authenticateUserService({
-        email: authUser.email,
+      const {
+        user: authUser,
+        token,
+        UserMenus,
+      } = await authService.authenticateUserService({
+        email: user?.email,
         isDirect: true,
       });
-      
-      return res.redirect('http://localhost:3032/auth-success?user=' + JSON.stringify({ user, token, UserMenus }));
 
+      return res.json({
+        message: "Амжилттай нэвтэрлээ.",
+        accessToken: token,
+        authUser: user,
+        UserMenus,
+      });
     } catch (error) {
       if (error.statusCode == 403) {
         responses.forbidden(res, error);
@@ -172,6 +160,25 @@ app.get(
   }
 );
 
+app.get(
+  "/auth/microsoft/callback",
+  // passport.authenticate("microsoft"),
+  async (req, res) => {
+    try {
+      console.log(res);
+      const x = res;
+      const { user, token, UserMenus } = req;
+
+      return res.json(x);
+    } catch (error) {
+      if (error.statusCode == 403) {
+        responses.forbidden(res, error);
+      } else {
+        responses.internalServerError(res, error);
+      }
+    }
+  }
+);
 
 const printMicrosoftForms = async (accessToken) => {
   try {
