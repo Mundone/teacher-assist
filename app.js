@@ -125,13 +125,13 @@ passport.deserializeUser(function (user, done) {
   done(null, user);
 });
 
-const corsOptions = {
-  origin: 'http://localhost:3032',
-  methods: 'GET, POST, OPTIONS',
-  allowedHeaders: ['Content-Type', 'Authorization'],
-};
+// const corsOptions = {
+//   origin: 'http://localhost:3032',
+//   methods: 'GET, POST, OPTIONS',
+//   allowedHeaders: ['Content-Type', 'Authorization'],
+// };
 
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
 
 app.get('/auth/microsoft', (req, res) => {
   const redirectUrl = 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize' +
@@ -140,7 +140,7 @@ app.get('/auth/microsoft', (req, res) => {
     '&redirect_uri=http://localhost:3000/auth/microsoft/callback' + // Callback URL on your backend
     '&scope=user.read%20openid%20profile%20email' +
     '&client_id=' + process.env.CLIENT_ID;
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3032'); // Allow CORS from http://localhost:3032
+    // res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3032'); // Allow CORS from http://localhost:3032
 
   res.redirect(redirectUrl);
 });
