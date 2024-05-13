@@ -79,11 +79,11 @@ const authenticateUserService = async ({code, password, isDirect, email}) => {
     include: [
       {
         model: allModels.UserRoleMenu,
-        where: { user_role_id: user.role_id },
+        where: { user_role_id: user?.role_id },
         include: [
           {
             model: allModels.UserRole,
-            where: { id: user.role_id },
+            where: { id: user?.role_id },
             attributes: [],
           },
         ],

@@ -17,11 +17,12 @@ require("./config/passport-setup");
 const authService = require("./services/authService");
 const axios = require("axios");
 const allModels = require("./models");
+const responses = require("./utils/responseUtil");
 
 const app = express();
 
 // Middlewares
-app.use(cors());
+app.use(cors({ origin: true })); // Enable CORS with dynamic origin
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -35,7 +36,7 @@ app.use(
   })
 );
 app.use(passport.initialize());
-// app.use(passport.session());
+app.use(passport.session());
 app.use(flash());
 
 // Swagger UI
@@ -81,56 +82,34 @@ passport.use(
     {
       clientID: process.env.CLIENT_ID,
       clientSecret: process.env.CLIENT_SECRET_VALUE,
-      // callbackURL: "https://www.teachas.online/dashboard/",
-      callbackURL: "http://localhost:3032/dashboard/",
+      callbackURL: "http://localhost:3000/auth/microsoft/callback",
+      // callbackURL: "http://localhost:3032/",
       scope: ["user.read", "openid", "profile", "email"],
       authorizationURL:
         "https://login.microsoftonline.com/common/oauth2/v2.0/authorize",
       tokenURL: "https://login.microsoftonline.com/common/oauth2/v2.0/token",
       tenant: "common",
+      session: false,
     },
     async function (accessToken, refreshToken, profile, done) {
       try {
-        // Check if the user already exists in the database
         let updateUser = await allModels.User.findOne({
-          where: { email: profile.emails[0].value },
+          where: { email: profile?.emails[0]?.value },
         });
 
-        // If the user doesn't exist, create a new one
-        if (!updateUser) {
-          // updateUser = await allModels.User.create({
-          //   email: profile.emails[0].value,
-          //   name: profile.displayName,
-          //   // Add other fields as needed
-          // });
-        } else {
-          // Update existing user's profile information
+        if (updateUser) {
           updateUser.name = profile.displayName;
-          // Update other fields as needed
           await updateUser.save();
         }
 
-        // You can set the profile image here as well if it's provided by Microsoft
-        // Example: user.profileImage = profile.photos[0].value;
+        const { user, token, UserMenus } =
+          await authService.authenticateUserService({
+            email: profile?.emails[0]?.value,
+            isDirect: true,
+          });
 
-        // Return the user object
-        // return done(null, user);
-
-        const { user: authenticatedUser, token, UserMenus } = await authService.authenticateUserService({
-          email: user.email,
-          isDirect: true,
-        });
-
-          done(null, authenticatedUser);
-
-        res.status(200).json({
-          message: "Амжилттай нэвтэрлээ.",
-          accessToken: token,
-          user: authenticatedUser,
-          UserMenus: UserMenus,
-        });
-        console.log(token);
-        console.log(authenticatedUser);
+        console.log("hahah", UserMenus);
+        done(null, user);
       } catch (error) {
         return done(error);
       }
@@ -138,16 +117,61 @@ passport.use(
   )
 );
 
-app.get("/auth/microsoft", passport.authenticate("microsoft"));
+passport.serializeUser(function (user, done) {
+  done(null, user);
+});
+
+passport.deserializeUser(function (user, done) {
+  done(null, user);
+});
+
+const corsOptions = {
+  origin: 'http://localhost:3032',
+  methods: 'GET, POST, OPTIONS',
+  allowedHeaders: ['Content-Type', 'Authorization'],
+};
+
+app.use(cors(corsOptions));
+
+app.get('/auth/microsoft', (req, res) => {
+  const redirectUrl = 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize' +
+    '?prompt=select_account' +
+    '&response_type=code' +
+    '&redirect_uri=http://localhost:3000/auth/microsoft/callback' + // Callback URL on your backend
+    '&scope=user.read%20openid%20profile%20email' +
+    '&client_id=' + process.env.CLIENT_ID;
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3032'); // Allow CORS from http://localhost:3032
+
+  res.redirect(redirectUrl);
+});
 
 app.get(
   "/auth/microsoft/callback",
-  passport.authenticate("microsoft", { failureRedirect: "/login" }),
-  function (req, res) {
-    // Successful authentication, redirect home.
-    res.redirect("/");
+  passport.authenticate("microsoft"),
+  async (req, res) => {
+    try {
+      console.log(res);
+
+      const authUser = req.user;
+
+      const { user, token, UserMenus } =
+      await authService.authenticateUserService({
+        email: authUser.email,
+        isDirect: true,
+      });
+      
+      return res.redirect('http://localhost:3032/auth-success?user=' + JSON.stringify({ user, token, UserMenus }));
+
+    } catch (error) {
+      if (error.statusCode == 403) {
+        responses.forbidden(res, error);
+      } else {
+        responses.internalServerError(res, error);
+      }
+    }
   }
 );
+
 
 const printMicrosoftForms = async (accessToken) => {
   try {
@@ -163,7 +187,7 @@ const printMicrosoftForms = async (accessToken) => {
     const forms = response.data.value.map((form) => form.name);
     //   console.log("Microsoft Forms:", forms);
   } catch (error) {
-    console.error("Error fetching Microsoft Forms:", error.response.data.error);
+    // console.error("Error fetching Microsoft Forms:", error.response.data.error);
     throw error;
   }
 };
