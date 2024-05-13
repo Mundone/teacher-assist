@@ -82,8 +82,8 @@ passport.use(
     {
       clientID: process.env.CLIENT_ID,
       clientSecret: process.env.CLIENT_SECRET_VALUE,
-      // callbackURL: "http://localhost:3000/auth/microsoft/callback",
-      callbackURL: "http://localhost:3032/",
+      callbackURL: "http://localhost:3000/auth/microsoft/callback",
+      // callbackURL: "http://localhost:3032/",
       scope: ["user.read", "openid", "profile", "email"],
       authorizationURL:
         "https://login.microsoftonline.com/common/oauth2/v2.0/authorize",
@@ -109,7 +109,7 @@ passport.use(
           });
 
         // console.log(user);
-        done(null, user, token, UserMenus);
+        done(null, user);
       } catch (error) {
         return done(error);
       }
@@ -132,24 +132,24 @@ app.get(
   passport.authenticate("microsoft"),
   async (req, res) => {
     try {
-      const user = req.user;
+      // const user = req.user;
       // console.log(user)
 
-      const {
-        user: authUser,
-        token,
-        UserMenus,
-      } = await authService.authenticateUserService({
-        email: user?.email,
-        isDirect: true,
-      });
+      // const {
+      //   user: authUser,
+      //   token,
+      //   UserMenus,
+      // } = await authService.authenticateUserService({
+      //   email: user?.email,
+      //   isDirect: true,
+      // });
 
-      return res.json({
-        message: "Амжилттай нэвтэрлээ.",
-        accessToken: token,
-        authUser: user,
-        UserMenus,
-      });
+      // return res.json({
+      //   message: "Амжилттай нэвтэрлээ.",
+      //   accessToken: token,
+      //   authUser: user,
+      //   UserMenus,
+      // });
     } catch (error) {
       if (error.statusCode == 403) {
         responses.forbidden(res, error);
@@ -162,14 +162,23 @@ app.get(
 
 app.get(
   "/auth/microsoft/callback",
-  // passport.authenticate("microsoft"),
+  passport.authenticate("microsoft"),
   async (req, res) => {
     try {
       console.log(res);
       const x = res;
-      const { user, token, UserMenus } = req;
+      const authUser = req.user;
 
-      return res.json(x);
+      const {
+        user,
+        token,
+        UserMenus,
+      } = await authService.authenticateUserService({
+        email: authUser?.email,
+        isDirect: true,
+      });
+
+      return res.json({user, token, UserMenus});
     } catch (error) {
       if (error.statusCode == 403) {
         responses.forbidden(res, error);
