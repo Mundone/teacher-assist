@@ -124,7 +124,7 @@ app.get(
         isDirect: true,
       });
 
-      res.redirect('https://teachas.online/dashboard?token=${token}');
+      // res.redirect('https://teachas.online/dashboard?token=${token}');
       res.redirect('http://localhost:3032?token=${token}');
 
     } catch (error) {
