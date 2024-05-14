@@ -48,35 +48,6 @@ const indexRouter = require("./routes/index.routes");
 app.use(methodCheckMiddleware);
 app.use("/", indexRouter);
 
-// fetchGoogleSheetData()
-//   .then(() => {
-//     console.log("Google Sheet data fetched successfully.");
-//     // Example form creation
-//     const formTitle = "Test Form";
-//     const questions = [
-//       { question: "What is your name?", type: "short answer" },
-//       {
-//         question: "How satisfied are you with the product?",
-//         type: "multiple choice",
-//         options: [
-//           "Very satisfied",
-//           "Satisfied",
-//           "Neutral",
-//           "Dissatisfied",
-//           "Very dissatisfied",
-//         ],
-//       },
-//     ];
-//     return createGoogleForm(formTitle, questions);
-//   })
-//   .then((formUrl) => {
-//     console.log("Google Form created successfully:", formUrl);
-//   })
-//   .catch((error) => {
-//     console.error("Error:", error);
-//   });
-
-// Configure Microsoft authentication strategy
 passport.use(
   new MicrosoftStrategy(
     {
@@ -108,7 +79,6 @@ passport.use(
             isDirect: true,
           });
 
-        // console.log(user);
         done(null, user);
       } catch (error) {
         return done(error);
@@ -125,31 +95,11 @@ passport.deserializeUser(function (user, done) {
   done(null, user);
 });
 
-// app.get("/auth/microsoft", passport.authenticate("microsoft"));
-
 app.get(
   "/auth/microsoft",
   passport.authenticate("microsoft"),
   async (req, res) => {
     try {
-      // const user = req.user;
-      // console.log(user)
-
-      // const {
-      //   user: authUser,
-      //   token,
-      //   UserMenus,
-      // } = await authService.authenticateUserService({
-      //   email: user?.email,
-      //   isDirect: true,
-      // });
-
-      // return res.json({
-      //   message: "Амжилттай нэвтэрлээ.",
-      //   accessToken: token,
-      //   authUser: user,
-      //   UserMenus,
-      // });
     } catch (error) {
       if (error.statusCode == 403) {
         responses.forbidden(res, error);
@@ -165,20 +115,16 @@ app.get(
   passport.authenticate("microsoft"),
   async (req, res) => {
     try {
-      console.log(res);
-      const x = res;
       const authUser = req.user;
 
-      const {
-        user,
-        token,
-        UserMenus,
-      } = await authService.authenticateUserService({
+      const { user, token, UserMenus } =
+      await authService.authenticateUserService({
         email: authUser?.email,
         isDirect: true,
       });
 
-      return res.json({user, token, UserMenus});
+      res.redirect(`https://teachas.online/dashboard?token=${token}`);
+
     } catch (error) {
       if (error.statusCode == 403) {
         responses.forbidden(res, error);
@@ -188,6 +134,7 @@ app.get(
     }
   }
 );
+
 
 const printMicrosoftForms = async (accessToken) => {
   try {
