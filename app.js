@@ -54,7 +54,7 @@ passport.use(
       clientID: process.env.CLIENT_ID,
       clientSecret: process.env.CLIENT_SECRET_VALUE,
       // callbackURL: "http://localhost:3000/auth/microsoft/callback",
-      callbackURL: "http://api.teachas.online/auth/microsoft/callback",
+      callbackURL: "https://api.teachas.online/auth/microsoft/callback",
       // callbackURL: "http://localhost:3032/",
       scope: ["user.read", "openid", "profile", "email"],
       authorizationURL:
