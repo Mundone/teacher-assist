@@ -6,19 +6,19 @@ const { accessControl } = require("../middlewares/authMiddleware");
 
 router.get(
   "/get_attendance/:id",
-  accessControl([1, 2, 3]),
+  accessControl([1, 2]),
   attendanceController.getAttendanceController
 );
 
 router.post(
   "/create_attendance",
-  accessControl([1, 2, 3]),
+  accessControl([1, 2]),
   attendanceController.createAttendanceController
 );
 
 router.delete(
   "/delete_attendance/:id",
-  accessControl([1, 2, 3]),
+  accessControl([1, 2]),
   attendanceController.deleteAttendanceController
 );
 
@@ -34,14 +34,14 @@ router.post(
 
 router.post(
   "/get_attendance_responses/:subject_schedule_id",
-  accessControl([1, 2, 3]),
+  accessControl([1, 2]),
   paginationMiddleware,
   attendanceController.getAllAttendanceResponsesController
 );
 
 router.post(
   "/get_students_with_attendance/:attendance_id",
-  accessControl([1, 2, 3]),
+  accessControl([1, 2]),
   paginationMiddleware,
   attendanceController.getStudentsWithAttendanceController
 );
@@ -49,7 +49,7 @@ router.post(
 
 // router.get(
 //   "/get_students/:id",
-//   accessControl([1, 2, 3]),
+//   accessControl([1, 2]),
 //   attendanceController.getStudentsAttendanceListController
 // );
 

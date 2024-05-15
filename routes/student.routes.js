@@ -32,14 +32,14 @@ const router = express.Router();
 
 router.post(
   "/get_students/:subject_id",
-  accessControl([1, 2, 3]),
+  accessControl([1, 2]),
   paginationMiddleware,
   studentController.getStudentsController
 );
 
 // router.get(
 //   "/get_students",
-//   accessControl([1, 2, 3]),
+//   accessControl([1, 2]),
 //   studentController.getStudentsWithoutBody
 // );
 
@@ -72,7 +72,7 @@ router.post(
 
 router.get(
   "/get_student/:id",
-  accessControl([1, 2, 3]),
+  accessControl([1, 2]),
   studentController.getStudentByIdController
 );
 
@@ -105,14 +105,14 @@ router.get(
 
 router.post(
   "/create_student",
-  accessControl([1, 2, 3]),
+  accessControl([1, 2]),
   studentController.createStudentController
 );
 
 
 router.post(
   "/create_student_bulk",
-  accessControl([1, 2, 3]),
+  accessControl([1, 2]),
   studentController.createStudentBulkController
 );
 
@@ -156,7 +156,7 @@ router.post(
  */
 router.put(
   "/update_student/:id",
-  accessControl([1, 2, 3]),
+  accessControl([1, 2]),
   studentController.updateStudentController
 );
 
@@ -195,7 +195,7 @@ router.put(
  */
 router.delete(
   "/delete_student/:id",
-  accessControl([1, 2, 3]),
+  accessControl([1, 2]),
   studentController.deleteStudentController
 );
 

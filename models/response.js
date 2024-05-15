@@ -1,6 +1,6 @@
 const { Model, DataTypes } = require("sequelize");
 
-class StudentProject extends Model {
+class Response extends Model {
   static init(sequelize) {
     super.init(
       {
@@ -12,23 +12,33 @@ class StudentProject extends Model {
         student_id: {
           type: DataTypes.INTEGER,
           references: {
-            model: "student", // Make sure this matches your Student model name
+            model: "student",
             key: "id",
           },
         },
-        project_id: {
+        question_id: {
           type: DataTypes.INTEGER,
           references: {
-            model: "project", // Make sure this matches your Subject model name
+            model: "question",
+            key: "id",
+          },
+        },
+        answer_text: {
+          type: DataTypes.STRING(255),
+        },
+        answer_id: {
+          type: DataTypes.INTEGER,
+          references: {
+            model: "offered_answer",
             key: "id",
           },
         },
       },
       {
         sequelize,
-        modelName: "student_project",
-        tableName: "student_project",
-        timestamps: true, // Cons_ider if you need timestamps
+        modelName: "response",
+        tableName: "response",
+        timestamps: true,
       }
     );
   }
@@ -39,12 +49,19 @@ class StudentProject extends Model {
       onDelete: "CASCADE",
       onUpdate: "CASCADE",
     });
-    this.belongsTo(models.Project, {
-      foreignKey: "project_id",
+
+    this.belongsTo(models.Question, {
+      foreignKey: "question_id",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
+    });
+
+    this.belongsTo(models.OfferedAnswer, {
+      foreignKey: "offered_answer_id",
       onDelete: "CASCADE",
       onUpdate: "CASCADE",
     });
   }
 }
 
-module.exports = StudentProject;
+module.exports = Response;

@@ -1,6 +1,6 @@
 const { Model, DataTypes } = require("sequelize");
 
-class UserFile extends Model {
+class Survey extends Model {
   static init(sequelize) {
     super.init(
       {
@@ -9,27 +9,17 @@ class UserFile extends Model {
           primaryKey: true,
           autoIncrement: true,
         },
-        user_id: {
-          type: DataTypes.INTEGER,
-          references: {
-            model: "user", // Make sure this matches your User model name
-            key: "id",
-          },
-        },
-        file_name: {
+        survey_title: {
           type: DataTypes.STRING(255),
         },
-        file_path: {
-          type: DataTypes.STRING(255),
-        },
-        file_type: {
+        description: {
           type: DataTypes.STRING(255),
         },
       },
       {
         sequelize,
-        modelName: "user_file",
-        tableName: "user_file",
+        modelName: "survey",
+        tableName: "survey",
         timestamps: true,
       }
     );
@@ -41,7 +31,13 @@ class UserFile extends Model {
       onDelete: "CASCADE",
       onUpdate: "CASCADE",
     });
+
+    this.hasMany(models.Question, {
+      foreignKey: "survey_id",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
+    });
   }
 }
 
-module.exports = UserFile;
+module.exports = Survey;

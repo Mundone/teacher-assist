@@ -1,3 +1,64 @@
+const surveys = [
+  {
+    survey_title: "Survey 1",
+    description: "This is the first survey",
+  },
+  {
+    survey_title: "Survey 2",
+    description: "This is the second survey",
+  },
+];
+
+const questions = [
+  {
+    question_text: "What is your favorite color?",
+    placeholder: "Enter your favorite color",
+    type: "free_text",
+  },
+  {
+    question_text: "Select your favorite fruit.",
+    placeholder: "Choose from the list",
+    type: "single_selection",
+  },
+];
+
+const offeredAnswers = [
+  {
+    value: "Red",
+  },
+  {
+    value: "Apple",
+  },
+];
+
+const responses = [
+  {
+    student_id: 1,
+    question_id: 1,
+    answer_text: "Blue",
+  },
+  {
+    student_id: 2,
+    question_id: 2,
+    answer_text: "Banana",
+  },
+];
+
+const students = [
+  {
+    name: "Student1",
+    student_code: "Student1",
+    email: "Student1",
+    password: "Student1",
+  },
+  {
+    name: "Student2",
+    student_code: "Student2",
+    email: "Student2",
+    password: "Student2",
+  },
+];
+
 const lessonTypes = [
   {
     name: "Лекц",
@@ -461,4 +522,9 @@ module.exports = {
   headOfDepartmentMenuCodes,
   teacherMenuCodes,
   seminarLessonAssessments,
+  surveys,
+  questions,
+  offeredAnswers,
+  responses,
+  students,
 };

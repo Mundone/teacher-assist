@@ -27,7 +27,7 @@ class User extends Model {
         role_id: {
           type: DataTypes.INTEGER,
           references: {
-            model: "user_role", // Make sure this matches your User model name
+            model: "user_role",
             key: "id",
           },
         },
@@ -37,9 +37,9 @@ class User extends Model {
         profile_image: {
           type: DataTypes.STRING(255),
         },
-        // teams_auth_token: {
-        //   type: DataTypes.STRING(255),
-        // },
+        teams_auth_token: {
+          type: DataTypes.STRING(255),
+        },
       },
       {
         sequelize,
@@ -53,11 +53,6 @@ class User extends Model {
   static associate(models) {
     this.belongsTo(models.UserRole, {
       foreignKey: "role_id",
-      onDelete: "CASCADE",
-      onUpdate: "CASCADE",
-    });
-    this.hasMany(models.UserFile, {
-      foreignKey: "user_id",
       onDelete: "CASCADE",
       onUpdate: "CASCADE",
     });
@@ -77,17 +72,12 @@ class User extends Model {
       onDelete: "CASCADE",
       onUpdate: "CASCADE",
     });
-
-    this.hasMany(models.Project, {
-      foreignKey: "head_of_department_user_id",
-      onDelete: "CASCADE",
-      onUpdate: "CASCADE",
-    });
-    this.hasMany(models.Project, {
-      foreignKey: "secretary_user_id",
-      onDelete: "CASCADE",
-      onUpdate: "CASCADE",
-    });
+      this.hasMany(models.Survey, {
+        foreignKey: "user_id",
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
+      });
+    
   }
 }
 

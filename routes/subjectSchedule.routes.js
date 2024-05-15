@@ -32,14 +32,14 @@ const router = express.Router();
 
 router.post(
   "/get_subject_schedules/:subjectId",
-  accessControl([1, 2, 3]),
+  accessControl([1, 2]),
   paginationMiddleware,
   subjectScheduleController.getSubjectSchedules
 );
 
 router.get(
   "/get_subject_schedules_for_dropdown_attendance/:subjectId",
-  accessControl([1, 2, 3]),
+  accessControl([1, 2]),
   paginationMiddleware,
   subjectScheduleController.getSubjectSchedulesForDropdownAttendance
 );

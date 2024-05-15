@@ -14,8 +14,9 @@ const studentRouter = require('./student.routes');
 const subjectRouter = require('./subject.routes');
 const subjectScheduleRouter = require('./subjectSchedule.routes');
 const subSchoolRouter = require('./subSchool.routes');
+const surveyRouter = require('./survey.routes');
 const userRouter = require('./user.routes');
-const userFileRouter = require('./userFile.routes');
+// const userFileRouter = require('./userFile.routes');
 const userRoleRouter = require('./userRole.routes');
 
 // router.use('/', attendanceRecordRouter);
@@ -32,8 +33,9 @@ router.use('/', studentRouter);
 router.use('/', subjectRouter);
 router.use('/', subjectScheduleRouter);
 router.use('/', subSchoolRouter);
+router.use('/', surveyRouter);
 router.use('/', userRouter);
-router.use('/', userFileRouter);
+// router.use('/', userFileRouter);
 router.use('/', userRoleRouter);
 
 

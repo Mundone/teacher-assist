@@ -31,21 +31,21 @@ const router = express.Router();
 
 router.post(
   "/get_grades",
-  accessControl([1, 2, 3]),
+  accessControl([1, 2]),
   paginationMiddleware,
   gradeController.getGradesController
 );
 
 router.post(
   "/get_direct_converted_grades",
-  accessControl([1, 2, 3]),
+  accessControl([1, 2]),
   paginationMiddleware,
   gradeController.getDirectConvertedGradesController
 );
 
 router.post(
   "/get_sd_converted_grades",
-  accessControl([1, 2, 3]),
+  accessControl([1, 2]),
   paginationMiddleware,
   gradeController.getSDConvertedGradesController
 );
@@ -79,7 +79,7 @@ router.post(
 
 router.put(
   "/update_grade/:id",
-  accessControl([1, 2, 3]),
+  accessControl([1, 2]),
   gradeController.updateGradeController
 ); // Update a specific grade
 

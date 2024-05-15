@@ -30,7 +30,7 @@ class Subject extends Model {
         sequelize,
         modelName: "subject",
         tableName: "subject",
-        timestamps: true, // Consider if you need timestamps
+        timestamps: true,
       }
     );
   }

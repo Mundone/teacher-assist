@@ -31,20 +31,20 @@ const router = express.Router();
 
 router.post(
   "/get_lesson_types",
-  accessControl([1, 2, 3]),
+  accessControl([1, 2]),
   paginationMiddleware,
   lessonTypeController.getLessonTypes
 );
 
 router.get(
   "/get_lesson_types",
-  accessControl([1, 2, 3]),
+  accessControl([1, 2]),
   lessonTypeController.getLessonTypesWithoutBody
 );
 
 router.get(
   "/get_lesson_type/:id",
-  accessControl([1, 2, 3]),
+  accessControl([1, 2]),
   lessonTypeController.getLessonTypeById
 );
 
@@ -68,7 +68,7 @@ router.delete(
 
 router.get(
   "/get_lesson_types_of_subject/:subject_id",
-  accessControl([1, 2, 3]),
+  accessControl([1, 2]),
   lessonTypeController.getLessonTypesOfSubjectController
 );
 

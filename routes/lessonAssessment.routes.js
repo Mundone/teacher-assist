@@ -31,14 +31,14 @@ const router = express.Router();
 
 router.post(
   "/get_lesson_assessments",
-  accessControl([1, 2, 3]),
+  accessControl([1, 2]),
   paginationMiddleware,
   lessonAssessmentController.getLessonAssessments
 );
 
 router.get(
   "/get_lesson_assessments",
-  accessControl([1, 2, 3]),
+  accessControl([1, 2]),
   lessonAssessmentController.getLessonAssessmentsWithoutBody
 );
 
@@ -71,7 +71,7 @@ router.get(
 
 router.get(
   "/get_lesson_assessment/:id",
-  accessControl([1, 2, 3]),
+  accessControl([1, 2]),
   lessonAssessmentController.getLessonAssessmentById
 );
 
@@ -193,13 +193,13 @@ router.delete(
 
 router.get(
   "/get_default_convert_grades/:subject_id",
-  accessControl([1, 2, 3]),
+  accessControl([1, 2]),
   lessonAssessmentController.getDefaultConvertGradesBySubjectController
 );
 
 router.get(
   "/get_lesson_assessments_of_subject/:subject_id",
-  accessControl([1, 2, 3]),
+  accessControl([1, 2]),
   lessonAssessmentController.getLessonAssessmentsOfSubjectController
 );
 

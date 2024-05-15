@@ -32,21 +32,21 @@ const router = express.Router();
 
 // router.post(
 //   "/get_lessons/:subjectId",
-//   accessControl([1, 2, 3]),
+//   accessControl([1, 2]),
 //   paginationMiddleware,
 //   lessonController.getLessons
 // );
 
 // router.get(
 //   "/get_lessons/:subjectId",
-//   accessControl([1, 2, 3]),
+//   accessControl([1, 2]),
 //   paginationMiddleware,
 //   lessonController.getLessonsWithoutBody
 // );
 
 // router.get(
 //   "/get_lesson_assessments",
-//   accessControl([1, 2, 3]),
+//   accessControl([1, 2]),
 //   lessonController.getLessons
 // );
 
@@ -79,7 +79,7 @@ const router = express.Router();
 
 // router.get(
 //   "/get_lesson/:id",
-//   accessControl([1, 2, 3]),
+//   accessControl([1, 2]),
 //   lessonController.getLessonById
 // );
 
@@ -112,7 +112,7 @@ const router = express.Router();
 
 // router.post(
 //   "/create_lesson",
-//   accessControl([1, 2, 3]),
+//   accessControl([1, 2]),
 //   lessonController.createLesson
 // );
 
@@ -157,7 +157,7 @@ const router = express.Router();
 
 // router.put(
 //   "/update_lesson/:id",
-//   accessControl([1, 2, 3]),
+//   accessControl([1, 2]),
 //   lessonController.updateLesson
 // );
 
@@ -197,40 +197,40 @@ const router = express.Router();
 
 // router.delete(
 //   "/delete_lesson/:id",
-//   accessControl([1, 2, 3]),
+//   accessControl([1, 2]),
 //   lessonController.deleteLesson
 // );
 
 router.post(
   "/get_lessons/:subjectId",
-  accessControl([1, 2, 3]),
+  accessControl([1, 2]),
   paginationMiddleware,
   lessonController.getLessons
 );
 router.get(
   "/get_lessons/:subjectId",
-  accessControl([1, 2, 3]),
+  accessControl([1, 2]),
   paginationMiddleware,
   lessonController.getLessonsWithoutBody
 );
 router.get(
   "/get_lesson/:id",
-  accessControl([1, 2, 3]),
+  accessControl([1, 2]),
   lessonController.getLessonById
 );
 router.post(
   "/create_lesson",
-  accessControl([1, 2, 3]),
+  accessControl([1, 2]),
   lessonController.createLesson
 );
 router.put(
   "/update_lesson/:id",
-  accessControl([1, 2, 3]),
+  accessControl([1, 2]),
   lessonController.updateLesson
 );
 router.delete(
   "/delete_lesson/:id",
-  accessControl([1, 2, 3]),
+  accessControl([1, 2]),
   lessonController.deleteLesson
 );
 

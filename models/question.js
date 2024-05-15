@@ -1,6 +1,6 @@
 const { Model, DataTypes } = require("sequelize");
 
-class Student extends Model {
+class Question extends Model {
   static init(sequelize) {
     super.init(
       {
@@ -9,51 +9,54 @@ class Student extends Model {
           primaryKey: true,
           autoIncrement: true,
         },
-        name: {
+        survey_id: {
+          type: DataTypes.INTEGER,
+          references: {
+            model: "survey",
+            key: "id",
+          },
+        },
+        order_no: {
+          type: DataTypes.INTEGER,
+        },
+        question_text: {
           type: DataTypes.STRING(255),
         },
-        student_code: {
+        placeholder: {
           type: DataTypes.STRING(255),
         },
-        profile_image: {
-          type: DataTypes.STRING(255),
+        type: {
+          type: DataTypes.ENUM('single_selection', 'multiple_selection', 'free_text'),
         },
-        email: {
-          type: DataTypes.STRING(255),
-        },
-        password: {
-          type: DataTypes.STRING,
-        },
-        // grade: {
-        //   type: DataTypes.JSON,
-        // },
       },
       {
         sequelize,
-        modelName: "student",
-        tableName: "student",
+        modelName: "question",
+        tableName: "question",
         timestamps: true,
       }
     );
   }
 
   static associate(models) {
-    this.hasMany(models.Grade, {
-      foreignKey: "student_id",
+    this.belongsTo(models.Survey, {
+      foreignKey: "survey_id",
       onDelete: "CASCADE",
       onUpdate: "CASCADE",
     });
-    this.hasMany(models.StudentSubjectSchedule, {
-      foreignKey: "student_id",
+
+    this.hasMany(models.OfferedAnswer, {
+      foreignKey: "question_id",
       onDelete: "CASCADE",
       onUpdate: "CASCADE",
     });
+
     this.hasMany(models.Response, {
-      foreignKey: "student_id",
+      foreignKey: "question_id",
       onDelete: "CASCADE",
       onUpdate: "CASCADE",
     });
   }
 }
 
-module.exports = Student;
+module.exports = Question;

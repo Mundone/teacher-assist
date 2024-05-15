@@ -6,7 +6,7 @@ const { accessControl } = require("../middlewares/authMiddleware");
 
 router.get(
   "/get_current_week",
-  // accessControl([1, 2, 3]),
+  // accessControl([1, 2]),
   settingsController.getCurrentWeekController
 );
 
@@ -43,50 +43,50 @@ router.delete(
 
 router.put(
   "/change_qr_url",
-  accessControl([1, 2, 3]),
+  accessControl([1, 2]),
   settingsController.changeQRUrlController
 );
 
 router.get(
   "/reset_db",
-  accessControl([1, 2, 3]),
+  accessControl([1, 2]),
   settingsController.resetDatabaseController
 );
 
 router.get(
   "/dashboard/get_teacher_count",
-  accessControl([1, 2, 3]),
+  accessControl([1, 2]),
   settingsController.getAllTeacherCountController
 );
 
 router.get(
   "/dashboard/get_his_subject_count",
-  accessControl([1, 2, 3]),
+  accessControl([1, 2]),
   settingsController.getAllTeachersSubjectCountController
 );
 
 router.get(
   "/dashboard/get_his_student_count",
-  accessControl([1, 2, 3]),
+  accessControl([1, 2]),
   settingsController.getAllTeachersStudentCountController
 );
 
 router.get(
   "/dashboard/get_his_subjects_with_student_count",
-  accessControl([1, 2, 3]),
+  accessControl([1, 2]),
   settingsController.getAllTeachersSubjecsWithStudentCountController
 );
 
 router.get(
   "/dashboard/get_students_attendance/:subject_id",
-  accessControl([1, 2, 3]),
+  accessControl([1, 2]),
   settingsController.getStudentsAttendanceWithWeekForEachSubjectController
 );
 
 
 router.get(
   "/dashboard/get_dashboard",
-  accessControl([1, 2, 3]),
+  accessControl([1, 2]),
   settingsController.getDashboardController
 );
 

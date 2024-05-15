@@ -37,13 +37,13 @@ router.post(
 
 router.get(
   "/get_user_roles",
-  accessControl([1, 2, 3]),
+  accessControl([1, 2]),
   userRoleController.getUserRolesWithoutBody
 );
 
 router.get(
   "/get_user_role/:id",
-  accessControl([1, 2, 3]),
+  accessControl([1, 2]),
   userRoleController.getUserRoleById
 );
 

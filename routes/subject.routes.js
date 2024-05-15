@@ -33,13 +33,13 @@ const router = express.Router();
 router.post(
   "/get_subjects",
   paginationMiddleware,
-  accessControl([1, 2, 3]),
+  accessControl([1, 2]),
   subjectController.getSubjects
 );
 
 router.get(
   "/get_subjects",
-  accessControl([1, 2, 3]),
+  accessControl([1, 2]),
   subjectController.getSubjectWithoutBody
 );
 
@@ -72,7 +72,7 @@ router.get(
 
 router.get(
   "/get_subject/:id",
-  accessControl([1, 2, 3]),
+  accessControl([1, 2]),
   subjectController.getSubject
 );
 
@@ -105,7 +105,7 @@ router.get(
 
 router.post(
   "/create_subject",
-  accessControl([1, 2, 3]),
+  accessControl([1, 2]),
   subjectController.createSubject
 );
 
@@ -150,7 +150,7 @@ router.post(
 
 router.put(
   "/update_subject/:id",
-  accessControl([1, 2, 3]),
+  accessControl([1, 2]),
   subjectController.updateSubject
 );
 
@@ -190,13 +190,13 @@ router.put(
 
 router.delete(
   "/delete_subject/:id",
-  accessControl([1, 2, 3]),
+  accessControl([1, 2]),
   subjectController.deleteSubject
 );
 
 router.put(
   "/start_subject/:id",
-  accessControl([1, 2, 3]),
+  accessControl([1, 2]),
   subjectController.startSubjectController
 );
 

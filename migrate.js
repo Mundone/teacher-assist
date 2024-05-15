@@ -7,12 +7,12 @@ const { profileUrl } = require("./config/const");
 const {
   lessonTypes,
   lectureLessonAssessments,
-  sorilLessonAssessments,
+  // sorilLessonAssessments,
   laboratoryLessonAssessments,
   assignmentLessonAssessments,
   seminarLessonAssessments,
-  testLessonAssessments,
-  subjectCodes,
+  // testLessonAssessments,
+  // subjectCodes,
   scheduleNames,
   scheduleDays,
   scheduleTimes,
@@ -20,6 +20,10 @@ const {
   adminMenuCodes,
   headOfDepartmentMenuCodes,
   teacherMenuCodes,
+  surveys,
+  questions,
+  offeredAnswers,
+  responses,students
 } = require("./dummyDatas");
 
 const resetDBFunction = async () => {
@@ -51,8 +55,8 @@ const insertRandomData = async () => {
   await models.UserRole.bulkCreate([
     { role_name: "Админ" },
     { role_name: "Багш" },
-    { role_name: "Тэнхимийн эрхлэгч" },
-    { role_name: "Оюутан" },
+    // { role_name: "Тэнхимийн эрхлэгч" },
+    // { role_name: "Оюутан" },
   ]);
 
   for (let i = 0; i < scheduleNames.length; i++) {
@@ -286,18 +290,56 @@ const insertRandomData = async () => {
     });
   }
 
-  const headOfDepartmentMenus = await models.Menu.findAll({
-    where: {
-      menu_code: { [Sequelize.Op.in]: headOfDepartmentMenuCodes },
-    },
-  });
-
-  for (const teacherMenu of headOfDepartmentMenus) {
-    await models.UserRoleMenu.create({
-      user_role_id: 3,
-      menu_id: teacherMenu.id,
+  for (const survey of surveys) {
+    await models.Survey.create({
+      survey_title: survey.survey_title,
+      description: survey.description,
     });
   }
+  
+  for (const question of questions) {
+    await models.Question.create({
+      question_text: question.question_text,
+      description: question.description,
+      type: question.type,
+    });
+  }
+  
+  for (const answer of offeredAnswers) {
+    await models.OfferedAnswer.create({
+      value: answer.value,
+    });
+  }
+
+  for (const student of students) {
+    await models.Student.create({
+      name: student.name,
+      student_code: student.student_code,
+      email: student.email,
+      password: student.password,
+    });
+  }
+  
+  for (const response of responses) {
+    await models.Response.create({
+      student_id: response.student_id,
+      question_id: response.question_id,
+      answer_text: response.answer_text,
+    });
+  }
+  
+  // const headOfDepartmentMenus = await models.Menu.findAll({
+  //   where: {
+  //     menu_code: { [Sequelize.Op.in]: headOfDepartmentMenuCodes },
+  //   },
+  // });
+
+  // for (const teacherMenu of headOfDepartmentMenus) {
+  //   await models.UserRoleMenu.create({
+  //     user_role_id: 3,
+  //     menu_id: teacherMenu.id,
+  //   });
+  // }
 };
 
 module.exports = {
