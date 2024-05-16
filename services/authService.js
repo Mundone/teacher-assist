@@ -359,6 +359,7 @@ const refreshTokenService = async (userId) => {
       ["code", "teacher_code"],
       "role_id",
       "profile_image",
+      "teams_auth_token",
     ],
   });
   if (!user) {
@@ -366,6 +367,8 @@ const refreshTokenService = async (userId) => {
     error.statusCode = 404;
     throw error;
   }
+
+  
 
   const userMenus = await allModels.Menu.findAll({
     include: [

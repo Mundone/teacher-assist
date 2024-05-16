@@ -71,8 +71,32 @@ passport.use(
 
         if (updateUser) {
           updateUser.name = profile.displayName;
+          console.log(accessToken)
+          updateUser.teams_auth_token = accessToken;
           await updateUser.save();
         }
+
+        const response = await fetch(
+          "https://graph.microsoft.com/v1.0/me/photo/$value",
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+
+        console.log(response)
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch profile image");
+        }
+
+        const imageBuffer = await response.buffer();
+        const base64Image = imageBuffer.toString("base64");
+        updateUser.profile_image = base64Image;
+        await updateUser.save();
+
+
 
         const { user, token, UserMenus } =
           await authService.authenticateUserService({
@@ -119,14 +143,13 @@ app.get(
       const authUser = req.user;
 
       const { user, token, UserMenus } =
-      await authService.authenticateUserService({
-        email: authUser?.email,
-        isDirect: true,
-      });
+        await authService.authenticateUserService({
+          email: authUser?.email,
+          isDirect: true,
+        });
 
       // res.redirect(`https://teachas.online?token=${token}`);
       res.redirect(`http://localhost:3032?token=${token}`);
-
     } catch (error) {
       if (error.statusCode == 403) {
         responses.forbidden(res, error);
@@ -136,7 +159,6 @@ app.get(
     }
   }
 );
-
 
 const printMicrosoftForms = async (accessToken) => {
   try {

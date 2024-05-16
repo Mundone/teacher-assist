@@ -1,33 +1,41 @@
 const surveys = [
   {
-    survey_title: "Survey 1",
-    description: "This is the first survey",
+    survey_title: "Оюутны зуны улирлын тест",
+    description: "Хувь хүний зан чанарын тест",
   },
   {
-    survey_title: "Survey 2",
-    description: "This is the second survey",
+    survey_title: "Багш нарын намрын тест",
+    description: "Ур чадварын тест",
   },
 ];
 
 const questions = [
   {
-    question_text: "What is your favorite color?",
-    placeholder: "Enter your favorite color",
-    type: "free_text",
+    question_text: "Дуртай өнгө чинь юу вэ?",
+    placeholder: "Дуртай өнгөө сонгоно үү.",
+    type: "single_selection",
+    order_no: 1,
+    survey_id: 1,
   },
   {
-    question_text: "Select your favorite fruit.",
-    placeholder: "Choose from the list",
-    type: "single_selection",
+    question_text: "Заан хэдэн хөлтэй вэ?",
+    placeholder: "Доор бичнэ үү.",
+    type: "free_text",
+    order_no: 2,
+    survey_id: 1,
   },
 ];
 
 const offeredAnswers = [
   {
-    value: "Red",
+    value: "Улаан",
+    question_id: 1,
+    order_no: 1,
   },
   {
-    value: "Apple",
+    value: "Цэнхэр",
+    question_id: 1,
+    order_no: 2,
   },
 ];
 
@@ -35,12 +43,14 @@ const responses = [
   {
     student_id: 1,
     question_id: 1,
-    answer_text: "Blue",
+    answer_text: "",
+    answer_id: 1,
   },
   {
     student_id: 2,
     question_id: 2,
-    answer_text: "Banana",
+    answer_text: "4 хөлтэй шдэ хэхэ.",
+    answer_id: null,
   },
 ];
 

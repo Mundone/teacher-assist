@@ -23,7 +23,8 @@ const {
   surveys,
   questions,
   offeredAnswers,
-  responses,students
+  responses,
+  students,
 } = require("./dummyDatas");
 
 const resetDBFunction = async () => {
@@ -296,18 +297,22 @@ const insertRandomData = async () => {
       description: survey.description,
     });
   }
-  
+
   for (const question of questions) {
     await models.Question.create({
       question_text: question.question_text,
       description: question.description,
       type: question.type,
+      order_no: question.order_no,
+      survey_id: question.survey_id,
     });
   }
-  
+
   for (const answer of offeredAnswers) {
     await models.OfferedAnswer.create({
       value: answer.value,
+      question_id: answer.question_id,
+      order_no: answer.order_no,
     });
   }
 
@@ -319,15 +324,16 @@ const insertRandomData = async () => {
       password: student.password,
     });
   }
-  
+
   for (const response of responses) {
     await models.Response.create({
       student_id: response.student_id,
       question_id: response.question_id,
       answer_text: response.answer_text,
+      answer_id: response.answer_id,
     });
   }
-  
+
   // const headOfDepartmentMenus = await models.Menu.findAll({
   //   where: {
   //     menu_code: { [Sequelize.Op.in]: headOfDepartmentMenuCodes },

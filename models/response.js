@@ -57,7 +57,7 @@ class Response extends Model {
     });
 
     this.belongsTo(models.OfferedAnswer, {
-      foreignKey: "offered_answer_id",
+      foreignKey: "answer_id",
       onDelete: "CASCADE",
       onUpdate: "CASCADE",
     });

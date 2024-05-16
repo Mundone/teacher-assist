@@ -1,4 +1,4 @@
-const subjectService = require("../services/subjectService");
+const surveyService = require("../services/surveyService");
 const buildWhereOptions = require("../utils/sequelizeUtil");
 const responses = require("../utils/responseUtil");
 
@@ -13,7 +13,7 @@ const getSurveysController = async (req, res, next) => {
       },
     ];
 
-    const objects = await subjectService.getSurveysService({
+    const objects = await surveyService.getSurveysService({
       where: buildWhereOptions(filters),
     });
     res.json(objects);
