@@ -53,8 +53,8 @@ passport.use(
     {
       clientID: process.env.CLIENT_ID,
       clientSecret: process.env.CLIENT_SECRET_VALUE,
-      // callbackURL: "http://localhost:3000/auth/microsoft/callback",
-      callbackURL: "https://api.teachas.online/auth/microsoft/callback",
+      callbackURL: "http://localhost:3000/auth/microsoft/callback",
+      // callbackURL: "https://api.teachas.online/auth/microsoft/callback",
       // callbackURL: "http://localhost:3032/",
       scope: ["user.read", "openid", "profile", "email"],
       authorizationURL:
@@ -71,30 +71,42 @@ passport.use(
 
         if (updateUser) {
           updateUser.name = profile.displayName;
-          console.log(accessToken)
+          // console.log(accessToken)
           updateUser.teams_auth_token = accessToken;
           await updateUser.save();
         }
 
         const response = await fetch(
-          "https://graph.microsoft.com/v1.0/me/photo/$value",
+          "https://graph.microsoft.com/v1.0/me/photos/48x48/$value",
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
             },
           }
         );
-
-        console.log(response)
-
+        
         if (!response.ok) {
           throw new Error("Failed to fetch profile image");
         }
+        
+        console.log("start: xxxxxx")
+        console.log(response)
+        console.log("end: xxxxxxx")
 
-        const imageBuffer = await response.buffer();
+        const imageArrayBuffer = await response.arrayBuffer(); // Use arrayBuffer() instead of buffer()
+        const imageBuffer = Buffer.from(imageArrayBuffer); // Convert ArrayBuffer to Buffer
         const base64Image = imageBuffer.toString("base64");
-        updateUser.profile_image = base64Image;
-        await updateUser.save();
+
+        console.log(base64Image.length);
+
+        try {
+          updateUser.profile_image = base64Image;
+          await updateUser.save();
+          console.log("Profile image saved successfully.");
+        } catch (error) {
+          console.error("Error saving profile image:", error);
+          throw error; // Rethrow the error to handle it at a higher level
+        }
 
 
 

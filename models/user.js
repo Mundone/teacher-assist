@@ -35,7 +35,7 @@ class User extends Model {
           type: DataTypes.STRING,
         },
         profile_image: {
-          type: DataTypes.STRING(255),
+          type: DataTypes.STRING(10000),
         },
         teams_auth_token: {
           type: DataTypes.STRING(255),
