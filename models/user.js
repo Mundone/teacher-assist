@@ -40,6 +40,9 @@ class User extends Model {
         teams_auth_token: {
           type: DataTypes.STRING(255),
         },
+        player_id: {
+          type: DataTypes.STRING(255),
+        },
       },
       {
         sequelize,

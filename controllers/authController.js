@@ -148,6 +148,19 @@ const sendOTPStudentController = async (req, res) => {
   }
 };
 
+const storePlayerIdController = async (req, res, next) => {
+  try {
+    const object = await authService.storePlayerIdService(req.body);
+    responses.created(res, object);
+  } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res, error);
+    } else {
+      responses.internalServerError(res, error);
+    }
+  }
+};
+
 module.exports = {
   registerController,
   loginController,
@@ -155,4 +168,5 @@ module.exports = {
   sendOTPStudentController,
   loginStudentController,
   getAuthInfoStudentController,
+  storePlayerIdController,
 };

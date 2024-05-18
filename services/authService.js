@@ -23,7 +23,7 @@ const registerUserService = async ({ code, name, password, roleID }) => {
   return newUser;
 };
 
-const authenticateUserService = async ({code, password, isDirect, email}) => {
+const authenticateUserService = async ({ code, password, isDirect, email }) => {
   let inputUser = null;
   if (isDirect == true) {
     inputUser = await allModels.User.findOne({
@@ -283,7 +283,7 @@ const sendEmailStudentService = async (email, student_code) => {
   }
 
   // const password = generateCode(6);
-  const password  = "123456";
+  const password = "123456";
   const options = mailOptionsStudent(email, password, ACTION_URL);
 
   try {
@@ -369,8 +369,6 @@ const refreshTokenService = async (userId) => {
     throw error;
   }
 
-  
-
   const userMenus = await allModels.Menu.findAll({
     include: [
       {
@@ -444,6 +442,14 @@ const refreshTokenStudentService = async (userId) => {
   return { user };
 };
 
+const storePlayerIdService = async ({ email, playerId }) => {
+  let updateUser = await allModels.User.findOne({
+    where: { email: email },
+    transaction,
+  });
+  return await updateUser.update({player_id: playerId});
+};
+
 module.exports = {
   registerUserService,
   authenticateUserService,
@@ -452,4 +458,5 @@ module.exports = {
   refreshTokenStudentService,
   sendEmailStudentService,
   authenticateUserMicrosoftService,
+  storePlayerIdService,
 };

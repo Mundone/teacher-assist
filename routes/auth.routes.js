@@ -77,4 +77,6 @@ router.post('/login_student', authController.loginStudentController);
 router.get('/get_auth_info', authController.getAuthInfoController);
 router.get('/get_auth_info_student', authController.getAuthInfoStudentController);
 
+router.post('/store_player_id', authController.storePlayerIdController);
+
 module.exports = router;
