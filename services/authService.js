@@ -444,7 +444,7 @@ const refreshTokenStudentService = async (userId) => {
 
 const storePlayerIdService = async ({ email, playerId }) => {
   let updateStudent = await allModels.Student.findOne({
-    where: { email: email },
+    where: { email: email?.toUpperCase() },
     // transaction,
   });
   return await updateStudent.update({player_id: playerId});

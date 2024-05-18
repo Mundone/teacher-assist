@@ -131,6 +131,9 @@ const createStudentService = async (data, subjectScheduleIds, userId) => {
       studentObject = existingStudentObject;
     } else {
       // Create a new student if one does not exist
+      if (data.email) {
+        data.email = data.email?.toUpperCase();
+      }
       studentObject = await allModels.Student.create(
         // { ...data, profile_image: profileUrl + data.student_code },
         { ...data },
@@ -209,11 +212,18 @@ const createStudentBulkService = async (studentData, subjectScheduleId) => {
 
     // Check and create/update students
     const studentPromises = studentData.map(async (data) => {
+      // Check if 'email' is present in the data and convert it to uppercase
+      if (data.email) {
+        data.email = data.email?.toUpperCase();
+      }
+    
+      // Perform the findOrCreate operation with the modified data
       const [student, created] = await allModels.Student.findOrCreate({
-        where: { student_code: data.student_code },
-        defaults: data,
+        where: { student_code: data.student_code }, // Assuming student_code is the unique identifier
+        defaults: data, // Pass the possibly modified data object
         transaction,
       });
+    
       return student;
     });
 
