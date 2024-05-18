@@ -282,7 +282,8 @@ const sendEmailStudentService = async (email, student_code) => {
     });
   }
 
-  const password = generateCode(6);
+  // const password = generateCode(6);
+  const password  = "123456";
   const options = mailOptionsStudent(email, password, ACTION_URL);
 
   try {
