@@ -12,8 +12,8 @@ function sendNotificationService(data, subjectObject) {
     app_id: ONE_SIGNAL_APP_ID,
     contents: { en: "Таныг " + subjectObject?.subject?.subject_name + " хичээлд амжилттай нэмлээ." },
     headings: { en: "Сайн уу хэхахах." },
-    included_segments: ["All"]
-    // include_player_ids: [data.playerId]
+    // included_segments: ["All"]
+    include_player_ids: [data.playerId]
   };
 
   return axios.post("https://onesignal.com/api/v1/notifications", body, { headers })

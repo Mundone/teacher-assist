@@ -35,7 +35,7 @@ const createSurveyService = async (body, userId) => {
       {
         survey_title,
         description,
-        user_id: userId
+        user_id: userId,
       },
       { transaction }
     );
@@ -74,14 +74,15 @@ const createSurveyService = async (body, userId) => {
   }
 };
 
-const submitSurveyService = async (responses, studentId) => {
+const submitSurveyService = async (body, studentId) => {
   const transaction = await allModels.sequelize.transaction();
-
+  console.log(body.responses);
+  let newResponse = null;
   try {
-    for (const response of responses) {
+    for (const response of body.responses) {
       const { question_id, answer_text, answer_id } = response;
 
-      await allModels.Response.create(
+      newResponse = await allModels.Response.create(
         {
           student_id: studentId,
           question_id,
@@ -93,9 +94,11 @@ const submitSurveyService = async (responses, studentId) => {
     }
 
     await transaction.commit();
+    return newResponse;
   } catch (error) {
     await transaction.rollback();
-    throw error;
+    return nulll;
+    // throw error;
   }
 };
 

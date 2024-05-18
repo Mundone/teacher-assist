@@ -181,7 +181,7 @@ const createStudentService = async (data, subjectScheduleIds, userId) => {
 
     // Commit the transaction
     await transaction.commit();
-    await sendNotificationService(data, subjectObject);
+    await sendNotificationService(studentObject, subjectObject);
     
     return studentObject; // Return the student object (new or existing)
   } catch (error) {

@@ -18,7 +18,6 @@ router.post(
 
 router.post(
   "/sumbit_survey",
-  accessControl([1, 2]),
   surveyController.submitSurveyController
 );
 

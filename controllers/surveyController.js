@@ -48,10 +48,10 @@ const submitSurveyController = async (req, res, next) => {
     responses.created(res, objects);
   } catch (error) {
       responses.forbidden(res, error);
-    if (error.statusCode == 403) {
-    } else {
-      responses.internalServerError(res, error);
-    }
+    // if (error.statusCode == 403) {
+    // } else {
+    //   responses.internalServerError(res, error);
+    // }
   }
 };
 

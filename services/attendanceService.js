@@ -73,6 +73,8 @@ const createAttendanceService = async (objectData, protocol, host, userId) => {
     });
   }
 
+  console.log(thatLesson)
+
   // const thatLesson = await allModels.Lesson.findOne({
   //   where: (week_number = objectData.week),
   // });
@@ -399,9 +401,9 @@ const getStudentsWithAttendanceService = async ({
   attendanceId,
   userId,
 }) => {
-  console.log(attendanceId);
+  // console.log(attendanceId);
   const attendanceObject = await allModels.Attendance.findByPk(attendanceId);
-  console.log(attendanceObject);
+  // console.log(attendanceObject);
   await checkIfUserCorrect(attendanceObject?.subject_schedule_id, userId);
 
   const { count: totalAttendanceResponses, rows: attendanceResponses } =

@@ -18,6 +18,9 @@ class Subject extends Model {
         is_started: {
           type: DataTypes.BOOLEAN,
         },
+        color: {
+          type: DataTypes.STRING(100),
+        },
         updated_by: {
           type: DataTypes.INTEGER,
           references: {
