@@ -160,7 +160,7 @@ const getAllStudentsSubjectsService = async ({ studentId }) => {
         include: [
           {
             model: allModels.StudentSubjectSchedule,
-            attributes: [], // No need for specific attributes in this model
+            attributes: [],
             where: { student_id: studentId },
           },
           {

@@ -26,6 +26,37 @@ const getSurveysController = async (req, res, next) => {
   }
 };
 
+const createSurveyController = async (req, res, next) => {
+  try {
+    const userId = req.user && req.user.id;
+    const objects = await surveyService.createSurveyService(req.body, userId);
+    responses.created(res, objects);
+  } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res, error);
+    } else {
+      responses.internalServerError(res, error);
+    }
+  }
+};
+
+
+const submitSurveyController = async (req, res, next) => {
+  try {
+    const userId = req.user && req.user.id;
+    const objects = await surveyService.submitSurveyService(req.body, userId);
+    responses.created(res, objects);
+  } catch (error) {
+      responses.forbidden(res, error);
+    if (error.statusCode == 403) {
+    } else {
+      responses.internalServerError(res, error);
+    }
+  }
+};
+
 module.exports = {
-  getSurveysController
+  getSurveysController,
+  createSurveyController,
+  submitSurveyController
 };

@@ -85,7 +85,7 @@ const getStudentByIdService = async (id) => {
 // );
 
 //subjectScheduleId ni unendee subject shuu
-const createStudentService = async (data, subjectScheduleId, userId) => {
+const createStudentService = async (data, subjectScheduleIds, userId) => {
   // Start a transaction
   const transaction = await allModels.sequelize.transaction();
 
@@ -99,7 +99,7 @@ const createStudentService = async (data, subjectScheduleId, userId) => {
             where: { teacher_user_id: userId },
           },
         ],
-        where: { id: subjectScheduleId },
+        where: { id: subjectScheduleIds[0] },
       },
       { transaction }
     );
@@ -138,17 +138,17 @@ const createStudentService = async (data, subjectScheduleId, userId) => {
     }
 
     // Retrieve all SubjectSchedules associated with the subject_id
-    const subjectScheduleObjects = await allModels.SubjectSchedule.findAll(
-      {
-        where: { subject_id: subjectObject.subject_id },
-      },
-      { transaction }
-    );
+    // const subjectScheduleObjects = await allModels.SubjectSchedule.findAll(
+    //   {
+    //     where: { subject_id: subjectObject.subject_id },
+    //   },
+    //   { transaction }
+    // );
 
     // Prepare data for linking student with subject schedules
-    const studentSubjectScheduleData = subjectScheduleObjects.map((ss) => ({
+    const studentSubjectScheduleData = subjectScheduleIds.map((ss) => ({
       student_id: studentObject.id,
-      subject_schedule_id: ss.id,
+      subject_schedule_id: ss,
     }));
 
     // Link student to subject schedules

@@ -10,4 +10,16 @@ router.get(
   surveyController.getSurveysController
 );
 
+router.post(
+  "/create_survey",
+  accessControl([1, 2]),
+  surveyController.createSurveyController
+);
+
+router.post(
+  "/sumbit_survey",
+  accessControl([1, 2]),
+  surveyController.submitSurveyController
+);
+
 module.exports = router;
