@@ -24,6 +24,9 @@ class Student extends Model {
         password: {
           type: DataTypes.STRING,
         },
+        player_id: {
+          type: DataTypes.STRING(255),
+        },
         // grade: {
         //   type: DataTypes.JSON,
         // },

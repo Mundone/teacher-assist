@@ -443,11 +443,11 @@ const refreshTokenStudentService = async (userId) => {
 };
 
 const storePlayerIdService = async ({ email, playerId }) => {
-  let updateUser = await allModels.User.findOne({
+  let updateStudent = await allModels.Student.findOne({
     where: { email: email },
     // transaction,
   });
-  return await updateUser.update({player_id: playerId});
+  return await updateStudent.update({player_id: playerId});
 };
 
 module.exports = {
