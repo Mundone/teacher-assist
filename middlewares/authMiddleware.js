@@ -36,6 +36,7 @@ const methodCheckMiddleware = (req, res, next) => {
     { method: "GET", path: "/auth/microsoft" },
     { method: "GET", path: "/auth/microsoft/callback" },
     { method: "GET", path: "/.well-known/microsoft-identity-association.json" },
+    { method: "POST", path: "/store_player_id" },
   ];
 
   // Define the GET routes that require authentication
