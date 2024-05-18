@@ -2,6 +2,7 @@
 const allModels = require("../models");
 const { Sequelize } = require("sequelize");
 const { profileUrl } = require("../config/const");
+const { sendNotificationService } = require("./notificationService");
 
 const getAllStudentsService = async ({
   where,
@@ -177,12 +178,15 @@ const createStudentService = async (data, subjectScheduleIds, userId) => {
 
     // Commit the transaction
     await transaction.commit();
-
+    await sendNotificationService(data, subjectObject);
+    
     return studentObject; // Return the student object (new or existing)
   } catch (error) {
     // Rollback the transaction in case of an error
-    await transaction.rollback();
-    throw error;
+    // await transaction.rollback();
+    // throw error;
+    console.error("Failed to send notification:", error.response ? error.response.data : error);
+  return Promise.reject(error);
   }
 };
 

@@ -49,9 +49,13 @@ const getStudentsController = async (req, res, next) => {
       // or you want to take the first one.
       const subjectSchedule =
         student.student_subject_schedules[0]?.subject_schedule;
-        const student_subject_schedule_concat = student.student_subject_schedules
-        .map(ss_sc => ss_sc.subject_schedule.schedule.schedule_name)
-        .join(', ');
+      // const student_subject_schedule_concat = student.student_subject_schedules
+      //   .map((ss_sc) => ss_sc.subject_schedule.schedule.schedule_name)
+      //   .join(", ");
+      const student_subject_schedule_concat =
+        student.student_subject_schedules.map(
+          (ss_sc) => ss_sc.subject_schedule.schedule.schedule_name
+        );
       return {
         id: student.id,
         name: student.name,
@@ -60,7 +64,7 @@ const getStudentsController = async (req, res, next) => {
         subject_schedule_id: subjectSchedule?.id,
         schedule_id: subjectSchedule?.schedule.id,
         // schedule_name: subjectSchedule?.schedule.schedule_name,
-        student_subject_schedule_concat
+        student_subject_schedule_concat,
         // Assuming you want to combine lecture_day and lecture_time for the name
         // Ensure that both properties exist in your data structure
         // subject_schedule_name:
