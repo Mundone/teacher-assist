@@ -45,13 +45,20 @@ const createAttendanceService = async (objectData, protocol, host, userId) => {
 
   const week = await settingsService.getCurrentWeekService();
 
+  let subjectScheduleObject = await allModels.SubjectSchedule.findByPk(
+    subject_schedule_id
+  );
+
   let thatLesson = await allModels.Lesson.findOne({
-    where: { week_number: week.semester.weekNumber },
+    where: {
+      week_number: week.semester.weekNumber,
+      subject_id: subjectScheduleObject?.subject_id,
+    },
     include: {
       model: allModels.LessonAssessment,
       include: {
         model: allModels.LessonType,
-        where: { id: objectData.subject_schedule_id },
+        where: { id: subjectScheduleObject?.lesson_type_id },
       },
     },
   });
@@ -59,13 +66,16 @@ const createAttendanceService = async (objectData, protocol, host, userId) => {
   if (!thatLesson) {
     thatLesson = await allModels.Lesson.findOne({
       order: [["week_number", "DESC"]], // Orders by week_number in descending order to get the highest
+      where: {
+        subject_id: subjectScheduleObject?.subject_id,
+      },
       include: [
         {
           model: allModels.LessonAssessment,
           include: [
             {
               model: allModels.LessonType,
-              where: { id: objectData.subject_schedule_id },
+              where: { id: subjectScheduleObject?.lesson_type_id },
             },
           ],
         },
