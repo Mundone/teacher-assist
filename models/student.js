@@ -16,7 +16,7 @@ class Student extends Model {
           type: DataTypes.STRING(255),
         },
         profile_image: {
-          type: DataTypes.STRING(255),
+          type: DataTypes.STRING(10000),
         },
         email: {
           type: DataTypes.STRING(255),
