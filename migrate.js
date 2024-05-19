@@ -237,7 +237,7 @@ const insertRandomData = async () => {
 
   await models.Semester.create({
     semester_code: "2024B - Хаврын улирал",
-    start_date: new Date("2024-01-24"),
+    start_date: new Date("2024-03-06"),
     is_active: true,
     user_id: 1,
   });

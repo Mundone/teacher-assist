@@ -21,4 +21,9 @@ router.post(
   surveyController.submitSurveyController
 );
 
+router.get(
+  "/get_surveys_as_student",
+  surveyController.getSurveysController
+);
+
 module.exports = router;

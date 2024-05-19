@@ -86,7 +86,6 @@ passport.use(
           if (profile?.officeLocation) {
             updateUser.office_location = profile?.officeLocation;
           }
-          // console.log(accessToken)
           updateUser.teams_auth_token = accessToken;
           await updateUser.save();
         }
@@ -103,16 +102,9 @@ passport.use(
         if (!response.ok) {
           throw new Error("Failed to fetch profile image");
         }
-
-        // console.log("start: xxxxxx")
-        // console.log(response)
-        // console.log("end: xxxxxxx")
-
-        const imageArrayBuffer = await response?.arrayBuffer(); // Use arrayBuffer() instead of buffer()
-        const imageBuffer = Buffer.from(imageArrayBuffer); // Convert ArrayBuffer to Buffer
+        const imageArrayBuffer = await response?.arrayBuffer();
+        const imageBuffer = Buffer.from(imageArrayBuffer);
         const base64Image = imageBuffer?.toString("base64");
-
-        // console.log(base64Image?.length);
 
         try {
           if (updateUser) {
@@ -122,7 +114,7 @@ passport.use(
           console.log("Profile image saved successfully.");
         } catch (error) {
           console.error("Error saving profile image:", error);
-          throw error; // Rethrow the error to handle it at a higher level
+          throw error;
         }
 
         const { user, token, UserMenus } =
@@ -148,21 +140,6 @@ passport.deserializeUser(function (user, done) {
 });
 
 app.get(
-  "/auth/microsoft",
-  passport.authenticate("microsoft"),
-  async (req, res) => {
-    try {
-    } catch (error) {
-      if (error.statusCode == 403) {
-        responses.forbidden(res, error);
-      } else {
-        responses.internalServerError(res, error);
-      }
-    }
-  }
-);
-
-app.get(
   "/auth/microsoft/callback",
   passport.authenticate("microsoft"),
   async (req, res) => {
@@ -177,6 +154,21 @@ app.get(
 
       // res.redirect(`https://teachas.online?token=${token}`);
       res.redirect(`http://localhost:3032?token=${token}`);
+    } catch (error) {
+      if (error.statusCode == 403) {
+        responses.forbidden(res, error);
+      } else {
+        responses.internalServerError(res, error);
+      }
+    }
+  }
+);
+
+app.get(
+  "/auth/microsoft",
+  passport.authenticate("microsoft"),
+  async (req, res) => {
+    try {
     } catch (error) {
       if (error.statusCode == 403) {
         responses.forbidden(res, error);
