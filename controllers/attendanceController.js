@@ -3,45 +3,23 @@ const responses = require("../utils/responseUtil");
 const buildWhereOptions = require("../utils/sequelizeUtil");
 const { parse, stringify } = require("flatted");
 
-// const getStudentsAttendanceListController = async (req, res, next) => {
-//   try {
-//     const userId = req.user && req.user.id;
-//     const { pageNo, pageSize, sortBy, sortOrder, filters } = req.pagination;
-//     const { attendance_id } = req.body;
+const getStudentsAttendanceController = async (req, res, next) => {
+  try {
+    const userId = req.user && req.user.id;
+    const { attendance_id } = req.body;
 
-//     const queryOptions = {
-//       where: buildWhereOptions(filters),
-//       limit: pageSize,
-//       offset: pageNo * pageSize,
-//       order: [[sortBy, sortOrder]],
-//       attendanceId: attendance_id,
-//       userId,
-//     };
+    const returnObject =
+    await userService.getStudentsAttendanceService(userId, attendance_id);
+    res.json(returnObject);
 
-//     // const { totalObjects, objects } =
-//     //   await userService.getStudentsAttendanceListService(queryOptions);
-
-//     const returnObject =
-//     await userService.getStudentsAttendanceListService(queryOptions);
-//     res.json(returnObject);
-
-//     // res.json({
-//     //   pagination: {
-//     //     current_page_no: pageNo + 1,
-//     //     total_pages: Math.ceil(totalObjects / pageSize),
-//     //     per_page: pageSize,
-//     //     total_elements: totalObjects,
-//     //   },
-//     //   data: objects,
-//     // });
-//   } catch (error) {
-//     if (error.statusCode == 403) {
-//       responses.forbidden(res, error);
-//     } else {
-//       responses.internalServerError(res, error);
-//     }
-//   }
-// };
+  } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res, error);
+    } else {
+      responses.internalServerError(res, error);
+    }
+  }
+};
 
 const getAttendanceController = async (req, res, next) => {
   try {
@@ -234,5 +212,5 @@ module.exports = {
   getAllAttendanceResponsesController,
   getStudentsWithAttendanceController,
   registerAttendanceInMobileController,
-  // getStudentsAttendanceListController,
+  getStudentsAttendanceController,
 };

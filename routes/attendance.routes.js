@@ -46,6 +46,10 @@ router.post(
   attendanceController.getStudentsWithAttendanceController
 );
 
+router.get(
+  "/student/get_students_attendance/:id",
+  attendanceController.getStudentsAttendanceController
+);
 
 // router.get(
 //   "/get_students/:id",

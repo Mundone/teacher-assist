@@ -138,9 +138,9 @@ const resetDatabaseController = async (req, res, next) => {
 const getAllTeacherCountController = async (req, res, next) => {
   try {
     const data = await settingsService.getAllTeacherCountService();
-    if (!data) {
-      responses.notFound(res);
-    }
+    // if (!data) {
+    //   responses.notFound(res);
+    // }
     res.json(data);
   } catch (error) {
     if (error.statusCode == 403) {
@@ -157,9 +157,9 @@ const getAllTeachersSubjectCountController = async (req, res, next) => {
     const data = await settingsService.getAllTeachersSubjectCountService(
       userId
     );
-    if (!data) {
-      responses.notFound(res);
-    }
+    // if (!data) {
+    //   responses.notFound(res);
+    // }
     res.json(data);
   } catch (error) {
     if (error.statusCode == 403) {

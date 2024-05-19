@@ -73,6 +73,9 @@ const authenticateUserService = async ({ code, password, isDirect, email }) => {
     role_id: inputUser?.role_id,
     user_role: inputUser?.user_role,
     profile_image: inputUser?.profile_image,
+    job_title: inputUser?.job_title,
+    phone_number: inputUser?.phone_number,
+    office_location: inputUser?.office_location,
   };
 
   const userMenus = await allModels.Menu.findAll({
@@ -360,7 +363,9 @@ const refreshTokenService = async (userId) => {
       ["code", "teacher_code"],
       "role_id",
       "profile_image",
-      "teams_auth_token",
+      "job_title",
+      "phone_number",
+      "office_location",
     ],
   });
   if (!user) {

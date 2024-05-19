@@ -53,8 +53,8 @@ passport.use(
     {
       clientID: process.env.CLIENT_ID,
       clientSecret: process.env.CLIENT_SECRET_VALUE,
-      // callbackURL: "http://localhost:3000/auth/microsoft/callback",
-      callbackURL: "https://api.teachas.online/auth/microsoft/callback",
+      callbackURL: "http://localhost:3000/auth/microsoft/callback",
+      // callbackURL: "https://api.teachas.online/auth/microsoft/callback",
       // callbackURL: "http://localhost:3032/",
       scope: ["user.read", "openid", "profile", "email"],
       authorizationURL:
@@ -65,12 +65,27 @@ passport.use(
     },
     async function (accessToken, refreshToken, profile, done) {
       try {
+        console.log("start: xxxxxx");
+        console.log(profile);
+        console.log("end: xxxxxxx");
+
         let updateUser = await allModels.User.findOne({
           where: { email: profile?.emails[0]?.value },
         });
 
         if (updateUser) {
-          updateUser.name = profile.displayName;
+          if (profile?.displayName) {
+            updateUser.name = profile?.displayName;
+          }
+          if (profile?.jobTitle) {
+            updateUser.job_title = profile?.jobTitle;
+          }
+          if (profile?.mobilePhone) {
+            updateUser.phone_number = profile?.mobilePhone;
+          }
+          if (profile?.officeLocation) {
+            updateUser.office_location = profile?.officeLocation;
+          }
           // console.log(accessToken)
           updateUser.teams_auth_token = accessToken;
           await updateUser.save();
@@ -84,31 +99,31 @@ passport.use(
             },
           }
         );
-        
+
         if (!response.ok) {
           throw new Error("Failed to fetch profile image");
         }
-        
-        console.log("start: xxxxxx")
-        console.log(response)
-        console.log("end: xxxxxxx")
 
-        const imageArrayBuffer = await response.arrayBuffer(); // Use arrayBuffer() instead of buffer()
+        // console.log("start: xxxxxx")
+        // console.log(response)
+        // console.log("end: xxxxxxx")
+
+        const imageArrayBuffer = await response?.arrayBuffer(); // Use arrayBuffer() instead of buffer()
         const imageBuffer = Buffer.from(imageArrayBuffer); // Convert ArrayBuffer to Buffer
-        const base64Image = imageBuffer.toString("base64");
+        const base64Image = imageBuffer?.toString("base64");
 
-        console.log(base64Image.length);
+        // console.log(base64Image?.length);
 
         try {
-          updateUser.profile_image = base64Image;
-          await updateUser.save();
+          if (updateUser) {
+            updateUser.profile_image = base64Image;
+            await updateUser.save();
+          }
           console.log("Profile image saved successfully.");
         } catch (error) {
           console.error("Error saving profile image:", error);
           throw error; // Rethrow the error to handle it at a higher level
         }
-
-
 
         const { user, token, UserMenus } =
           await authService.authenticateUserService({

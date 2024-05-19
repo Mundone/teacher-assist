@@ -73,7 +73,7 @@ const createAttendanceService = async (objectData, protocol, host, userId) => {
     });
   }
 
-  console.log(thatLesson)
+  console.log(thatLesson);
 
   // const thatLesson = await allModels.Lesson.findOne({
   //   where: (week_number = objectData.week),
@@ -247,7 +247,6 @@ function isWithinRadius(
 }
 
 const registerAttendanceInMobileService = async (objectData, userId) => {
-
   const attendanceObject = await allModels.Attendance.findByPk(
     objectData.attendance_id,
     {
@@ -265,68 +264,68 @@ const registerAttendanceInMobileService = async (objectData, userId) => {
   const studentDistance = isWithinRadius(attendanceObject, objectData);
 
   // if (studentDistance) {
-    const studentObject = await allModels.Student.findByPk(userId);
+  const studentObject = await allModels.Student.findByPk(userId);
 
-    // Check if the student is related to the subject schedule in one query
-    // const studentCount = await allModels.StudentSubjectSchedule.count({
-    //   where: {
-    //     "$Student.student_code$": studentObject.student_code,
-    //     subject_schedule_id: attendanceObject.subject_schedule_id,
-    //   },
-    //   include: [
-    //     {
-    //       model: allModels.Student,
-    //       attributes: [],
-    //     },
-    //   ],
-    // });
+  // Check if the student is related to the subject schedule in one query
+  // const studentCount = await allModels.StudentSubjectSchedule.count({
+  //   where: {
+  //     "$Student.student_code$": studentObject.student_code,
+  //     subject_schedule_id: attendanceObject.subject_schedule_id,
+  //   },
+  //   include: [
+  //     {
+  //       model: allModels.Student,
+  //       attributes: [],
+  //     },
+  //   ],
+  // });
 
-    // if (studentCount === 0) {
-    //   throw new Error("Энэ оюутан энэ хичээлийнх биш байна.", 403);
-    // }
+  // if (studentCount === 0) {
+  //   throw new Error("Энэ оюутан энэ хичээлийнх биш байна.", 403);
+  // }
 
-    if (attendanceObject.qr_containing_text == objectData.qr_containing_text) {
-      // Check if the student has already registered
-      const isRegistered = await allModels.AttendanceResponse.count({
-        where: {
-          submitted_code: studentObject.student_code,
-          attendance_id: attendanceObject.id,
-        },
-      });
-
-      if (isRegistered > 0) {
-        throw new Error("Энэ оюутан бүртгэгдсэн байна.", 400);
-      }
-
-      // Create the attendance response
-      const returnData = await allModels.AttendanceResponse.create({
-        attendance_id: attendanceObject.id,
+  if (attendanceObject.qr_containing_text == objectData.qr_containing_text) {
+    // Check if the student has already registered
+    const isRegistered = await allModels.AttendanceResponse.count({
+      where: {
         submitted_code: studentObject.student_code,
-        submitted_name: studentObject.student_name,
-        attendance_date: new Date(),
-      });
+        attendance_id: attendanceObject.id,
+      },
+    });
 
-      console.log(studentObject.id);
-      console.log(attendanceObject.lesson_id);
-
-      const gradeObject = await allModels.Grade.findOne({
-        where: {
-          student_id: studentObject.id,
-          lesson_id: attendanceObject.lesson_id,
-        },
-      });
-
-      // Since the student is already verified above, directly update the grade without re-fetching the student
-      await gradeService.updateGradeService(
-        gradeObject?.id,
-        { grade: 1, updatedAt: new Date(), distance: studentDistance },
-        null,
-        true
-      );
-      return returnData;
-    } else {
-      throw new Error("qr string буруу байна.", 400);
+    if (isRegistered > 0) {
+      throw new Error("Энэ оюутан бүртгэгдсэн байна.", 400);
     }
+
+    // Create the attendance response
+    const returnData = await allModels.AttendanceResponse.create({
+      attendance_id: attendanceObject.id,
+      submitted_code: studentObject.student_code,
+      submitted_name: studentObject.student_name,
+      attendance_date: new Date(),
+    });
+
+    console.log(studentObject.id);
+    console.log(attendanceObject.lesson_id);
+
+    const gradeObject = await allModels.Grade.findOne({
+      where: {
+        student_id: studentObject.id,
+        lesson_id: attendanceObject.lesson_id,
+      },
+    });
+
+    // Since the student is already verified above, directly update the grade without re-fetching the student
+    await gradeService.updateGradeService(
+      gradeObject?.id,
+      { grade: 1, updatedAt: new Date(), distance: studentDistance },
+      null,
+      true
+    );
+    return returnData;
+  } else {
+    throw new Error("qr string буруу байна.", 400);
+  }
   // } else {
   //   throw new Error(
   //     "Байршил " +
@@ -451,64 +450,28 @@ async function checkIfUserCorrect(subjectScheduleId, userId) {
   }
 }
 
-// const getStudentsAttendanceListService = async ({
-//   where,
-//   limit,
-//   offset,
-//   order,
-//   attendanceId,
-//   userId,
-// }) => {
-//   const attendanceObject = allModels.Attendance.findByPk(attendanceId, {
-//     include: [
-//       {
-//         model: allModels.Lesson,
-//         include: [
-//           {
-//             model: allModels.Grade,
-//           },
-//           {
-//             model: allModels.LessonAssessment,
-//             where: {
-//               is_attendance_add: true,
-//             },
-//           },
-//         ],
-//       },
-//     ],
-//   });
+const getStudentsAttendanceService = async (userId, attendanceId) => {
+  const attendanceObject = allModels.Attendance.findByPk(attendanceId, {
+    include: [
+      {
+        model: allModels.Lesson,
+        include: [
+          {
+            model: allModels.Grade,
+          },
+          {
+            model: allModels.LessonAssessment,
+            where: {
+              is_attendance_add: true,
+            },
+          },
+        ],
+      },
+    ],
+  });
 
-//   return attendanceObject;
-//   let { count: totalObjects, rows: objects } =
-//     await allModels.Student.findAndCountAll({
-//       include: [
-//         {
-//           model: allModels.UserRole,
-//           attributes: ["id", "role_name"],
-//         },
-//       ],
-//       attributes: [
-//         "id",
-//         "name",
-//         "email",
-//         "code",
-//         "role_id",
-//         "school_id",
-//         "createdAt",
-//       ],
-
-//       where: where,
-//       limit: limit,
-//       offset: offset,
-//       order: order,
-//       distinct: true,
-//     });
-
-//   return {
-//     totalObjects,
-//     objects,
-//   };
-// };
+  return attendanceObject;
+};
 
 module.exports = {
   getAttendanceByIdService,
@@ -518,5 +481,5 @@ module.exports = {
   getAllAttendanceResponsesService,
   getStudentsWithAttendanceService,
   registerAttendanceInMobileService,
-  // getStudentsAttendanceListService,
+  getStudentsAttendanceService,
 };

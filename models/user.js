@@ -43,6 +43,15 @@ class User extends Model {
         player_id: {
           type: DataTypes.STRING(255),
         },
+        job_title: {
+          type: DataTypes.STRING(255),
+        },
+        phone_number: {
+          type: DataTypes.STRING(255),
+        },
+        office_location: {
+          type: DataTypes.STRING(255),
+        },
       },
       {
         sequelize,
