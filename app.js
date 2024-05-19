@@ -53,8 +53,8 @@ passport.use(
     {
       clientID: process.env.CLIENT_ID,
       clientSecret: process.env.CLIENT_SECRET_VALUE,
-      // callbackURL: "http://localhost:3000/auth/microsoft/callback",
-      callbackURL: "https://api.teachas.online/auth/microsoft/callback",
+      callbackURL: "http://localhost:3000/auth/microsoft/callback",
+      // callbackURL: "https://api.teachas.online/auth/microsoft/callback",
       // callbackURL: "http://localhost:3032/",
       scope: ["user.read", "openid", "profile", "email"],
       authorizationURL:
@@ -152,8 +152,8 @@ app.get(
           isDirect: true,
         });
 
-      // res.redirect(`https://teachas.online?token=${token}`);
-      res.redirect(`http://localhost:3032?token=${token}`);
+      res.redirect(`https://teachas.online?token=${token}`);
+      // res.redirect(`http://localhost:3032?token=${token}`);
     } catch (error) {
       if (error.statusCode == 403) {
         responses.forbidden(res, error);
