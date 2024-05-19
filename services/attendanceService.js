@@ -46,7 +46,7 @@ const createAttendanceService = async (objectData, protocol, host, userId) => {
   const week = await settingsService.getCurrentWeekService();
 
   let subjectScheduleObject = await allModels.SubjectSchedule.findByPk(
-    subject_schedule_id
+    objectData.subject_schedule_id
   );
 
   let thatLesson = await allModels.Lesson.findOne({
