@@ -7,141 +7,286 @@ const getAllSubjects = async ({
   offset,
   order,
   isWithoutBody,
+  isForLecture,
 }) => {
-  if (isWithoutBody) {
-    return await allModels.Subject.findAll({
-      attributes: [
-        "id",
-        "subject_name",
-        "subject_code",
-        "is_started",
-        "createdAt",
-        [
-          Sequelize.literal(`(
+  if (isForLecture) {
+    if (isWithoutBody) {
+      return await allModels.Subject.findAll({
+        attributes: [
+          "id",
+          "subject_name",
+          "subject_code",
+          "is_started",
+          "createdAt",
+          [
+            Sequelize.literal(`(
+            SELECT COUNT(DISTINCT student.id)
+            FROM student_subject_schedule
+            JOIN student ON student.id = student_subject_schedule.student_id
+            JOIN subject_schedule ON subject_schedule.id = student_subject_schedule.subject_schedule_id
+            WHERE subject_schedule.subject_id = subject.id
+          )`),
+            "student_count",
+          ],
+        ],
+        where: where,
+        include: [
+          {
+            model: allModels.SubjectLessonType,
+            attributes: ["lesson_type_id"],
+            include: [
+              {
+                model: allModels.LessonType,
+                attributes: ["lesson_type_name"],
+              },
+            ],
+          },
+          {
+            model: allModels.SubjectSchedule,
+            attributes: ["lesson_type_id"],
+            where: {
+              [Sequelize.Op.or]: [
+                { lesson_type_id: 1 },
+                { lesson_type_id: 2 },
+                { lesson_type_id: 3 }
+              ]
+            },
+            include: [
+              {
+                model: allModels.StudentSubjectSchedule,
+                attributes: [
+                  "id",
+                  "student_id",
+                  "subject_schedule_id",
+                  "createdAt",
+                ],
+                include: [
+                  {
+                    model: allModels.Student,
+                  },
+                ],
+              },
+              {
+                model: allModels.LessonType,
+                attributes: ["id", "lesson_type_name"],
+              },
+              {
+                model: allModels.Schedule,
+              },
+            ],
+            attributes: [
+              "id",
+              "subject_id",
+              "lesson_type_id",
+              // "lecture_day",
+              // "lecture_time",
+              "createdAt",
+            ],
+          },
+        ],
+      });
+    }
+
+    let { count: totalSubjects, rows: subjects } =
+      await allModels.Subject.findAndCountAll({
+        attributes: [
+          "id",
+          "subject_name",
+          "subject_code",
+          "is_started",
+          "createdAt",
+          [
+            Sequelize.literal(`(
           SELECT COUNT(DISTINCT student.id)
           FROM student_subject_schedule
           JOIN student ON student.id = student_subject_schedule.student_id
           JOIN subject_schedule ON subject_schedule.id = student_subject_schedule.subject_schedule_id
           WHERE subject_schedule.subject_id = subject.id
         )`),
-          "student_count",
+            "student_count",
+          ],
         ],
-      ],
-      where: where,
-      include: [
-        {
-          model: allModels.SubjectLessonType,
-          attributes: ["lesson_type_id"],
-          include: [
-            {
-              model: allModels.LessonType,
-              attributes: ["lesson_type_name"],
-            },
+        include: [
+          {
+            model: allModels.SubjectLessonType,
+            attributes: ["lesson_type_id"],
+            include: [
+              {
+                model: allModels.LessonType,
+                attributes: ["lesson_type_name"],
+              },
+            ],
+          },
+          {
+            model: allModels.SubjectSchedule,
+            attributes: ["lesson_type_id"],
+            include: [
+              {
+                model: allModels.Subject,
+                attributes: ["id", "subject_name", "is_started"],
+              },
+              {
+                model: allModels.LessonType,
+                attributes: ["id", "lesson_type_name"],
+              },
+            ],
+            attributes: [
+              "id",
+              "subject_id",
+              "lesson_type_id",
+              // "lecture_day",
+              // "lecture_time",
+              "createdAt",
+            ],
+          },
+        ],
+        where: where,
+        limit: limit,
+        offset: offset,
+        order: order,
+        distinct: true,
+      });
+
+    return {
+      totalSubjects,
+      subjects,
+    };
+  } else {
+    if (isWithoutBody) {
+      return await allModels.Subject.findAll({
+        attributes: [
+          "id",
+          "subject_name",
+          "subject_code",
+          "is_started",
+          "createdAt",
+          [
+            Sequelize.literal(`(
+            SELECT COUNT(DISTINCT student.id)
+            FROM student_subject_schedule
+            JOIN student ON student.id = student_subject_schedule.student_id
+            JOIN subject_schedule ON subject_schedule.id = student_subject_schedule.subject_schedule_id
+            WHERE subject_schedule.subject_id = subject.id
+          )`),
+            "student_count",
           ],
-        },
-        {
-          model: allModels.SubjectSchedule,
-          attributes: ["lesson_type_id"],
-          include: [
-            {
-              model: allModels.StudentSubjectSchedule,
-              attributes: [
-                "id",
-                "student_id",
-                "subject_schedule_id",
-                "createdAt",
-              ],
-              include: [
-                {
-                  model: allModels.Student,
-                },
-              ],
-            },
-            {
-              model: allModels.LessonType,
-              attributes: ["id", "lesson_type_name"],
-            },
-            {
-              model: allModels.Schedule,
-            },
+        ],
+        where: where,
+        include: [
+          {
+            model: allModels.SubjectLessonType,
+            attributes: ["lesson_type_id"],
+            include: [
+              {
+                model: allModels.LessonType,
+                attributes: ["lesson_type_name"],
+              },
+            ],
+          },
+          {
+            model: allModels.SubjectSchedule,
+            attributes: ["lesson_type_id"],
+            include: [
+              {
+                model: allModels.StudentSubjectSchedule,
+                attributes: [
+                  "id",
+                  "student_id",
+                  "subject_schedule_id",
+                  "createdAt",
+                ],
+                include: [
+                  {
+                    model: allModels.Student,
+                  },
+                ],
+              },
+              {
+                model: allModels.LessonType,
+                attributes: ["id", "lesson_type_name"],
+              },
+              {
+                model: allModels.Schedule,
+              },
+            ],
+            attributes: [
+              "id",
+              "subject_id",
+              "lesson_type_id",
+              // "lecture_day",
+              // "lecture_time",
+              "createdAt",
+            ],
+          },
+        ],
+      });
+    }
+
+    let { count: totalSubjects, rows: subjects } =
+      await allModels.Subject.findAndCountAll({
+        attributes: [
+          "id",
+          "subject_name",
+          "subject_code",
+          "is_started",
+          "createdAt",
+          [
+            Sequelize.literal(`(
+          SELECT COUNT(DISTINCT student.id)
+          FROM student_subject_schedule
+          JOIN student ON student.id = student_subject_schedule.student_id
+          JOIN subject_schedule ON subject_schedule.id = student_subject_schedule.subject_schedule_id
+          WHERE subject_schedule.subject_id = subject.id
+        )`),
+            "student_count",
           ],
-          attributes: [
-            "id",
-            "subject_id",
-            "lesson_type_id",
-            // "lecture_day",
-            // "lecture_time",
-            "createdAt",
-          ],
-        },
-      ],
-    });
+        ],
+        include: [
+          {
+            model: allModels.SubjectLessonType,
+            attributes: ["lesson_type_id"],
+            include: [
+              {
+                model: allModels.LessonType,
+                attributes: ["lesson_type_name"],
+              },
+            ],
+          },
+          {
+            model: allModels.SubjectSchedule,
+            attributes: ["lesson_type_id"],
+            include: [
+              {
+                model: allModels.Subject,
+                attributes: ["id", "subject_name", "is_started"],
+              },
+              {
+                model: allModels.LessonType,
+                attributes: ["id", "lesson_type_name"],
+              },
+            ],
+            attributes: [
+              "id",
+              "subject_id",
+              "lesson_type_id",
+              // "lecture_day",
+              // "lecture_time",
+              "createdAt",
+            ],
+          },
+        ],
+        where: where,
+        limit: limit,
+        offset: offset,
+        order: order,
+        distinct: true,
+      });
+
+    return {
+      totalSubjects,
+      subjects,
+    };
   }
-
-  let { count: totalSubjects, rows: subjects } =
-    await allModels.Subject.findAndCountAll({
-      attributes: [
-        "id",
-        "subject_name",
-        "subject_code",
-        "is_started",
-        "createdAt",
-        [
-          Sequelize.literal(`(
-        SELECT COUNT(DISTINCT student.id)
-        FROM student_subject_schedule
-        JOIN student ON student.id = student_subject_schedule.student_id
-        JOIN subject_schedule ON subject_schedule.id = student_subject_schedule.subject_schedule_id
-        WHERE subject_schedule.subject_id = subject.id
-      )`),
-          "student_count",
-        ],
-      ],
-      include: [
-        {
-          model: allModels.SubjectLessonType,
-          attributes: ["lesson_type_id"],
-          include: [
-            {
-              model: allModels.LessonType,
-              attributes: ["lesson_type_name"],
-            },
-          ],
-        },
-        {
-          model: allModels.SubjectSchedule,
-          attributes: ["lesson_type_id"],
-          include: [
-            {
-              model: allModels.Subject,
-              attributes: ["id", "subject_name", "is_started"],
-            },
-            {
-              model: allModels.LessonType,
-              attributes: ["id", "lesson_type_name"],
-            },
-          ],
-          attributes: [
-            "id",
-            "subject_id",
-            "lesson_type_id",
-            // "lecture_day",
-            // "lecture_time",
-            "createdAt",
-          ],
-        },
-      ],
-      where: where,
-      limit: limit,
-      offset: offset,
-      order: order,
-      distinct: true,
-    });
-
-  return {
-    totalSubjects,
-    subjects,
-  };
 };
 
 const getAllStudentsSubjectsService = async ({ studentId }) => {

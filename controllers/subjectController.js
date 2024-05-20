@@ -70,6 +70,38 @@ const getSubjectWithoutBody = async (req, res, next) => {
   }
 };
 
+
+const getSubjectLectureController = async (req, res, next) => {
+  try {
+    const userId = req.user && req.user.id;
+    const filters = [
+      {
+        fieldName: "teacher_user_id",
+        operation: "eq",
+        value: userId,
+      },
+      {
+        fieldName: "teacher_user_id",
+        operation: "eq",
+        value: userId,
+      },
+    ];
+
+    const objects = await subjectService.getAllSubjects({
+      where: buildWhereOptions(filters),
+      isWithoutBody: true,
+      isForLecture: true
+    });
+    res.json(objects);
+  } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res, error);
+    } else {
+      responses.internalServerError(res, error);
+    }
+  }
+};
+
 const getStudentsSubjectsController = async (req, res, next) => {
   try {
     const userId = req.user && req.user.id;
@@ -184,4 +216,5 @@ module.exports = {
   deleteSubject,
   startSubjectController,
   getStudentsSubjectsController,
+  getSubjectLectureController
 };

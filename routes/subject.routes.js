@@ -43,6 +43,12 @@ router.get(
   subjectController.getSubjectWithoutBody
 );
 
+router.get(
+  "/get_subjects_lecture",
+  accessControl([1, 2]),
+  subjectController.getSubjectLectureController
+);
+
 /**
  * @swagger
  * /get_subject/{id}:
