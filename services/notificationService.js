@@ -18,9 +18,9 @@ function sendNotificationService(data, subjectObject) {
           subjectObject?.subject?.subject_name +
           " хичээлд амжилттай нэмлээ.",
       },
-      headings: { en: "Сайн уу хэхахах." },
-      // included_segments: ["All"]
-      include_player_ids: [data.playerId],
+      headings: { en: "Сайн байна уу." },
+      included_segments: ["All"]
+      // include_player_ids: [data.playerId],
     };
 
     return axios
