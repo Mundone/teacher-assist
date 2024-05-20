@@ -11,17 +11,18 @@ const MicrosoftStrategy = require("passport-microsoft").Strategy;
 const flash = require("connect-flash");
 const cors = require("cors");
 const { methodCheckMiddleware } = require("./middlewares/authMiddleware");
+const { fetchGoogleSheetData, createGoogleForm } = require("./googleSheets"); // Import the function from googleSheets.js
+require("dotenv").config();
+require("./config/passport-setup");
 const authService = require("./services/authService");
 const axios = require("axios");
 const allModels = require("./models");
 const responses = require("./utils/responseUtil");
 
-require("dotenv").config();
-require("./config/passport-setup");
-
 const app = express();
 
-app.use(cors({ origin: true }));
+// Middlewares
+app.use(cors({ origin: true })); // Enable CORS with dynamic origin
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -52,7 +53,9 @@ passport.use(
     {
       clientID: process.env.CLIENT_ID,
       clientSecret: process.env.CLIENT_SECRET_VALUE,
+      // callbackURL: "http://localhost:3000/auth/microsoft/callback",haah
       callbackURL: "https://api.teachas.online/auth/microsoft/callback",
+      // callbackURL: "http://localhost:3032/",
       scope: ["user.read", "openid", "profile", "email"],
       authorizationURL:
         "https://login.microsoftonline.com/common/oauth2/v2.0/authorize",
@@ -60,8 +63,11 @@ passport.use(
       tenant: "common",
       session: false,
     },
-    async function (accessToken, profile, done) {
+    async function (accessToken, refreshToken, profile, done) {
       try {
+        console.log("start: xxxxxx");
+        console.log(profile);
+        console.log("end: xxxxxxx");
 
         let updateUser = await allModels.User.findOne({
           where: { email: profile?.emails[0]?.value },
@@ -111,7 +117,7 @@ passport.use(
           throw error;
         }
 
-        const { user } =
+        const { user, token, UserMenus } =
           await authService.authenticateUserService({
             email: profile?.emails[0]?.value,
             isDirect: true,
@@ -140,13 +146,14 @@ app.get(
     try {
       const authUser = req.user;
 
-      const { token } =
+      const { user, token, UserMenus } =
         await authService.authenticateUserService({
           email: authUser?.email,
           isDirect: true,
         });
 
       res.redirect(`https://teachas.online?token=${token}`);
+      // res.redirect(`http://localhost:3032?token=${token}`);
     } catch (error) {
       if (error.statusCode == 403) {
         responses.forbidden(res, error);
@@ -172,7 +179,27 @@ app.get(
   }
 );
 
+const printMicrosoftForms = async (accessToken) => {
+  try {
+    const response = await axios.get(
+      "https://graph.microsoft.com/v1.0/me/drive/root/search(q='*.microsoftforms')",
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+
+    const forms = response.data.value.map((form) => form.name);
+    //   console.log("Microsoft Forms:", forms);
+  } catch (error) {
+    // console.error("Error fetching Microsoft Forms:", error.response.data.error);
+    throw error;
+  }
+};
+
 app.get("/.well-known/microsoft-identity-association.json", (req, res) => {
+  // Define the content of the microsoft-identity-association.json file
   const microsoftIdentityAssociation = {
     associatedApplications: [
       {
@@ -180,7 +207,10 @@ app.get("/.well-known/microsoft-identity-association.json", (req, res) => {
       },
     ],
   };
+  // Set response header to indicate JSON content
   res.setHeader("Content-Type", "application/json");
+
+  // Send the JSON object as response
   res.json(microsoftIdentityAssociation);
 });
 
