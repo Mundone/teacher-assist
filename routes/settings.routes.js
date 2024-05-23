@@ -83,11 +83,16 @@ router.get(
   settingsController.getStudentsAttendanceWithWeekForEachSubjectController
 );
 
-
 router.get(
   "/dashboard/get_dashboard",
   accessControl([1, 2]),
   settingsController.getDashboardController
+);
+
+router.post(
+  "/ask_gpt",
+  accessControl([1, 2]),
+  settingsController.askGPTController
 );
 
 

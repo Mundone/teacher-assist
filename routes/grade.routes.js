@@ -37,6 +37,12 @@ router.post(
 );
 
 router.post(
+  "/get_grades_chatgpt",
+  accessControl([1, 2]),
+  gradeController.getGradesChatGPTController
+);
+
+router.post(
   "/get_direct_converted_grades",
   accessControl([1, 2]),
   paginationMiddleware,

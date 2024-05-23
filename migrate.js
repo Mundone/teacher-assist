@@ -291,48 +291,48 @@ const insertRandomData = async () => {
     });
   }
 
-  for (const survey of surveys) {
-    await models.Survey.create({
-      survey_title: survey.survey_title,
-      description: survey.description,
-    });
-  }
+  // for (const survey of surveys) {
+  //   await models.Survey.create({
+  //     survey_title: survey.survey_title,
+  //     description: survey.description,
+  //   });
+  // }
 
-  for (const question of questions) {
-    await models.Question.create({
-      question_text: question.question_text,
-      description: question.description,
-      type: question.type,
-      order_no: question.order_no,
-      survey_id: question.survey_id,
-    });
-  }
+  // for (const question of questions) {
+  //   await models.Question.create({
+  //     question_text: question.question_text,
+  //     description: question.description,
+  //     type: question.type,
+  //     order_no: question.order_no,
+  //     survey_id: question.survey_id,
+  //   });
+  // }
 
-  for (const answer of offeredAnswers) {
-    await models.OfferedAnswer.create({
-      value: answer.value,
-      question_id: answer.question_id,
-      order_no: answer.order_no,
-    });
-  }
+  // for (const answer of offeredAnswers) {
+  //   await models.OfferedAnswer.create({
+  //     value: answer.value,
+  //     question_id: answer.question_id,
+  //     order_no: answer.order_no,
+  //   });
+  // }
 
-  for (const student of students) {
-    await models.Student.create({
-      name: student.name,
-      student_code: student.student_code,
-      email: student.email,
-      password: student.password,
-    });
-  }
+  // for (const student of students) {
+  //   await models.Student.create({
+  //     name: student.name,
+  //     student_code: student.student_code,
+  //     email: student.email,
+  //     password: student.password,
+  //   });
+  // }
 
-  for (const response of responses) {
-    await models.Response.create({
-      student_id: response.student_id,
-      question_id: response.question_id,
-      answer_text: response.answer_text,
-      answer_id: response.answer_id,
-    });
-  }
+  // for (const response of responses) {
+  //   await models.Response.create({
+  //     student_id: response.student_id,
+  //     question_id: response.question_id,
+  //     answer_text: response.answer_text,
+  //     answer_id: response.answer_id,
+  //   });
+  // }
 
   // const headOfDepartmentMenus = await models.Menu.findAll({
   //   where: {

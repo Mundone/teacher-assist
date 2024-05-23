@@ -88,6 +88,173 @@ const getAllStudentGradesService = async ({
   };
 };
 
+const getAllStudentGradesChatGPTService = async (userId) => {
+  let rawData = await allModels.Subject.findAll({
+    where: {
+      teacher_user_id: userId,
+    },
+    attributes: ["subject_name", "subject_code"],
+    include: [
+      {
+        model: allModels.SubjectSchedule,
+        attributes: ["id"],
+        include: [
+          {
+            model: allModels.LessonType,
+            attributes: ["lesson_type_name"],
+          },
+          {
+            model: allModels.Schedule,
+            attributes: ["schedule_name", "schedule_day", "schedule_time"],
+          },
+          {
+            model: allModels.StudentSubjectSchedule,
+            attributes: ["id"],
+            include: [
+              {
+                model: allModels.Student,
+                attributes: ["name", "student_code"],
+                include: [
+                  {
+                    model: allModels.Grade,
+                    attributes: ["grade"],
+                    include: [
+                      {
+                        model: allModels.Lesson,
+                        attributes: ["week_number"],
+                        include: [
+                          {
+                            model: allModels.LessonAssessment,
+                            attributes: ["lesson_assessment_code"],
+                            include: [
+                              {
+                                model: allModels.LessonType,
+                                attributes: ["lesson_type_name"],
+                                required: true
+                              }
+                            ]
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  });
+
+  // Process rawData to create the desired structure with dynamic lesson type matching
+  const gradesData = rawData.map(subject => ({
+    subject_name: subject.subject_name,
+    subject_code: subject.subject_code,
+    students: subject.subject_schedules.reduce((acc, scheduleObject) => {
+      scheduleObject.student_subject_schedules.forEach(studentSchedule => {
+        let student = acc.find(s => s.student_code === studentSchedule.student.student_code);
+        if (!student) {
+          student = {
+            name: studentSchedule.student.name,
+            student_code: studentSchedule.student.student_code,
+            student_subject_schedules: []
+          };
+          acc.push(student);
+        }
+        const studentScheduleData = {
+          id: scheduleObject.id,
+          lesson_type: scheduleObject.lesson_type.lesson_type_name,
+          schedule: {
+            schedule_name: scheduleObject.schedule.schedule_name,
+            schedule_day: scheduleObject.schedule.schedule_day,
+            schedule_time: scheduleObject.schedule.schedule_time,
+          },
+          grades: []
+        };
+        const assessments = {};
+        studentSchedule.student.grades.forEach(gradeObject => {
+          const lessonAssessment = gradeObject.lesson.lesson_assessment;
+          // Match lesson type names dynamically
+          if (studentScheduleData.lesson_type === lessonAssessment.lesson_type.lesson_type_name) {
+            const code = lessonAssessment.lesson_assessment_code;
+            if (!assessments[code]) {
+              assessments[code] = {
+                lesson_assessment_code: code,
+                grades: []
+              };
+            }
+            assessments[code].grades.push({
+              grade: gradeObject.grade,
+              week_number: gradeObject.lesson.week_number
+            });
+          }
+        });
+        studentScheduleData.grades = Object.values(assessments);
+        student.student_subject_schedules.push(studentScheduleData);
+      });
+      return acc;
+    }, [])
+  }));
+
+  return gradesData;
+};
+
+
+function getCircularReplacer() {
+  const seen = new WeakSet();
+  return (key, value) => {
+    if (typeof value === "object" && value !== null) {
+      if (seen.has(value)) {
+        return; // Skip circular references
+      }
+      seen.add(value);
+    }
+    return value;
+  };
+}
+
+function createLookup(items, key) {
+  const lookup = {};
+  const result = [];
+
+  items.forEach((item) => {
+    const keyValue = item[key];
+    if (!lookup[keyValue]) {
+      lookup[keyValue] = { ...item, id: Object.keys(lookup).length + 1 };
+      result.push(lookup[keyValue]);
+    }
+  });
+
+  return { lookup, result };
+}
+
+function transformLessons(lessons) {
+  const { lookup: lessonAssessmentLookup, result: lessonAssessments } =
+    createLookup(
+      lessons.map((l) => l.lesson_assessment),
+      "lesson_assessment_code"
+    );
+  const { lookup: lessonTypeLookup, result: lessonTypes } = createLookup(
+    lessons.map((l) => l.lesson_type),
+    "lesson_type_name"
+  );
+
+  const transformedLessons = lessons.map((l) => ({
+    week_number: l.week_number,
+    grade: l.grade,
+    lesson_assessment_id:
+      lessonAssessmentLookup[l.lesson_assessment.lesson_assessment_code].id,
+    lesson_type_id: lessonTypeLookup[l.lesson_type.lesson_type_name].id,
+  }));
+
+  return {
+    lessons: transformedLessons,
+    assessments: lessonAssessments,
+    types: lessonTypes,
+  };
+}
+
 // await allModels.Lesson.findAndCountAll({
 //   include: [
 //     {
@@ -236,4 +403,5 @@ const updateGradeService = async (id, data, userId, isFromAttendance) => {
 module.exports = {
   getAllStudentGradesService,
   updateGradeService,
+  getAllStudentGradesChatGPTService,
 };

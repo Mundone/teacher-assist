@@ -275,11 +275,13 @@ const getStudentsAttendanceWithWeekForEachSubjectService = async (
 ) => {
   const result = await allModels.Lesson.findAll({
     attributes: [
-      'id',
+      "id",
       [
-        Sequelize.literal('COUNT(DISTINCT CASE WHEN `Grades`.`grade` >= 1 THEN `Grades`.`student_id` END)'), 
-        'studentCount'
-      ]
+        Sequelize.literal(
+          "COUNT(DISTINCT CASE WHEN `Grades`.`grade` >= 1 THEN `Grades`.`student_id` END)"
+        ),
+        "studentCount",
+      ],
     ],
     where: {
       subject_id: subjectId,
@@ -289,7 +291,8 @@ const getStudentsAttendanceWithWeekForEachSubjectService = async (
         model: allModels.Grade,
         attributes: [],
         required: false,
-      },{
+      },
+      {
         model: allModels.LessonAssessment,
         attributes: [],
         where: {
@@ -298,11 +301,11 @@ const getStudentsAttendanceWithWeekForEachSubjectService = async (
         // required: true,
       },
     ],
-    group: ['Lesson.id'],
+    group: ["Lesson.id"],
     raw: true,
   });
 
-  const studentCounts = result.map(lesson => (lesson.studentCount || 0));
+  const studentCounts = result.map((lesson) => lesson.studentCount || 0);
   return studentCounts;
 
   return await allModels.Student.findAll({
@@ -341,6 +344,41 @@ const getStudentsAttendanceWithWeekForEachSubjectService = async (
   });
 };
 
+const axios = require("axios");
+
+const apiKey = process.env.GPT;
+
+// const prompt = 'Translate the following English text to French: "Hello, how are you?"';
+
+async function callOpenAIChatGPT(userId, prompt) {
+  try {
+    const response = await axios.post(
+      "https://api.openai.com/v1/chat/completions",
+      {
+        // prompt: prompt,
+        model: "gpt-3.5-turbo-0125",
+        messages: [
+          {
+            role: "system",
+            content: prompt,
+          },
+        ],
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+        },
+      }
+    );
+
+    const answer = response.data.choices[0]?.message?.content;
+    console.log("ChatGPT Response:", answer);
+    return answer;
+  } catch (error) {
+    console.error("Error calling OpenAI ChatGPT:", error);
+  }
+}
+
 module.exports = {
   getCurrentWeekService,
   getAllSemestersService,
@@ -356,4 +394,5 @@ module.exports = {
   getAllTeachersStudentCountService,
   getAllTeachersSubjecsWithStudentCountService,
   getStudentsAttendanceWithWeekForEachSubjectService,
+  callOpenAIChatGPT,
 };

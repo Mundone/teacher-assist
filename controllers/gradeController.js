@@ -125,6 +125,102 @@ const getGradesController = async (req, res, next) => {
   }
 };
 
+const getGradesChatGPTController = async (req, res, next) => {
+  try {
+    const userId = req.user && req.user.id;
+
+    const grades = await gradeService.getAllStudentGradesChatGPTService(userId);
+    // const students = grades;
+    // console.log(grades);
+
+    // var newStudents = students.map((student) => {
+    //   const grades = student?.grades.map((innerGrade) => {
+    //     return {
+    //       grade_id: innerGrade?.id,
+    //       grade: innerGrade?.grade,
+    //       week_no: innerGrade?.lesson?.week_number,
+    //       lesson_no: innerGrade?.lesson?.lesson_number,
+    //       lesson_assessment_code:
+    //         innerGrade?.lesson?.lesson_assessment.lesson_assessment_code,
+    //       lesson_assessment_sort:
+    //         innerGrade?.lesson?.lesson_assessment.lesson_assessment_sort,
+    //       lesson_type_name: innerGrade?.lesson?.lesson_type.lesson_type_name,
+    //       lesson_type_sort: innerGrade?.lesson?.lesson_type.lesson_type_sort,
+    //     };
+    //   });
+
+    //   // Aggregating grade sums by lesson type and assessment code
+    //   const gradeSumsByLessonTypeAndAssessment = grades.reduce(
+    //     (acc, currentGrade) => {
+    //       // const key = `${currentGrade.lesson_type_name} | ${currentGrade.lesson_assessment_code}`;
+    //       const key = currentGrade.lesson_assessment_code;
+    //       acc[key] = (acc[key] || 0) + currentGrade.grade;
+    //       return acc;
+    //     },
+    //     {}
+    //   );
+
+    // return {
+    //   student_name: student.name,
+    //   student_code: student.student_code,
+    //   grades: grades,
+    //   gradeSumsByLessonTypeAndAssessment: gradeSumsByLessonTypeAndAssessment,
+    // };
+
+    // });
+
+    // newStudents.forEach((student) => {
+    //   student.grades.sort((a, b) => {
+    //     if (a.lesson_type_sort !== b.lesson_type_sort) {
+    //       return a.lesson_type_sort - b.lesson_type_sort;
+    //     } else if (a.week_no !== b.week_no) {
+    //       return a.week_no - b.week_no;
+    //     } else if (a.lesson_no !== b.lesson_no) {
+    //       return a.lesson_no - b.lesson_no;
+    //     } else {
+    //       return a.lesson_assessment_sort - b.lesson_assessment_sort;
+    //     }
+    //   });
+    // });
+
+    // console.log(newStudents);
+
+    // const headerData = newStudents.map((newStudent) => ({
+    //   grades: newStudent.grades.map(
+    //     ({ week_no, lesson_no, lesson_assessment_code, lesson_type_name }) => ({
+    //       lesson_type_name,
+    //       week_no,
+    //       lesson_no,
+    //       lesson_assessment_code,
+    //     })
+    //   ),
+    // }));
+
+    // const tableData = newStudents.map((newStudent) => ({
+    //   student_name: newStudent.student_name,
+    //   student_code: newStudent.student_code,
+    //   grades: newStudent.grades.map(({ grade_id, grade }) => ({
+    //     grade_id,
+    //     grade,
+    //   })),
+    //   gradeSumsByLessonTypeAndAssessment:
+    //     newStudent.gradeSumsByLessonTypeAndAssessment,
+    // }));
+
+    // res.json({
+    //   table_header: headerData[0]?.grades,
+    //   table_data: tableData,
+    // });
+    res.json({ grades });
+  } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res, error);
+    } else {
+      responses.internalServerError(res, error);
+    }
+  }
+};
+
 const getDirectConvertedGradesController = async (req, res, next) => {
   try {
     const userId = req.user && req.user.id;
@@ -548,11 +644,10 @@ const getSDConvertedGradesController = async (req, res, next) => {
   }
 };
 
-
-
 module.exports = {
   getGradesController,
   updateGradeController,
   getDirectConvertedGradesController,
   getSDConvertedGradesController,
+  getGradesChatGPTController,
 };

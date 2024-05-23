@@ -231,27 +231,26 @@ const getStudentsAttendanceWithWeekForEachSubjectController = async (
       // res.json(students)
       res.json({
         header_data: [
-          "1" ,
-          "2" ,
-          "3" ,
-          "4" ,
-          "5" ,
-          "6" ,
-          "7" ,
-          "8" ,
-          "9" ,
-          "10" ,
-          "11" ,
-          "12" ,
-          "13" ,
-          "14" ,
-          "15" ,
-          "16" ,
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9",
+          "10",
+          "11",
+          "12",
+          "13",
+          "14",
+          "15",
+          "16",
         ],
         student_count, // Renamed data to students
       });
     }
-    
   } catch (error) {
     if (error.statusCode == 403) {
       responses.forbidden(res, error);
@@ -293,6 +292,28 @@ const getDashboardController = async (req, res, next) => {
   }
 };
 
+const askGPTController = async (req, res, next) => {
+  try {
+    const userId = req.user && req.user.id;
+    const prompt = req.body.prompt ?? null;
+    if (!prompt || !userId) {
+      responses.forbidden(res);
+    } else {
+      const data = await settingsService.callOpenAIChatGPT(userId, prompt);
+      if (!data) {
+        responses.notFound(res);
+      }
+      res.json(data);
+    }
+  } catch (error) {
+    if (error.statusCode == 403) {
+      responses.forbidden(res, error);
+    } else {
+      responses.internalServerError(res, error);
+    }
+  }
+};
+
 module.exports = {
   getCurrentWeekController,
   getSemestersController,
@@ -308,4 +329,5 @@ module.exports = {
   getAllTeachersSubjecsWithStudentCountController,
   getStudentsAttendanceWithWeekForEachSubjectController,
   getDashboardController,
+  askGPTController,
 };
