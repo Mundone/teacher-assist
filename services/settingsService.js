@@ -2,6 +2,7 @@ const allModels = require("../models");
 const { Sequelize } = require("sequelize");
 const { execFile } = require("child_process");
 const { resetDBFunction } = require("../migrate");
+const gradeService = require("../services/gradeService");
 
 const getCurrentWeekService = async () => {
   const exist = await allModels.Semester.findOne();
@@ -352,6 +353,31 @@ const apiKey = process.env.GPT;
 
 async function callOpenAIChatGPT(userId, prompt) {
   try {
+    const gradeData = await gradeService.getAllStudentGradesChatGPTService(
+      userId
+    );
+    const addedPrompt =
+      "Json data: " +
+      JSON.stringify(gradeData) +
+      ". The provided JSON data contains detailed information about university subjects, " +
+      "each associated with specific students. Each student's entry includes their name, " +
+      "student code, and a list of their subject schedules, classified by lesson types " +
+      "such as lectures ('Лекц') and labs ('Лаборатор'). For each schedule, detailed grade " +
+      "records are provided, broken down by assessment codes and weekly performance. " +
+      "Analyze this structured data to respond to academic-related queries using the same language as the question." +
+      "For non-academic queries or general knowledge, respond based on your built-in knowledge and ignore the JSON data. " +
+      "Note: 'Дүн' means grade, 'хичээл' means subject, 'хичээлийн төрөл'" +
+      " means lesson type, 'оюутан' means student. REMEMBER. GIVE ME ANSWER. IF I ASK NUMBER GIVE ME NUMBER NO MATTER WHAT." +
+      ' Question: "' +
+      prompt +
+      '?"' +
+      "If the question is unrelated to the provided JSON, answer without referring to the JSON data";
+
+    // "just give me answer and briefly describe your method before providing the answer.";
+
+    console.log(addedPrompt);
+    //  console.log(gradeData)
+
     const response = await axios.post(
       "https://api.openai.com/v1/chat/completions",
       {
@@ -360,7 +386,7 @@ async function callOpenAIChatGPT(userId, prompt) {
         messages: [
           {
             role: "system",
-            content: prompt,
+            content: addedPrompt,
           },
         ],
       },
@@ -372,11 +398,33 @@ async function callOpenAIChatGPT(userId, prompt) {
     );
 
     const answer = response.data.choices[0]?.message?.content;
-    console.log("ChatGPT Response:", answer);
-    return answer;
+    const cleanedAnswer = cleanData(answer);
+
+    // const answer = "123";
+    // console.log("ChatGPT Response:", cleanedAnswer);
+    return cleanedAnswer;
   } catch (error) {
     console.error("Error calling OpenAI ChatGPT:", error);
   }
+}
+const he = require("he"); // Ensure you have installed this package
+
+function cleanData(input) {
+  // Convert the input to a string if it isn't already
+  let string = input.toString();
+
+  // Replace tabs and multiple spaces with a single space
+  string = string.replace(/\t+/g, " ");
+  string = string.replace(/\s\s+/g, " ");
+  string = string.replace(/\\"/g, '"'); // Double quotes
+  string = string.replace(/\\n/g, "\n"); // New lines
+  string = string.replace(/\\r/g, "\r"); // Carriage returns
+  string = string.replace(/\\\\/g, "\\"); // Backslashes
+
+  // Optionally, remove newline characters if you want everything in a single line
+  // string = string.replace(/\n+/g, ' ');
+
+  return string.trim();
 }
 
 module.exports = {

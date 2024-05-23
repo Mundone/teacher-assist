@@ -295,6 +295,7 @@ const getDashboardController = async (req, res, next) => {
 const askGPTController = async (req, res, next) => {
   try {
     const userId = req.user && req.user.id;
+    // console.log("userID: " + userId)
     const prompt = req.body.prompt ?? null;
     if (!prompt || !userId) {
       responses.forbidden(res);
