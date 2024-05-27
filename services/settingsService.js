@@ -349,29 +349,48 @@ const axios = require("axios");
 
 const apiKey = process.env.GPT;
 
+const { Translate } = require("@google-cloud/translate").v2;
+const CREDENTIALS = require("../config/credentials.json");
+
 // const prompt = 'Translate the following English text to French: "Hello, how are you?"';
+
+// const projectId = process.env.GOOGLE_TRANSLATE;
+const translate = new Translate({
+  credentials: CREDENTIALS,
+  projectId: CREDENTIALS.project_id,
+});
+
+const translateText = async (text, targetLanguage) => {
+  try {
+    let [response] = await translate.translate(text, targetLanguage);
+    return response;
+  } catch (error) {
+    console.log(`Error at translateText --> ${error}`);
+    return 0;
+  }
+};
 
 async function callOpenAIChatGPT(userId, prompt) {
   try {
     const gradeData = await gradeService.getAllStudentGradesChatGPTService(
       userId
     );
+
+    const targetLang = "en";
+    const translationPrompt = await translateText(prompt, targetLang);
+    console.log(translationPrompt);
+
     const addedPrompt =
       "Json data: " +
       JSON.stringify(gradeData) +
-      ". The provided JSON data contains detailed information about university subjects, " +
-      "each associated with specific students. Each student's entry includes their name, " +
-      "student code, and a list of their subject schedules, classified by lesson types " +
-      "such as lectures ('Лекц') and labs ('Лаборатор'). For each schedule, detailed grade " +
-      "records are provided, broken down by assessment codes and weekly performance. " +
-      "Analyze this structured data to respond to academic-related queries using the same language as the question." +
-      "For non-academic queries or general knowledge, respond based on your built-in knowledge and ignore the JSON data. " +
-      "Note: 'Дүн' means grade, 'хичээл' means subject, 'хичээлийн төрөл'" +
-      " means lesson type, 'оюутан' means student. REMEMBER. GIVE ME ANSWER. IF I ASK NUMBER GIVE ME NUMBER NO MATTER WHAT." +
-      ' Question: "' +
-      prompt +
+      ". The data includes details about university subjects, each with assigned students. " +
+      "Students are linked to specific courses, each with a type of lesson (lecture or lab), a schedule, and grades segmented by week and assessment codes. " +
+      "Respond with concise answers, using only relevant totals or specific details directly requested. " +
+      "Ensure responses are based directly on the provided data, accurately calculating any requested totals without additional explanation unless requested. " +
+      'Question: "' +
+      translationPrompt +
       '?"' +
-      "If the question is unrelated to the provided JSON, answer without referring to the JSON data";
+      "Provide the response succinctly, focusing only on the final result.";
 
     // "just give me answer and briefly describe your method before providing the answer.";
 
@@ -400,9 +419,15 @@ async function callOpenAIChatGPT(userId, prompt) {
     const answer = response.data.choices[0]?.message?.content;
     const cleanedAnswer = cleanData(answer);
 
+    console.log(cleanedAnswer);
+    const answerTarget = "mn";
+    const translationAnswer = await translateText(cleanedAnswer, answerTarget);
+    console.log(translationAnswer);
+    const cleanedtranslationAnswer = cleanData(translationAnswer);
+
     // const answer = "123";
     // console.log("ChatGPT Response:", cleanedAnswer);
-    return cleanedAnswer;
+    return cleanedtranslationAnswer;
   } catch (error) {
     console.error("Error calling OpenAI ChatGPT:", error);
   }

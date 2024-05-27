@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@aws-sdk/s3-request-presigner": "^3.465.0",
+    "@google-cloud/translate": "^8.3.0",
     "aws-sdk": "^2.1512.0",
     "axios": "^1.7.2",
     "bcryptjs": "^2.4.3",
