@@ -51,11 +51,6 @@ class Student extends Model {
       onDelete: "CASCADE",
       onUpdate: "CASCADE",
     });
-    this.hasMany(models.Response, {
-      foreignKey: "student_id",
-      onDelete: "CASCADE",
-      onUpdate: "CASCADE",
-    });
   }
 }
 

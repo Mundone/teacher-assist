@@ -1,6 +1,6 @@
 const { Model, DataTypes } = require("sequelize");
 
-class Survey extends Model {
+class Notification extends Model {
   static init(sequelize) {
     super.init(
       {
@@ -9,17 +9,23 @@ class Survey extends Model {
           primaryKey: true,
           autoIncrement: true,
         },
-        survey_title: {
+        title: {
           type: DataTypes.STRING(255),
         },
-        description: {
+        text: {
+          type: DataTypes.INTEGER,
+        },
+        image_link: {
           type: DataTypes.STRING(255),
+        },
+        notification_date: {
+          type: DataTypes.DATE,
         },
       },
       {
         sequelize,
-        modelName: "survey",
-        tableName: "survey",
+        modelName: "notification",
+        tableName: "notification",
         timestamps: true,
       }
     );
@@ -31,13 +37,13 @@ class Survey extends Model {
       onDelete: "CASCADE",
       onUpdate: "CASCADE",
     });
-
-    this.hasMany(models.Question, {
-      foreignKey: "survey_id",
+    
+    this.belongsTo(models.Subject, {
+      foreignKey: "subject_id",
       onDelete: "CASCADE",
       onUpdate: "CASCADE",
     });
   }
 }
 
-module.exports = Survey;
+module.exports = Notification;

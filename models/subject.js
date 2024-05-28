@@ -61,6 +61,11 @@ class Subject extends Model {
       onDelete: "CASCADE",
       onUpdate: "CASCADE",
     });
+    this.hasMany(models.Notification, {
+      foreignKey: "subject_id",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
+    });
   }
 }
 

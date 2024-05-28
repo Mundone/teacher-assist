@@ -11,7 +11,6 @@ const MicrosoftStrategy = require("passport-microsoft").Strategy;
 const flash = require("connect-flash");
 const cors = require("cors");
 const { methodCheckMiddleware } = require("./middlewares/authMiddleware");
-const { fetchGoogleSheetData, createGoogleForm } = require("./googleSheets"); // Import the function from googleSheets.js
 require("dotenv").config();
 require("./config/passport-setup");
 const authService = require("./services/authService");
@@ -22,7 +21,7 @@ const responses = require("./utils/responseUtil");
 const app = express();
 
 // Middlewares
-app.use(cors({ origin: true })); // Enable CORS with dynamic origin
+app.use(cors({ origin: true }));
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -53,7 +52,7 @@ passport.use(
     {
       clientID: process.env.CLIENT_ID,
       clientSecret: process.env.CLIENT_SECRET_VALUE,
-      // callbackURL: "http://localhost:3000/auth/microsoft/callback",haah
+      // callbackURL: "http://localhost:3000/auth/microsoft/callback",
       callbackURL: "https://api.teachas.online/auth/microsoft/callback",
       // callbackURL: "http://localhost:3032/",
       scope: ["user.read", "openid", "profile", "email"],
@@ -179,24 +178,6 @@ app.get(
   }
 );
 
-const printMicrosoftForms = async (accessToken) => {
-  try {
-    const response = await axios.get(
-      "https://graph.microsoft.com/v1.0/me/drive/root/search(q='*.microsoftforms')",
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    );
-
-    const forms = response.data.value.map((form) => form.name);
-    //   console.log("Microsoft Forms:", forms);
-  } catch (error) {
-    // console.error("Error fetching Microsoft Forms:", error.response.data.error);
-    throw error;
-  }
-};
 
 app.get("/.well-known/microsoft-identity-association.json", (req, res) => {
   // Define the content of the microsoft-identity-association.json file
@@ -207,10 +188,8 @@ app.get("/.well-known/microsoft-identity-association.json", (req, res) => {
       },
     ],
   };
-  // Set response header to indicate JSON content
   res.setHeader("Content-Type", "application/json");
 
-  // Send the JSON object as response
   res.json(microsoftIdentityAssociation);
 });
 

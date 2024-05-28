@@ -7,24 +7,15 @@ const { profileUrl } = require("./config/const");
 const {
   lessonTypes,
   lectureLessonAssessments,
-  // sorilLessonAssessments,
   laboratoryLessonAssessments,
   assignmentLessonAssessments,
   seminarLessonAssessments,
-  // testLessonAssessments,
-  // subjectCodes,
   scheduleNames,
   scheduleDays,
   scheduleTimes,
   menuDatas,
   adminMenuCodes,
-  headOfDepartmentMenuCodes,
   teacherMenuCodes,
-  surveys,
-  questions,
-  offeredAnswers,
-  responses,
-  students,
 } = require("./dummyDatas");
 
 const resetDBFunction = async () => {
@@ -33,31 +24,21 @@ const resetDBFunction = async () => {
   console.log("Database sync complete.");
   await insertRandomData();
   console.log("Random data inserted successfully.");
-  // } catch (err) {
-  //   console.error("Error during database operation:", err);
-  //   return err;
-  // } finally {
-  // await sequelize.close();
-  // console.log("Database connection closed.");
-  // }
+//   } catch (err) {
+//     console.error("Error during database operation:", err);
+//     return err;
+//   } finally {
+//   await sequelize.close();
+//   console.log("Database connection closed.");
+//   }
 };
 
-const generateRandomData = () => {
-  const randomDay = Math.floor(Math.random() * 7) + 1; // Day of the week, 1 (Monday) - 7 (Sunday)
-  const randomTime = Math.floor(Math.random() * 10) + 1; // Assuming time slots are numbered
-  return { randomDay, randomTime };
-};
-
-const generateRandomGrade = (maxGrade) =>
-  Math.floor(Math.random() * (maxGrade + 1));
 
 const insertRandomData = async () => {
   //teacherRole
   await models.UserRole.bulkCreate([
     { role_name: "Админ" },
     { role_name: "Багш" },
-    // { role_name: "Тэнхимийн эрхлэгч" },
-    // { role_name: "Оюутан" },
   ]);
 
   for (let i = 0; i < scheduleNames.length; i++) {
@@ -181,17 +162,6 @@ const insertRandomData = async () => {
     is_attendance_add: lessonTypes[10].is_attendance_add,
   });
 
-  // for (let i = 0; i < testLessonAssessments.length; i++) {
-  //   await models.LessonAssessment.create({
-  //     lesson_assessment_code: testLessonAssessments[i].code,
-  //     lesson_assessment_description: testLessonAssessments[i].desc,
-  //     lesson_type_id: practicLessonType.id,
-  //     lesson_assessment_sort: testLessonAssessments[i].sort,
-  //     default_grade: testLessonAssessments[i].def_grade,
-  //     is_attendance_add: testLessonAssessments[i].is_attendance_add,
-  //   });
-  // }
-
   await models.School.bulkCreate([
     {
       school_name: "ШУТИС",
@@ -213,26 +183,6 @@ const insertRandomData = async () => {
       school_id: 1,
       // profile_image: profileUrl + "admin",
     },
-    // {
-    //   name: "Тэнхимийн эрхлэгч өвөө",
-    //   email: "headOfDepartment@gmail.com",
-    //   code: "dep",
-    //   role_id: 2,
-    //   password: await bcrypt.hash("Pass@123", 10),
-    //   school_id: 1,
-    //   is_head_of_department: true,
-    //   // profile_image: profileUrl + "dep",
-    // },
-    // {
-    //   name: "Нарийн бичиг хатагтай",
-    //   email: "secretary@gmail.com",
-    //   code: "sec",
-    //   role_id: 2,
-    //   password: await bcrypt.hash("Pass@123", 10),
-    //   school_id: 1,
-    //   is_secretary: true,
-    //   // profile_image: profileUrl + "sec",
-    // },
   ]);
 
   await models.Semester.create({
@@ -241,27 +191,6 @@ const insertRandomData = async () => {
     is_active: true,
     user_id: 1,
   });
-
-  // await models.SubSchool.bulkCreate([
-  //   {
-  //     sub_school_name: "ШУТИС - МХТС",
-  //     is_active: true,
-  //     user_id: 1,
-  //     school_id: 1,
-  //   },
-  //   {
-  //     sub_school_name: "ШУТИС - БУХС",
-  //     is_active: true,
-  //     user_id: 1,
-  //     school_id: 1,
-  //   },
-  //   {
-  //     sub_school_name: "ШУТИС - ЭХИС",
-  //     is_active: true,
-  //     user_id: 1,
-  //     school_id: 1,
-  //   },
-  // ]);
 
   await models.Menu.bulkCreate(menuDatas);
 
@@ -290,62 +219,6 @@ const insertRandomData = async () => {
       menu_id: teacherMenu.id,
     });
   }
-
-  // for (const survey of surveys) {
-  //   await models.Survey.create({
-  //     survey_title: survey.survey_title,
-  //     description: survey.description,
-  //   });
-  // }
-
-  // for (const question of questions) {
-  //   await models.Question.create({
-  //     question_text: question.question_text,
-  //     description: question.description,
-  //     type: question.type,
-  //     order_no: question.order_no,
-  //     survey_id: question.survey_id,
-  //   });
-  // }
-
-  // for (const answer of offeredAnswers) {
-  //   await models.OfferedAnswer.create({
-  //     value: answer.value,
-  //     question_id: answer.question_id,
-  //     order_no: answer.order_no,
-  //   });
-  // }
-
-  // for (const student of students) {
-  //   await models.Student.create({
-  //     name: student.name,
-  //     student_code: student.student_code,
-  //     email: student.email,
-  //     password: student.password,
-  //   });
-  // }
-
-  // for (const response of responses) {
-  //   await models.Response.create({
-  //     student_id: response.student_id,
-  //     question_id: response.question_id,
-  //     answer_text: response.answer_text,
-  //     answer_id: response.answer_id,
-  //   });
-  // }
-
-  // const headOfDepartmentMenus = await models.Menu.findAll({
-  //   where: {
-  //     menu_code: { [Sequelize.Op.in]: headOfDepartmentMenuCodes },
-  //   },
-  // });
-
-  // for (const teacherMenu of headOfDepartmentMenus) {
-  //   await models.UserRoleMenu.create({
-  //     user_role_id: 3,
-  //     menu_id: teacherMenu.id,
-  //   });
-  // }
 };
 
 module.exports = {

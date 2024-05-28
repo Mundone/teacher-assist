@@ -1,73 +1,17 @@
-const surveys = [
-  {
-    survey_title: "Оюутны зуны улирлын тест",
-    description: "Хувь хүний зан чанарын тест",
-  },
-  {
-    survey_title: "Багш нарын намрын тест",
-    description: "Ур чадварын тест",
-  },
-];
-
-const questions = [
-  {
-    question_text: "Дуртай өнгө чинь юу вэ?",
-    placeholder: "Дуртай өнгөө сонгоно үү.",
-    type: "single_selection",
-    order_no: 1,
-    survey_id: 1,
-  },
-  {
-    question_text: "Заан хэдэн хөлтэй вэ?",
-    placeholder: "Доор бичнэ үү.",
-    type: "free_text",
-    order_no: 2,
-    survey_id: 1,
-  },
-];
-
-const offeredAnswers = [
-  {
-    value: "Улаан",
-    question_id: 1,
-    order_no: 1,
-  },
-  {
-    value: "Цэнхэр",
-    question_id: 1,
-    order_no: 2,
-  },
-];
-
-const responses = [
-  {
-    student_id: 1,
-    question_id: 1,
-    answer_text: "",
-    answer_id: 1,
-  },
-  {
-    student_id: 2,
-    question_id: 2,
-    answer_text: "4 хөлтэй шдэ хэхэ.",
-    answer_id: null,
-  },
-];
-
-const students = [
-  {
-    name: "Student1",
-    student_code: "Student1",
-    email: "Student1",
-    password: "Student1",
-  },
-  {
-    name: "Student2",
-    student_code: "Student2",
-    email: "Student2",
-    password: "Student2",
-  },
-];
+// const students = [
+//   {
+//     name: "Student1",
+//     student_code: "Student1",
+//     email: "Student1",
+//     password: "Student1",
+//   },
+//   {
+//     name: "Student2",
+//     student_code: "Student2",
+//     email: "Student2",
+//     password: "Student2",
+//   },
+// ];
 
 const lessonTypes = [
   {
@@ -454,10 +398,18 @@ const menuDatas = [
   {
     menu_code: "0108",
     parent_id: 2,
-    menu_name: "Санал асуулга",
-    router_link: "/dashboard/survey",
+    menu_name: "Чатбот",
+    router_link: "/dashboard/chat",
     sorted_order: 7,
-    icon_name: "wpf:survey",
+    icon_name: "tabler:message-chatbot",
+  },
+  {
+    menu_code: "0109",
+    parent_id: 2,
+    menu_name: "Мэдэгдэл явуулах",
+    router_link: "/dashboard/notification",
+    sorted_order: 8,
+    icon_name: "mdi:notification-settings-outline",
   },
   {
     menu_code: "0201",
@@ -532,9 +484,5 @@ module.exports = {
   headOfDepartmentMenuCodes,
   teacherMenuCodes,
   seminarLessonAssessments,
-  surveys,
-  questions,
-  offeredAnswers,
-  responses,
-  students,
+  // students,
 };

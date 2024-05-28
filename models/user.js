@@ -84,12 +84,16 @@ class User extends Model {
       onDelete: "CASCADE",
       onUpdate: "CASCADE",
     });
-      this.hasMany(models.Survey, {
-        foreignKey: "user_id",
-        onDelete: "CASCADE",
-        onUpdate: "CASCADE",
-      });
-    
+    // this.hasMany(models.Survey, {
+    //   foreignKey: "user_id",
+    //   onDelete: "CASCADE",
+    //   onUpdate: "CASCADE",
+    // });
+    this.hasMany(models.Notification, {
+      foreignKey: "user_id",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
+    });
   }
 }
 
