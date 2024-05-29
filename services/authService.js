@@ -310,7 +310,8 @@ const sendEmailStudentService = async (email, student_code) => {
   }
 };
 
-const authenticateStudentService = async (email, password) => {
+const authenticateStudentService = async (email, password, playerId) => {
+
   const inputStudent = await allModels.Student.findOne({
     where: { email: email?.toUpperCase() },
   });
@@ -322,6 +323,10 @@ const authenticateStudentService = async (email, password) => {
     const error = new Error("Имейл рүү явсан код буруу байна.");
     error.statusCode = 403;
     throw error;
+  }
+
+  if(playerId){
+    await inputStudent.update({player_id: playerId});
   }
 
   const token = jwt.sign(

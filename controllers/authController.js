@@ -88,10 +88,11 @@ const getAuthInfoController = async (req, res) => {
 
 const loginStudentController = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, playerId } = req.body;
     const { user, token } = await authService.authenticateStudentService(
       email,
-      password
+      password,
+      playerId
     );
     res.status(200).json({
       message: "Амжилттай нэвтэрлээ.",
