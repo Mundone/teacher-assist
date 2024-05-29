@@ -2,7 +2,7 @@
 const allModels = require("../models");
 const { Sequelize } = require("sequelize");
 const { profileUrl } = require("../config/const");
-const { sendNotificationService } = require("./notificationService");
+const { sendNotificationWhenCreateStudentService } = require("./notificationService");
 
 const getAllStudentsService = async ({
   where,
@@ -181,7 +181,7 @@ const createStudentService = async (data, subjectScheduleIds, userId) => {
 
     // Commit the transaction
     await transaction.commit();
-    await sendNotificationService(studentObject, subjectObject);
+    await sendNotificationWhenCreateStudentService(studentObject, subjectObject);
     
     return studentObject; // Return the student object (new or existing)
   } catch (error) {

@@ -9,7 +9,7 @@ const headers = {
   Authorization: `Basic ${REST_API_KEY}`,
 };
 
-function sendNotificationService(data, subjectObject) {
+function sendNotificationWhenCreateStudentService(data, subjectObject) {
   let body = {};
   if (data?.playerId) {
     body = {
@@ -18,11 +18,11 @@ function sendNotificationService(data, subjectObject) {
         en:
           "Таныг " +
           subjectObject?.subject?.subject_name +
-          " хичээлд амжилттай нэмлээ.",
+          " хичээлд амжилттай нэмлээ. Сайн сураарай.",
       },
-      headings: { en: "Сайн байна уу." },
-      included_segments: ["All"],
-      // include_player_ids: [data.playerId],
+      headings: { en: "Таныг хичээлд нэмлээ." },
+      // included_segments: ["All"],
+      include_subscription_ids: [data?.playerId],
     };
 
     return axios
@@ -37,6 +37,11 @@ const getNotificationsService = async ({ where }) => {
   return await allModels.Notification.findAll({
     // attributes: ["id", "notif_title", "description"],
     where: where,
+    include: [
+      {
+        model: allModels.Subject,
+      },
+    ],
   });
 };
 
@@ -46,7 +51,7 @@ const createNotificationService = async (body, userId) => {
   const transaction = await allModels.sequelize.transaction();
 
   try {
-    if(notification_date == null){
+    if (notification_date == null) {
       notification_date = new Date();
     }
     const notif = await allModels.Notification.create(
@@ -61,7 +66,45 @@ const createNotificationService = async (body, userId) => {
     );
 
     await transaction.commit();
-    return notif;
+
+    const thatStudents = await allModels.Student.findAll({
+      include: [
+        {
+          model: allModels.StudentSubjectSchedule,
+          include: [
+            {
+              model: allModels.SubjectSchedule,
+              where: { subject_id: subject_id },
+            },
+          ],
+        },
+      ],
+    });
+
+    const include_player_ids = thatStudents?.map((thatStudent) => {
+      return thatStudent?.player_id;
+    });
+
+    let body = {};
+    if (include_player_ids != []) {
+      body = {
+        app_id: ONE_SIGNAL_APP_ID,
+        contents: {
+          en: text,
+        },
+        headings: { en: title },
+        // included_segments: ["All"],
+        include_player_ids: include_player_ids,
+      };
+
+      console.log(body);
+
+      return axios
+        .post("https://onesignal.com/api/v1/notifications", body, { headers })
+        .then((response) => response.data);
+    } else {
+      return notif;
+    }
   } catch (error) {
     await transaction.rollback();
     throw error;
@@ -69,7 +112,7 @@ const createNotificationService = async (body, userId) => {
 };
 
 module.exports = {
-  sendNotificationService,
   getNotificationsService,
   createNotificationService,
+  sendNotificationWhenCreateStudentService,
 };
