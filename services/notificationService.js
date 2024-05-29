@@ -33,16 +33,36 @@ function sendNotificationWhenCreateStudentService(data, subjectObject) {
   }
 }
 
-const getNotificationsService = async ({ where }) => {
-  return await allModels.Notification.findAll({
-    // attributes: ["id", "notif_title", "description"],
-    where: where,
-    include: [
-      {
-        model: allModels.Subject,
-      },
-    ],
-  });
+const getNotificationsService = async ({ where, limit, offset, order }) => {
+  let { count: totalObjects, rows: objects } =
+    await allModels.Notification.findAndCountAll({
+      attributes: [
+        "id",
+        "title",
+        "notification_text",
+        "notification_date",
+        "subject_id",
+      ],
+      include: [
+        {
+          model: allModels.Subject,
+          attributes: [
+            "id",
+            "subject_name",
+            "subject_code",
+          ],
+        },
+      ],
+      where: where,
+      limit: limit,
+      offset: offset,
+      order: order,
+      distinct: true,
+    });
+    return {
+      totalObjects,
+      objects,
+    };
 };
 
 const createNotificationService = async (body, userId) => {
@@ -89,13 +109,10 @@ const createNotificationService = async (body, userId) => {
       }
       return acc;
     }, []);
-    
-    
 
     let body = {};
     if (include_player_ids != []) {
-      if(notification_date == null) {
-
+      if (notification_date == null) {
         body = {
           app_id: ONE_SIGNAL_APP_ID,
           contents: {
@@ -106,7 +123,6 @@ const createNotificationService = async (body, userId) => {
           include_subscription_ids: include_player_ids,
         };
       } else {
-
         body = {
           app_id: ONE_SIGNAL_APP_ID,
           contents: {
@@ -115,9 +131,8 @@ const createNotificationService = async (body, userId) => {
           headings: { en: title },
           // included_segments: ["All"],
           include_subscription_ids: include_player_ids,
-          send_after: newNotificationDate + " GMT+0800"
+          send_after: newNotificationDate + " GMT+0800",
         };
-
       }
 
       console.log(body);
