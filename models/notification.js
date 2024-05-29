@@ -12,7 +12,7 @@ class Notification extends Model {
         title: {
           type: DataTypes.STRING(255),
         },
-        text: {
+        notification_text: {
           type: DataTypes.INTEGER,
         },
         image_link: {

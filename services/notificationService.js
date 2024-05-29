@@ -57,7 +57,7 @@ const createNotificationService = async (body, userId) => {
     const notif = await allModels.Notification.create(
       {
         title,
-        text,
+        notification_text: text,
         notification_date,
         subject_id,
         user_id: userId,
@@ -81,9 +81,14 @@ const createNotificationService = async (body, userId) => {
       ],
     });
 
-    const include_player_ids = thatStudents?.map((thatStudent) => {
-      return thatStudent?.player_id;
-    });
+    const include_player_ids = thatStudents?.reduce((acc, thatStudent) => {
+      if (thatStudent?.player_id) {
+        acc.push(thatStudent.player_id);
+      }
+      return acc;
+    }, []);
+    
+    
 
     let body = {};
     if (include_player_ids != []) {
@@ -94,7 +99,7 @@ const createNotificationService = async (body, userId) => {
         },
         headings: { en: title },
         // included_segments: ["All"],
-        include_player_ids: include_player_ids,
+        include_subscription_ids: include_player_ids,
       };
 
       console.log(body);
