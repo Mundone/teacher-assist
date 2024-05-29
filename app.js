@@ -76,13 +76,13 @@ passport.use(
           if (profile?.displayName) {
             updateUser.name = profile?.displayName;
           }
-          if (profile?.jobTitle) {
+          if (profile?._json?.jobTitle) {
             updateUser.job_title = profile?.jobTitle;
           }
-          if (profile?.mobilePhone) {
+          if (profile?._json?.mobilePhone) {
             updateUser.phone_number = profile?.mobilePhone;
           }
-          if (profile?.officeLocation) {
+          if (profile?._json?.officeLocation) {
             updateUser.office_location = profile?.officeLocation;
           }
           updateUser.teams_auth_token = accessToken;
