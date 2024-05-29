@@ -102,6 +102,7 @@ const createNotificationService = async (body, userId) => {
         headings: { en: title },
         // included_segments: ["All"],
         include_subscription_ids: include_player_ids,
+        send_after: newNotificationDate + " GMT+0800"
       };
 
       console.log(body);
