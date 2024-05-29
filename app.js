@@ -77,13 +77,13 @@ passport.use(
             updateUser.name = profile?.displayName;
           }
           if (profile?._json?.jobTitle) {
-            updateUser.job_title = profile?.jobTitle;
+            updateUser.job_title = profile?._json.jobTitle;
           }
           if (profile?._json?.mobilePhone) {
-            updateUser.phone_number = profile?.mobilePhone;
+            updateUser.phone_number = profile?._json.mobilePhone;
           }
           if (profile?._json?.officeLocation) {
-            updateUser.office_location = profile?.officeLocation;
+            updateUser.office_location = profile?._json.officeLocation;
           }
           updateUser.teams_auth_token = accessToken;
           await updateUser.save();
