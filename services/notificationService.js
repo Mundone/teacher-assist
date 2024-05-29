@@ -94,16 +94,31 @@ const createNotificationService = async (body, userId) => {
 
     let body = {};
     if (include_player_ids != []) {
-      body = {
-        app_id: ONE_SIGNAL_APP_ID,
-        contents: {
-          en: text,
-        },
-        headings: { en: title },
-        // included_segments: ["All"],
-        include_subscription_ids: include_player_ids,
-        send_after: newNotificationDate + " GMT+0800"
-      };
+      if(notification_date == null) {
+
+        body = {
+          app_id: ONE_SIGNAL_APP_ID,
+          contents: {
+            en: text,
+          },
+          headings: { en: title },
+          // included_segments: ["All"],
+          include_subscription_ids: include_player_ids,
+        };
+      } else {
+
+        body = {
+          app_id: ONE_SIGNAL_APP_ID,
+          contents: {
+            en: text,
+          },
+          headings: { en: title },
+          // included_segments: ["All"],
+          include_subscription_ids: include_player_ids,
+          send_after: newNotificationDate + " GMT+0800"
+        };
+
+      }
 
       console.log(body);
 
