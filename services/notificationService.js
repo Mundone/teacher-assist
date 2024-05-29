@@ -50,15 +50,17 @@ const createNotificationService = async (body, userId) => {
 
   const transaction = await allModels.sequelize.transaction();
 
+  let newNotificationDate = notification_date;
+
   try {
-    if (notification_date == null) {
-      notification_date = new Date();
+    if (newNotificationDate == null) {
+      newNotificationDate = new Date();
     }
     const notif = await allModels.Notification.create(
       {
         title,
         notification_text: text,
-        notification_date,
+        notification_date: newNotificationDate,
         subject_id,
         user_id: userId,
       },
