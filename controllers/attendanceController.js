@@ -9,7 +9,7 @@ const getStudentsAttendanceController = async (req, res, next) => {
     const { attendance_id } = req.body;
 
     const returnObject =
-    await userService.getStudentsAttendanceService(userId, attendance_id);
+    await attendanceService.getStudentsAttendanceService(userId, attendance_id);
     res.json(returnObject);
 
   } catch (error) {

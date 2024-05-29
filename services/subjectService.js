@@ -288,8 +288,8 @@ const getAllSubjects = async ({
     };
   }
 };
-
 const getAllStudentsSubjectsService = async ({ studentId }) => {
+
   return await allModels.Subject.findAll({
     attributes: [
       "id",
@@ -318,14 +318,33 @@ const getAllStudentsSubjectsService = async ({ studentId }) => {
         ],
         attributes: ["id", "subject_id", "lesson_type_id", "createdAt"],
       },
+      {
+        model: allModels.Lesson,
+        attributes: ["id", "week_number"],
+        include: [
+          {
+            model: allModels.Grade,
+            attributes: ["id", "grade"],
+          },
+          {
+            model: allModels.LessonAssessment,
+            attributes: ["id", "is_attendance_add"],
+            where: {
+              is_attendance_add: true,
+            },
+          },
+        ],
+      },
     ],
-    order: [["createdAt", "DESC"]],
+    order: [[{ model: allModels.Lesson }, "week_number", "ASC"]],
     distinct: true,
     where: {
       "$subject_schedules.student_subject_schedules.student_id$": studentId,
     },
   });
-};
+  
+}
+
 
 // const getAllSubjects = async ({
 //   where,

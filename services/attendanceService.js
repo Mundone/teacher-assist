@@ -56,6 +56,7 @@ const createAttendanceService = async (objectData, protocol, host, userId) => {
     },
     include: {
       model: allModels.LessonAssessment,
+      where: { is_attendance_add: true },
       include: {
         model: allModels.LessonType,
         where: { id: subjectScheduleObject?.lesson_type_id },

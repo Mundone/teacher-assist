@@ -105,19 +105,24 @@ const getSubjectLectureController = async (req, res, next) => {
 const getStudentsSubjectsController = async (req, res, next) => {
   try {
     const userId = req.user && req.user.id;
-
     console.log(userId);
 
     const queryOptions = {
       studentId: userId,
     };
 
-    // console.log(req);
+    const objects = await subjectService.getAllStudentsSubjectsService(queryOptions);
 
-    const objects =
-      await subjectService.getAllStudentsSubjectsService(queryOptions);
+    // Transform the lessons format in each subject
+    const transformedSubjects = objects.map(subject => ({
+      ...subject.dataValues, // spread the existing subject properties
+      lessons: subject.lessons.map(lesson => ({
+        week_number: lesson.week_number,
+        grade: lesson.grades.length > 0 ? lesson.grades[0].grade : 0 // assuming there's always one grade per lesson
+      }))
+    }));
 
-    res.json(objects);
+    res.json(transformedSubjects);
   } catch (error) {
     if (error.statusCode == 403) {
       responses.forbidden(res, error);
@@ -126,6 +131,7 @@ const getStudentsSubjectsController = async (req, res, next) => {
     }
   }
 };
+
 
 const getSubject = async (req, res, next) => {
   try {
